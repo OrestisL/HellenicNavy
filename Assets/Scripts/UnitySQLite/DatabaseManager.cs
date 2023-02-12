@@ -721,7 +721,7 @@ namespace UnitySQLite
             sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
             //sm_dbTransaction = sm_dbConnection.BeginTransaction();
 
-            sm_dbCommand.ExecuteReader().Dispose(); ;
+            sm_dbCommand.ExecuteReader().Dispose();
             //sm_dbTransaction.Commit();
 
             Logger.Instance.AddMessage(query);

@@ -13,8 +13,10 @@ namespace UnitySQLite
         [Header("User data")]
         [SerializeField]
         public string DatabaseName;
-        public Account _currentAccount;
-        public static Action<Account> onAccountGet;
+        [SerializeField]
+        private Account _currentAccount;
+        public static Action<Account> onSuccessfulLogin;
+        public static Action onLogout;
         public static Action<bool, string> onLoginAttempt;
 
         public TMP_InputField username, password, output;
@@ -26,14 +28,14 @@ namespace UnitySQLite
             base.Awake();
 
            // onLoginAttempt += (b, text) => output.text = text;
-            onAccountGet += (acc) => _currentAccount = acc;
+            onSuccessfulLogin += (acc) => _currentAccount = acc;
             login.onClick.AddListener(() => Login(username.text, password.text));
-            createAccount.onClick.AddListener(() =>
-            {
-                Account acc;
-                if (username.text != "" & password.text != "")
-                    acc = new Account(username.text, password.text, (int)_currentAccount.Dept, (int)_currentAccount.AccessLevel);
-            });
+            //createAccount.onClick.AddListener(() =>
+            //{
+            //    Account acc;
+            //    if (username.text != "" & password.text != "")
+            //        acc = new Account(username.text, password.text, (int)_currentAccount.Dept, (int)_currentAccount.AccessLevel);
+            //});
         }
 
         //private void Start()
@@ -53,12 +55,17 @@ namespace UnitySQLite
             StartCoroutine(GetAccount(username));
         }
 
+        public void ClearCurrentAccount()
+        {
+            _currentAccount = new Account();
+        }
+
         public void Login(string username, string password)
         {
             if (username == string.Empty | password == string.Empty)
                 return;
 
-            onAccountGet += (account) =>
+            onSuccessfulLogin += (account) =>
             {
                 string hash = Account.CreateSHA256(password, account.Salt);
                 Account.ValidateCredentials(username, hash, account);
@@ -77,8 +84,8 @@ namespace UnitySQLite
 #if UNITY_EDITOR
             _currentAccount = Account.CurrentAccount;
 #endif
-            onAccountGet?.Invoke(Account.CurrentAccount);
-            onAccountGet = null;
+            onSuccessfulLogin?.Invoke(Account.CurrentAccount);
+            onSuccessfulLogin = null;
         }
 
         private IEnumerator GetAccount(string username)
@@ -92,8 +99,8 @@ namespace UnitySQLite
 #if UNITY_EDITOR
             _currentAccount = Account.CurrentAccount;
 #endif
-            onAccountGet?.Invoke(Account.CurrentAccount);
-            onAccountGet = null;
+            onSuccessfulLogin?.Invoke(Account.CurrentAccount);
+            onSuccessfulLogin = null;
         }
 
     }
