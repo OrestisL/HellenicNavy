@@ -39,6 +39,7 @@ namespace UnitySQLite.Utilities
         EB,     //επιστασια βλαβων 
         HL,     //ηλεκτρολογικα
         HNAS,   //ηλεκτρονικος αυτοματων συστηματων
+        All,
     }
 
     public enum AccessLevel
@@ -365,27 +366,27 @@ namespace UnitySQLite.Utilities
             CreateAccount();
         }
 
-        private Account(string name, string pass, string salt, int _accLv, int _dep)
+        private Account(string name, string pass, string salt, int _dep, int _accLv)
         {
             _accountName = name;
             _accountPasswordHash = pass;
             _salt = salt;
-            _accessLevel = (AccessLevel)_accLv;
             _dept = (Department)_dep;
+            _accessLevel = (AccessLevel)_accLv;
         }
 
         public static void RetrieveAccount(int currentUID)
         {
             _currentAccount = null;
-            DatabaseManager.Instance.ReadData("UserData", SelectFromDatabaseMode.everything,
+            DatabaseManager.Instance.ReadData("Users", SelectFromDatabaseMode.everything,
                                                 SaveRetrievedAccount, SortResultsBy.none, null, "", 0, 0, $"WHERE UID = {currentUID}");
         }
 
         public static void RetrieveAccount(string username)
         {
             _currentAccount = null;
-            DatabaseManager.Instance.ReadData("UserData", SelectFromDatabaseMode.everything,
-                                                SaveRetrievedAccount, SortResultsBy.none, null, "", 0, 0, $"WHERE Username = \'{username}\'");
+            DatabaseManager.Instance.ReadData("Users", SelectFromDatabaseMode.everything,
+                                                SaveRetrievedAccount, SortResultsBy.none, null, "", 0, 0, $"WHERE Name = \'{username}\'");
         }
 
         private static void SaveRetrievedAccount(List<List<DataEntry>> data)

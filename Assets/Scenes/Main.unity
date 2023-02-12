@@ -1627,7 +1627,7 @@ MonoBehaviour:
     _accountName: 
     _accountPasswordHash: 
     _salt: 
-    _accessLevel: 1
+    _accessLevel: 0
     _dept: 0
   username: {fileID: 866801318}
   password: {fileID: 42842089}

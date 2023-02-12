@@ -25,7 +25,8 @@ namespace UnitySQLite
         {
             base.Awake();
 
-            onLoginAttempt += (b, text) => output.text = text;
+           // onLoginAttempt += (b, text) => output.text = text;
+            onAccountGet += (acc) => _currentAccount = acc;
             login.onClick.AddListener(() => Login(username.text, password.text));
             createAccount.onClick.AddListener(() =>
             {
