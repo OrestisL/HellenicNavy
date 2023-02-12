@@ -17,7 +17,7 @@ namespace UnitySQLite
         public static Action<Account> onAccountGet;
         public static Action<bool, string> onLoginAttempt;
 
-        public TMP_InputField username, password, email, output;
+        public TMP_InputField username, password, output;
         public Button login, createAccount;
 
         public TableRow content;
@@ -31,16 +31,16 @@ namespace UnitySQLite
             {
                 Account acc;
                 if (username.text != "" & password.text != "")
-                    acc = new Account(username.text, password.text, email.text);
+                    acc = new Account(username.text, password.text, (int)_currentAccount.Dept, (int)_currentAccount.AccessLevel);
             });
         }
 
-        private void Start()
-        {
-            DatabaseManager.Instance.Initialize("Databases", DatabaseName);
+        //private void Start()
+        //{
+        //    DatabaseManager.Instance.Initialize("Databases", DatabaseName);
             
-            DatabaseManager.Instance.CreateTableOnDatabase("UserData", content.GetColumns());    
-        } 
+        //    DatabaseManager.Instance.CreateTableOnDatabase("UserData", content.GetColumns());    
+        //} 
 
         public void SetCurrentAccount(int id)
         {

@@ -1,0 +1,3 @@
+- create accounts (3x users (1 for each dept), 1x supervisor, 1x master)
+- add change password functionality
+- add password to database (and change password)

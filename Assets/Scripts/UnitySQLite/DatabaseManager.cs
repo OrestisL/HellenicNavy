@@ -130,13 +130,9 @@ namespace UnitySQLite
         /// Search "SQLITE datatypes" for more information.</param>
         public void CreateTableOnDatabase(string TableName, string columns)
         {
-            //remove spaces because it no work
-            if (TableName.Contains(" "))
-                TableName = TableName.Replace(" ", "_");
 
             //set the query string
-
-            string query = string.Format("CREATE TABLE IF NOT EXISTS {0}({1});",
+            string query = string.Format("CREATE TABLE IF NOT EXISTS '{0}'({1});",
                 TableName, columns);
 
             //create and execute command
@@ -157,13 +153,9 @@ namespace UnitySQLite
         /// </summary>
         public void DeleteTableFromDatabase(string TableName)
         {
-            //remove spaces because it no work
-            if (TableName.Contains(" "))
-                TableName = TableName.Replace(" ", "_");
-
             //dbConnection = CreateConnectionToDB(path);
             //create query
-            string query = string.Format("DROP TABLE IF EXISTS {0};", TableName);
+            string query = string.Format("DROP TABLE IF EXISTS '{0}';", TableName);
 
             //create command
             sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
@@ -185,10 +177,6 @@ namespace UnitySQLite
         /// <returns>True if the entry exists and false otherwise.</returns>
         private bool CheckIfEntryExists(string TableName, string values)
         {
-            //remove spaces because it no work
-            if (TableName.Contains(" "))
-                TableName = TableName.Replace(" ", "_");
-
             string query = string.Empty;
             GetColumnNamesOnTable(TableName, out TableRow row);
             ReadOnlySpan<char> val = values;
@@ -210,7 +198,7 @@ namespace UnitySQLite
                 if (row.columns[current].Unique)
                 {
                     value = val.Slice(startIdx, idx - startIdx).ToString();
-                    query = string.Format("SELECT {0} FROM {1} WHERE {0}={2}", row.columns[current].ColumnName, TableName, value);
+                    query = string.Format("SELECT {0} FROM '{1}' WHERE {0}={2}", row.columns[current].ColumnName, TableName, value);
                     //table should have 1 primary key
                     value = string.Format("{0} = {1}", row.columns[current].ColumnName, value);
                     sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
@@ -240,10 +228,6 @@ namespace UnitySQLite
         /// </summary>
         private void InsertSingleColumnValueToTable(string TableName, string columnName, string values)
         {
-            //remove spaces because it no work
-            if (TableName.Contains(" "))
-                TableName = TableName.Replace(" ", "_");
-
             //dbConnection = CreateConnectionToDB(pathToDatabase);
             //dbConnection.Open();
             string query = string.Empty;
@@ -253,7 +237,7 @@ namespace UnitySQLite
             string[] commaSeparatedValues = values.Split(',');
             for (int i = 0; i < commaSeparatedValues.Length; i++)
             {
-                query = string.Format("INSERT INTO {0}({1}) VALUES ({2});", TableName, columnName, commaSeparatedValues[i]);
+                query = string.Format("INSERT INTO '{0}'({1}) VALUES ({2});", TableName, columnName, commaSeparatedValues[i]);
                 sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
                 sm_dbCommand.ExecuteReader().Dispose();
                 sm_dbCommand.Dispose();
@@ -268,10 +252,6 @@ namespace UnitySQLite
 
         private void WriteToDatabase(string tableName, TableRow tableRow)
         {
-            // remove spaces because it no work
-            if (tableName.Contains(" "))
-                tableName = tableName.Replace(" ", "_");
-
             if (!CheckIfTableExists(tableName))
             {
                 Logger.Instance.AddMessage(string.Format("Attempt to insert values to table {0} but it doesnt exist.", tableName));
@@ -308,7 +288,7 @@ namespace UnitySQLite
                 }
 
                 ReadOnlySpan<char> slice = newlinesSeparatedSpan.Slice(startIdx, nextNLIndex - startIdx);
-                query = string.Format("INSERT OR IGNORE INTO {0}({1}) VALUES ({2});", tableName, tableRow.GetColumnNames(), slice.ToString());
+                query = string.Format("INSERT OR IGNORE INTO '{0}'({1}) VALUES ({2});", tableName, tableRow.GetColumnNames(), slice.ToString());
                 sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
                 sm_dbCommand.ExecuteNonQuery();
                 sm_dbCommand.Dispose();
@@ -391,10 +371,10 @@ namespace UnitySQLite
             SqliteDataReader reader = sm_dbCommand.ExecuteReader();
             sm_dbCommand.Dispose();
             bool exists = reader.Read();
-            if (!exists)
-            {
-                DataVisualizer.Instance.ChangeDefaultMessage(string.Format("Table {0} does not exist in database", tableName));
-            }
+            //if (!exists)
+            //{
+            //    DataVisualizer.Instance.ChangeDefaultMessage(string.Format("Table {0} does not exist in database", tableName));
+            //}
             reader.Dispose();
             return exists;
         }
@@ -405,10 +385,6 @@ namespace UnitySQLite
         private void ReadFromDatabase(string TableName, SelectFromDatabaseMode mode, out List<List<DataEntry>> readValues,
             SortResultsBy sort = SortResultsBy.none, TableColumn SortColumn = null, string ColumnNames = "", int minRow = 0, int maxRow = 0, string Condition = "")
         {
-            //remove spaces because it no work
-            if (TableName.Contains(" "))
-                TableName = TableName.Replace(" ", "_");
-
             //dbConnection = CreateConnectionToDB(pathToDatabase);
             //dbConnection.Open();
             string query = string.Empty;
@@ -425,10 +401,10 @@ namespace UnitySQLite
             switch (mode)
             {
                 case SelectFromDatabaseMode.everything:
-                    query = string.Format("SELECT * FROM {0}", TableName);
+                    query = string.Format("SELECT * FROM '{0}'", TableName);
                     break;
                 case SelectFromDatabaseMode.specificColumns:
-                    query = string.Format("SELECT {0} FROM {1}", ColumnNames, TableName);
+                    query = string.Format("SELECT {0} FROM '{1}'", ColumnNames, TableName);
                     break;
                 case SelectFromDatabaseMode.specificRows:
                     if (maxRow == 0)
@@ -440,7 +416,7 @@ namespace UnitySQLite
                         return;
                     }
 
-                    query = string.Format("SELECT {0} FROM {1} WHERE {2}", ColumnNames, TableName, string.Format("rowid BETWEEN {0} AND {1}", minRow, maxRow));
+                    query = string.Format("SELECT {0} FROM '{1}' WHERE {2}", ColumnNames, TableName, string.Format("rowid BETWEEN {0} AND {1}", minRow, maxRow));
                     break;
             }
 
@@ -608,7 +584,7 @@ namespace UnitySQLite
                 return -1;
             }
             //create database command
-            string query = string.Format("SELECT MAX(rowid) FROM {0};", tableName);
+            string query = string.Format("SELECT MAX(rowid) FROM '{0}';", tableName);
             //create command
 
             sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
@@ -704,7 +680,7 @@ namespace UnitySQLite
             bool isLastLoop = false;
 
             //initialize query
-            string query = string.Format("UPDATE {0} SET ", TableName);
+            string query = string.Format("UPDATE '{0}' SET ", TableName);
 
             while (!isLastLoop)
             {
@@ -758,7 +734,7 @@ namespace UnitySQLite
             if (TableName == "" || Condition == "" || !CheckIfTableExists(TableName))
                 return;
 
-            string query = string.Format("DELETE FROM {0} WHERE {1}", TableName, Condition);
+            string query = string.Format("DELETE FROM '{0}' WHERE {1}", TableName, Condition);
             sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
             Logger.Instance.AddMessage(query);
         }
@@ -950,7 +926,6 @@ namespace UnitySQLite
 
         #region Internal functions
 
-
         private void StartThreads()
         {
             //initialize threads
@@ -992,7 +967,7 @@ namespace UnitySQLite
             if (!CheckIfTableExists(tableName))
             { return; }
             //this query returns the amount of entries in the table 
-            string query = string.Format("SELECT COUNT(rowid) FROM {0};", tableName);
+            string query = string.Format("SELECT COUNT(rowid) FROM '{0}';", tableName);
             //create command
             SqliteCommand dbCommand = new SqliteCommand(query, connection);
             //get the number of rows
@@ -1002,7 +977,7 @@ namespace UnitySQLite
             if (numRows > m_maxRowsAllowed)
             {
                 Debug.Log("Rows are more than allowed, deleting the first entry");
-                query = string.Format("DELETE FROM {0} WHERE rowid IN (SELECT rowid FROM {0} LIMIT 1);", tableName);
+                query = string.Format("DELETE FROM '{0}' WHERE rowid IN (SELECT rowid FROM '{0}' LIMIT 1);", tableName);
                 dbCommand = new SqliteCommand(query, connection);
                 dbCommand.ExecuteReader().Dispose();
             }

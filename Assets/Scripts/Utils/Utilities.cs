@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +29,24 @@ namespace UnitySQLite.Utilities
         none = 0,
         ASC,
         DESC,
+    }
+
+    public enum Department
+    {
+        None = 0,
+        MHX,    //μηχανοστασιο
+        BM,     //βοηθητικα μηχανηματα
+        EB,     //επιστασια βλαβων 
+        HL,     //ηλεκτρολογικα
+        HNAS,   //ηλεκτρονικος αυτοματων συστηματων
+    }
+
+    public enum AccessLevel
+    {
+        None = 0,
+        user,
+        supervisor,
+        master
     }
 
     [Serializable]
@@ -294,13 +312,15 @@ namespace UnitySQLite.Utilities
     public class Account
     {
         [SerializeField]
-        private int _UID;
+        private string _accountName, _accountPasswordHash, _salt;
         [SerializeField]
-        private string _accountName, _accountPasswordHash, _salt, _email, _creationDate;
+        private AccessLevel _accessLevel;
+        [SerializeField]
+        private Department _dept;
         public string AccountName { get { return _accountName; } }
         public string Salt { get { return _salt; } }
-        public string Email { get { return _email; } }
-        public string CreationDate { get { return _creationDate; } }
+        public AccessLevel AccessLevel { get { return _accessLevel; } }
+        public Department Dept { get { return _dept; } }
 
         private static Account _currentAccount;
         public static Account CurrentAccount { get { return _currentAccount; } }
@@ -322,15 +342,15 @@ namespace UnitySQLite.Utilities
 
         public Account()
         {
-            _UID = 0;
             _accountName = null;
             _accountPasswordHash = null;
-            _email = null;
+            _salt = null;
+            _accessLevel = AccessLevel.None;
+            _dept = Department.None;
         }
 
-        public Account(string accountName, string accountPassword, string email)
+        public Account(string accountName, string accountPassword, int dept, int accecssLevel)
         {
-            _creationDate = DateTime.Now.ToString("yyyy-MM-dd").ToString();
             using (RandomNumberGenerator rng = new RNGCryptoServiceProvider())
             {
                 byte[] bytes = new byte[16];
@@ -340,19 +360,18 @@ namespace UnitySQLite.Utilities
 
             _accountName = accountName;
             _accountPasswordHash = CreateSHA256(accountPassword, _salt);
-            _email = email;
-
+            _dept = (Department)dept;
+            _accessLevel = (AccessLevel)accecssLevel;
             CreateAccount();
         }
 
-        private Account(int UID, string name, string pass, string salt, string email, string date)
+        private Account(string name, string pass, string salt, int _accLv, int _dep)
         {
-            _UID = UID;
             _accountName = name;
             _accountPasswordHash = pass;
             _salt = salt;
-            _email = email;
-            _creationDate = date;
+            _accessLevel = (AccessLevel)_accLv;
+            _dept = (Department)_dep;
         }
 
         public static void RetrieveAccount(int currentUID)
@@ -378,12 +397,11 @@ namespace UnitySQLite.Utilities
             }
             int idx = data.Count - 1;
             _currentAccount = new Account(
-                                   data[idx][0].IntegerValue,
+                                   data[idx][0].StringValue,
                                    data[idx][1].StringValue,
                                    data[idx][2].StringValue,
-                                   data[idx][3].StringValue,
-                                   data[idx][4].StringValue,
-                                   data[idx][5].StringValue);
+                                   data[idx][3].IntegerValue,
+                                   data[idx][4].IntegerValue);
         }
 
         /// <summary>
@@ -394,19 +412,14 @@ namespace UnitySQLite.Utilities
         {
             DatabaseManager.Instance.ReadData("UserData", SelectFromDatabaseMode.everything, (data) =>
             {
-                if (data.Count > 0)
-                    _UID = data[data.Count - 1][0].IntegerValue + 1;
-                else
-                    _UID = 0;
 
                 List<DataEntry> content = new List<DataEntry>
                 {
-                    new DataEntry(_UID),
                     new DataEntry(_accountName),
                     new DataEntry(_accountPasswordHash),
                     new DataEntry(_salt),
-                    new DataEntry(_email),
-                    new DataEntry(DateTime.Now.ToString("yyyy-MM-dd"))
+                    new DataEntry((int)_accessLevel),
+                    new DataEntry((int)_dept),
                 };
 
                 List<TableColumn> cols = AccountManagement.Instance.content.columns;
@@ -414,7 +427,7 @@ namespace UnitySQLite.Utilities
 
                 DatabaseManager.Instance.WriteOnce(() =>
                 {
-                    DatabaseManager.Instance.ThreadedWriteToDatabase("UserData", row, true, Account.onEntryExists);
+                    DatabaseManager.Instance.ThreadedWriteToDatabase("Users", row, true, Account.onEntryExists);
                 });
             });
         }
@@ -437,7 +450,7 @@ namespace UnitySQLite.Utilities
 
         public override string ToString()
         {
-            string s = string.Format("UID:{0}\nusername:{1}\nemail:{2}\ncreation date:{3}", _UID, _accountName, _email, _creationDate);
+            string s = string.Format("Username:{0}\nAccessLevel:{1}\nDepartment:{2}\n", _accountName, _accessLevel, _dept);
             Debug.Log(s);
             return s;
         }
