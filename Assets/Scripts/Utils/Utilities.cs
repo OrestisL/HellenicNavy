@@ -405,6 +405,23 @@ namespace UnitySQLite.Utilities
                                    data[idx][4].IntegerValue);
         }
 
+        public void ChangePassword(string newPassword)
+        {
+            using (RandomNumberGenerator rng = new RNGCryptoServiceProvider())
+            {
+                byte[] bytes = new byte[16];
+                rng.GetNonZeroBytes(bytes);
+                _salt = bytes.ByteArrayToString();
+            }
+            string hash = CreateSHA256(newPassword, _salt);
+
+            string values = string.Format("{0},{1}", hash, _salt);
+
+            DatabaseManager.Instance.WriteOnce(() =>
+                                                DatabaseManager.Instance.
+                                                UpdateValuesOnTable("Users", "Password,Salt", values, $"name = '{_accountName}'")
+                                               );
+        }
         /// <summary>
         /// Create account on database if not exists. 
         /// First get UID and increase it by 1, then create.

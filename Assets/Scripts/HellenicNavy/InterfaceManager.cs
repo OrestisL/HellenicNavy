@@ -17,7 +17,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     {
         base.Awake();
 
-        AccountManagement.onSuccessfulLogin += (acc) =>
+        AccountManagement.onAfterLogin += (acc) =>
         {
             username.text = acc.AccountName;
             loginPanel.SetActive(false);

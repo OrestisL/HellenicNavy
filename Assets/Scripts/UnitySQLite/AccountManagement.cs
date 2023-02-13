@@ -16,6 +16,7 @@ namespace UnitySQLite
         [SerializeField]
         private Account _currentAccount;
         public static Action<Account> onSuccessfulLogin;
+        public static Action<Account> onAfterLogin;
         public static Action onLogout;
         public static Action<bool, string> onLoginAttempt;
 
@@ -100,6 +101,7 @@ namespace UnitySQLite
             _currentAccount = Account.CurrentAccount;
 #endif
             onSuccessfulLogin?.Invoke(Account.CurrentAccount);
+            onAfterLogin?.Invoke(Account.CurrentAccount);
             onSuccessfulLogin = null;
         }
 
