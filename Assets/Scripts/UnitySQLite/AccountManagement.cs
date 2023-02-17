@@ -16,7 +16,8 @@ namespace UnitySQLite
         [SerializeField]
         private Account _currentAccount;
         public static Action<Account> onSuccessfulLogin;
-        public static Action<Account> onAfterLogin;
+        private static bool validLogin;
+        public static Action<bool, Account> onAfterLogin;
         public static Action onLogout;
         public static Action<bool, string> onLoginAttempt;
 
@@ -29,7 +30,7 @@ namespace UnitySQLite
             base.Awake();
 
            // onLoginAttempt += (b, text) => output.text = text;
-            onSuccessfulLogin += (acc) => _currentAccount = acc;
+            onSuccessfulLogin += (acc) => { _currentAccount = acc; };
             login.onClick.AddListener(() => Login(username.text, password.text));
             //createAccount.onClick.AddListener(() =>
             //{
@@ -69,7 +70,7 @@ namespace UnitySQLite
             onSuccessfulLogin += (account) =>
             {
                 string hash = Account.CreateSHA256(password, account.Salt);
-                Account.ValidateCredentials(username, hash, account);
+                validLogin = Account.ValidateCredentials(username, hash, account);
             };
             SetCurrentAccount(username);
         }
@@ -101,7 +102,7 @@ namespace UnitySQLite
             _currentAccount = Account.CurrentAccount;
 #endif
             onSuccessfulLogin?.Invoke(Account.CurrentAccount);
-            onAfterLogin?.Invoke(Account.CurrentAccount);
+            onAfterLogin?.Invoke(validLogin, Account.CurrentAccount);
             onSuccessfulLogin = null;
         }
 

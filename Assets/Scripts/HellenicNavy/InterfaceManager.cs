@@ -17,17 +17,20 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     {
         base.Awake();
 
-        AccountManagement.onAfterLogin += (acc) =>
+        AccountManagement.onAfterLogin += (valid, acc) =>
         {
-            username.text = acc.AccountName;
-            loginPanel.SetActive(false);
-            userPanel.SetActive(true);
+            if (valid)
+            {
+                username.text = acc.AccountName;
+                loginPanel.SetActive(false);
+                userPanel.SetActive(true);
 
-            //clear input fields
-            AccountManagement.Instance.password.text = "";
-            AccountManagement.Instance.username.text = "";
+                //clear input fields
+                AccountManagement.Instance.password.text = "";
+                AccountManagement.Instance.username.text = "";
 
-            //show info depending on account 
+                //show info depending on account
+            }
         };
 
         AccountManagement.onLogout += () =>
