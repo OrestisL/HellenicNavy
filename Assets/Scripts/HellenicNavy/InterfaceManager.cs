@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using UnitySQLite;
 
+
 public class InterfaceManager : GenericSingleton<InterfaceManager>
 {
     [Header("Login panel")]
@@ -12,6 +13,20 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public GameObject userPanel;
     public Button logoutButton;
     public TextMeshProUGUI username;
+
+    [Header("Service Interface")]
+    public Button addMachineryButton;
+    public Button addServiceEntryButton;
+    public RectTransform scrollView;
+    public TMP_InputField nameInput;
+    public TMP_InputField idInput;
+    public TMP_Dropdown deptDropdown;
+    public TMP_InputField hoursInput;
+
+    [Header("Prefabs")]
+    public GameObject serviceEntryPrefab;
+    public GameObject serviceTypePrefab;
+
 
     public override void Awake()
     {
