@@ -111,19 +111,32 @@ public class ServiceEntry : MonoBehaviour
 
         hoursField.onEndEdit.AddListener((s) => 
         {
+            hoursField.text = hoursField.text.Trim();
             if (s.Equals(string.Empty))
             {
                 ClearChildren(serviceTypesParentHours);
             }
             else
             {
-                //clear whitespace
-                hoursField.text = hoursField.text.Trim();
                 int lineCount = hoursField.text.Count(x => x == '\n') + 1;
-                for (int i = 0; i < lineCount; i++)
+                int existing = serviceTypesParentHours.childCount;
+                if (existing < lineCount)
                 {
-                    Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentHours);
+                    //need to add more 
+                    for (int i = 0; i < lineCount - existing; i++)
+                    {
+                        Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentHours);
+                    }
                 }
+                else if (existing > lineCount)
+                {
+                    //delete from bottom
+                    for (int i = existing - 1; i >= lineCount; i--)
+                    {
+                        Destroy(serviceTypesParentHours.GetChild(i).gameObject);
+                    }
+                }
+
             }
         });
 
@@ -138,6 +151,7 @@ public class ServiceEntry : MonoBehaviour
                 //clear whitespace
                 daysField.text = daysField.text.Trim();
                 int lineCount = daysField.text.Count(x => x == '\n') + 1;
+
                 for (int i = 0; i < lineCount; i++)
                 {
                     Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentDays);
