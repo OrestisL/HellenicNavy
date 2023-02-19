@@ -20,25 +20,16 @@ public class ServiceEntry : MonoBehaviour
     {
         get
         {
-            hoursField.text.Trim();
+            hoursField.text = hoursField.text.Trim();
             List<int> result = new List<int>();
-            ReadOnlySpan<char> text = hoursField.text;
-            int nextNewlineIndex = 0;
-            bool isLastLoop = false;
-            while (!isLastLoop)
+            if (hoursField.text.Length == 0)
             {
-                int indexStart = nextNewlineIndex;
-                nextNewlineIndex = hoursField.text.IndexOf("\n", indexStart);
-
-                isLastLoop = nextNewlineIndex == -1;
-                if (isLastLoop)
-                {
-                    nextNewlineIndex = hoursField.text.Length;
-                }
-
-                ReadOnlySpan<char> currentValue = text.Slice(indexStart, nextNewlineIndex - indexStart);
-
-                result.Add(int.Parse(currentValue.ToString()));
+                return result;
+            }
+            string[] nlSeparated = hoursField.text.Split('\n');
+            for (int i = 0; i < nlSeparated.Length; i++)
+            {
+                result.Add(int.Parse(nlSeparated[i]));
             }
             return result;
         }
@@ -47,24 +38,16 @@ public class ServiceEntry : MonoBehaviour
     {
         get
         {
-            daysField.text.Trim();
+            daysField.text = daysField.text.Trim();
             List<int> result = new List<int>();
-            ReadOnlySpan<char> text = daysField.text;
-            int nextNewlineIndex = 0;
-            bool isLastLoop = false;
-            while (!isLastLoop)
+            if (daysField.text.Length == 0)
             {
-                int indexStart = nextNewlineIndex;
-                nextNewlineIndex = daysField.text.IndexOf("\n", indexStart);
-
-                isLastLoop = nextNewlineIndex == -1;
-                if (isLastLoop)
-                {
-                    nextNewlineIndex = daysField.text.Length;
-                }
-
-                ReadOnlySpan<char> currentValue = text.Slice(indexStart, nextNewlineIndex - indexStart);
-                result.Add(int.Parse(currentValue.ToString()));
+                return result;
+            }
+            string[] nlSeparated = daysField.text.Split('\n');
+            for (int i = 0; i < nlSeparated.Length; i++)
+            {
+                result.Add(int.Parse(nlSeparated[i]));
             }
             return result;
         }
@@ -77,7 +60,6 @@ public class ServiceEntry : MonoBehaviour
         get
         {
             serviceAssignmentTypesHours = new List<ServiceAssignmentType>();
-
             //get all assignment types
             for (int i = 0; i < serviceTypesParentHours.childCount; i++)
             {
@@ -92,11 +74,12 @@ public class ServiceEntry : MonoBehaviour
     {
         get
         {
+            serviceAssignmentTypesDays = new List<ServiceAssignmentType>();
             for (int i = 0; i < serviceTypesParentDays.childCount; i++)
             {
-                serviceAssignmentTypesHours.Add((ServiceAssignmentType)serviceTypesParentDays.GetChild(i).GetComponent<TMP_Dropdown>().value);
+                serviceAssignmentTypesDays.Add((ServiceAssignmentType)serviceTypesParentDays.GetChild(i).GetComponent<TMP_Dropdown>().value);
             }
-            serviceAssignmentTypesDays = new List<ServiceAssignmentType>();
+
             return serviceAssignmentTypesDays;
         }
     }
@@ -109,7 +92,7 @@ public class ServiceEntry : MonoBehaviour
         hoursField.inputValidator = validator;
         daysField.inputValidator = validator;
 
-        hoursField.onEndEdit.AddListener((s) => 
+        hoursField.onEndEdit.AddListener((s) =>
         {
             //clear whitespace
             hoursField.text = hoursField.text.Trim();

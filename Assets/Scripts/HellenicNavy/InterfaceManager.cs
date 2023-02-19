@@ -87,5 +87,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         }
 
         _currentService = new Service(nameInput.text, idInput.text, int.Parse(hoursInput.text), serviceEntries);
+        Debug.Log(_currentService.ToJson());
     }
 }

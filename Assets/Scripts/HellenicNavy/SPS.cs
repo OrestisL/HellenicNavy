@@ -83,6 +83,7 @@ namespace SPS
             serviceDays = new List<List<int>>();
             descriptions = new List<string>();
             serviceTypesHours = new List<List<ServiceAssignmentType>>();
+            serviceTypesDays = new List<List<ServiceAssignmentType>>();
 
             for (int i = 0; i < entries.Count; i++)
             {
@@ -115,8 +116,8 @@ namespace SPS
         }
 
         public string ToJson()
-        {
-            return JsonConvert.SerializeObject(this);
+        { 
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
     }
