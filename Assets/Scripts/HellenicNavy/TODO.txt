@@ -4,4 +4,6 @@
 - loading message
 - export/import database
 - limit hours/days input to comma separated ints only (done)
-- add a way to add the assignment types
+- add a way to add the assignment types (done)
+- add a way to show a machinery that's been added
+- finish menu panel (vertical pos = - (no. items* (height + spacing) + bottom offset) /2 - 100 )

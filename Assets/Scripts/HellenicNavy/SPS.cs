@@ -69,7 +69,9 @@ namespace SPS
             CurrentHours = s.CurrentHours;
             descriptions = s.descriptions;
             serviceHours = s.serviceHours;
+            serviceDays = s.serviceDays;
             serviceTypesHours = s.serviceTypesHours;
+            serviceTypesDays = s.serviceTypesDays;
             serviceAssignments = s.serviceAssignments;
         }
 
