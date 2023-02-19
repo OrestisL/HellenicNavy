@@ -20,16 +20,28 @@ public class ServiceEntry : MonoBehaviour
     {
         get
         {
-            hoursField.text = hoursField.text.Trim();
+            hoursField.text = hoursField.text.Trim();        
             List<int> result = new List<int>();
             if (hoursField.text.Length == 0)
             {
                 return result;
             }
-            string[] nlSeparated = hoursField.text.Split('\n');
-            for (int i = 0; i < nlSeparated.Length; i++)
+            ReadOnlySpan<char> text = hoursField.text.AsSpan();
+            int nextCommaIndex = 0;
+            bool isLastLoop = false;
+            while(!isLastLoop) 
             {
-                result.Add(int.Parse(nlSeparated[i]));
+                int indexStart = nextCommaIndex;
+                nextCommaIndex = hoursField.text.IndexOf('\n', indexStart);
+
+                isLastLoop = nextCommaIndex == -1;
+                if (isLastLoop) 
+                {
+                    nextCommaIndex = hoursField.text.Length;
+                }
+                ReadOnlySpan<char> nameSlice = text.Slice(indexStart, nextCommaIndex - indexStart);
+                result.Add(int.Parse(nameSlice.ToString()));
+                nextCommaIndex++;
             }
             return result;
         }
@@ -44,10 +56,22 @@ public class ServiceEntry : MonoBehaviour
             {
                 return result;
             }
-            string[] nlSeparated = daysField.text.Split('\n');
-            for (int i = 0; i < nlSeparated.Length; i++)
+            ReadOnlySpan<char> text = daysField.text.AsSpan();
+            int nextCommaIndex = 0;
+            bool isLastLoop = false;
+            while (!isLastLoop)
             {
-                result.Add(int.Parse(nlSeparated[i]));
+                int indexStart = nextCommaIndex;
+                nextCommaIndex = daysField.text.IndexOf('\n', indexStart);
+
+                isLastLoop = nextCommaIndex == -1;
+                if (isLastLoop)
+                {
+                    nextCommaIndex = daysField.text.Length;
+                }
+                ReadOnlySpan<char> nameSlice = text.Slice(indexStart, nextCommaIndex - indexStart);
+                result.Add(int.Parse(nameSlice.ToString()));
+                nextCommaIndex++;
             }
             return result;
         }

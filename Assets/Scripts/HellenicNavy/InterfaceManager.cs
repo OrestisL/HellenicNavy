@@ -85,8 +85,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         {
             serviceEntries.Add(serviceEntryParent.GetChild(i).GetComponent<ServiceEntry>());
         }
-
-        _currentService = new Service(nameInput.text, idInput.text, int.Parse(hoursInput.text), serviceEntries);
+        
+        _currentService = new Service(nameInput.text, idInput.text, hoursInput.text.Length > 0? int.Parse(hoursInput.text) : 0, serviceEntries);
         Debug.Log(_currentService.ToJson());
     }
 }
