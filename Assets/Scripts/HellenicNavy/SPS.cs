@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-
+using UnityEngine;
 
 namespace SPS
 {
@@ -55,7 +55,8 @@ namespace SPS
         public List<string> descriptions;
         public List<List<int>> serviceHours;
         public List<List<int>> serviceDays;
-        public List<List<ServiceAssignmentType>> serviceTypes;
+        public List<List<ServiceAssignmentType>> serviceTypesHours;
+        public List<List<ServiceAssignmentType>> serviceTypesDays;
         public List<ServiceAssignment> serviceAssignments; //WIP
 
         public Service() { }
@@ -68,7 +69,7 @@ namespace SPS
             CurrentHours = s.CurrentHours;
             descriptions = s.descriptions;
             serviceHours = s.serviceHours;
-            serviceTypes = s.serviceTypes;
+            serviceTypesHours = s.serviceTypesHours;
             serviceAssignments = s.serviceAssignments;
         }
 
@@ -81,14 +82,15 @@ namespace SPS
             serviceHours = new List<List<int>>();
             serviceDays = new List<List<int>>();
             descriptions = new List<string>();
-            serviceTypes = new List<List<ServiceAssignmentType>>();
+            serviceTypesHours = new List<List<ServiceAssignmentType>>();
 
             for (int i = 0; i < entries.Count; i++)
             {
                 serviceHours.Add(entries[i].Hours);
                 serviceDays.Add(entries[i].Days);
                 descriptions.Add(entries[i].Descr);
-                serviceTypes.Add(entries[i].Types);
+                serviceTypesHours.Add(entries[i].TypesHours);
+                serviceTypesDays.Add(entries[i].TypesDays);
             }
         }
 

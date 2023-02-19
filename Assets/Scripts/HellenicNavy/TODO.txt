@@ -3,4 +3,5 @@
 - add password to database (and change password) (needs new dll)
 - loading message
 - export/import database
-- limit hours/days input to comma separated ints only
+- limit hours/days input to comma separated ints only (done)
+- add a way to add the assignment types
