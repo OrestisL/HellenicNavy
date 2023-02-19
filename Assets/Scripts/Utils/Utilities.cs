@@ -75,7 +75,7 @@ namespace UnitySQLite.Utilities
 
         public override string ToString()
         {
-            string final = string.Format("{0} {1}", columnName, columnType);
+            string final = string.Format("'{0}' {1}", columnName, columnType);
 
             if (isUnique)
                 final = string.Format("{0} UNIQUE", final);
