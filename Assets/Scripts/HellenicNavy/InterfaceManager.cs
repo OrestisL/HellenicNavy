@@ -13,8 +13,13 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     [SerializeField]
     CreateTables tables;
 
+    public GameObject canvas;
+
     [Header("Login panel")]
     public GameObject loginPanel;
+    public Button loginButton;
+    public Button updatePasswordButton;
+    public Button showPasswordButton;
 
     [Header("User panel")]
     public GameObject userPanel;
@@ -22,6 +27,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public TextMeshProUGUI username;
 
     [Header("Service Interface")]
+    public GameObject addMachineryPanel;
     public Button addMachineryButton;
     public Button addServiceEntryButton;
     public RectTransform serviceEntryParent;
@@ -32,9 +38,10 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public TMP_InputField hoursInput;
 
     [Header("Menu")]
-    public GameObject manuPanel;
+    public GameObject menuPanel;
     public Button menuButton;
     public Button addSystemButton;
+    public Button changePWButton;
 
     [Header("Add System Interface")]
     public GameObject addSystemPanel;
@@ -49,6 +56,11 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     [SerializeField]
     List<ServiceEntry> serviceEntries;
 
+    public enum LoginInterfaceSetup
+    {
+        login,
+        changePW,
+    }
 
     public override void Awake()
     {
@@ -63,8 +75,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 userPanel.SetActive(true);
 
                 //clear input fields
-                AccountManagement.Instance.password.text = "";
-                AccountManagement.Instance.username.text = "";
+                AccountManagement.Instance.passwordField.text = "";
+                AccountManagement.Instance.usernameField.text = "";
 
                 //show info depending on account
             }
@@ -75,7 +87,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             //hide all info first
             AccountManagement.Instance.ClearCurrentAccount();
             userPanel.SetActive(false);
-            loginPanel.SetActive(true);
+            SetupLoginInterface(LoginInterfaceSetup.login);
         };
 
         logoutButton.onClick.AddListener(() => AccountManagement.onLogout?.Invoke());
@@ -83,18 +95,86 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     private void Start()
     {
-        addServiceEntryButton.onClick.AddListener(AddServiceEntry);
-        addMachineryButton.onClick.AddListener(AddMachinery);
-        //createSystemEntryButton.onClick.AddListener(() => AddSystem(addSystemName.text));
-        createSystemEntryButton.onClick.AddListener(() => ShowSystems(systemDropdown));
+        SetupButtons();
     }
 
-    void AddServiceEntry() 
+    void SetupInterface(AccessLevel accessLevel)
+    {
+        //TODO hide UI elements according to access level
+    }
+
+    void SetupButtons()
+    {
+        loginButton.onClick.AddListener(() => AccountManagement.Instance.Login());
+
+        addServiceEntryButton.onClick.AddListener(AddServiceEntry);
+        addMachineryButton.onClick.AddListener(AddMachinery);
+
+        createSystemEntryButton.onClick.AddListener(() => AddSystem(addSystemName.text));
+        addSystemButton.onClick.AddListener(() => addSystemPanel.SetActive(!addSystemPanel.activeSelf));
+        closeAddSystemPanel.onClick.AddListener(() => addSystemPanel.SetActive(false));
+
+        menuButton.onClick.AddListener(() => menuPanel.SetActive(!menuPanel.activeSelf));
+
+        changePWButton.onClick.AddListener(() => SetupLoginInterface(LoginInterfaceSetup.changePW));
+        updatePasswordButton.onClick.AddListener(() =>
+        {
+            AccountManagement.Instance.CurrentAccount.ChangePassword(AccountManagement.Instance.passwordField.text);
+            loginPanel.SetActive(false);
+            //show message
+        });
+
+        showPasswordButton.onClick.AddListener(() => ShowPassword());
+    }
+
+    void SetupLoginInterface(LoginInterfaceSetup setup)
+    {
+        AccountManagement.Instance.ChangeInterfaceLayout(setup);
+        switch (setup)
+        {
+            case LoginInterfaceSetup.login:
+                updatePasswordButton.transform.parent.gameObject.SetActive(false);
+                loginButton.transform.parent.gameObject.SetActive(true);
+                ResetUI();
+                break;
+            case LoginInterfaceSetup.changePW:
+                updatePasswordButton.transform.parent.gameObject.SetActive(true);
+                loginButton.transform.parent.gameObject.SetActive(false);
+                break;
+        }
+
+        loginPanel.SetActive(true);
+    }
+
+    void ResetUI()
+    {
+        menuPanel.SetActive(false);
+        userPanel.SetActive(false);
+        addSystemPanel.SetActive(false);
+        addMachineryPanel.SetActive(false);
+    }
+
+    void ShowPassword() 
+    {
+        TMP_InputField.ContentType current = AccountManagement.Instance.passwordField.contentType;
+        if (current == TMP_InputField.ContentType.Password)
+        {
+            AccountManagement.Instance.passwordField.contentType = TMP_InputField.ContentType.Standard;
+        }
+        else if (current == TMP_InputField.ContentType.Standard) 
+        {
+            AccountManagement.Instance.passwordField.contentType = TMP_InputField.ContentType.Password;
+        }
+
+        AccountManagement.Instance.passwordField.ForceLabelUpdate();
+    }
+
+    void AddServiceEntry()
     {
         Instantiate(serviceEntryPrefab, serviceEntryParent);
     }
 
-    void AddMachinery() 
+    void AddMachinery()
     {
         serviceEntries = new List<ServiceEntry>();
 
@@ -102,8 +182,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         {
             serviceEntries.Add(serviceEntryParent.GetChild(i).GetComponent<ServiceEntry>());
         }
-        
-        _currentService = new Service(nameInput.text, idInput.text, hoursInput.text.Length > 0? int.Parse(hoursInput.text) : 0, serviceEntries);
+
+        _currentService = new Service(nameInput.text, idInput.text, hoursInput.text.Length > 0 ? int.Parse(hoursInput.text) : 0, serviceEntries);
         Debug.Log(_currentService.ToJson());
     }
 
@@ -111,7 +191,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     /// When adding a system, it should be written to the systems list table.
     /// </summary>
     /// <param name="name">System name.</param>
-    void AddSystem(string name) 
+    void AddSystem(string name)
     {
         if (name.Equals(string.Empty))
         {
@@ -137,15 +217,15 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     {
         List<string> names = new List<string>();
         //read systems list table
-        DatabaseManager.Instance.ReadData("Systems List", SelectFromDatabaseMode.everything, 
-            (data) => 
+        DatabaseManager.Instance.ReadData("Systems List", SelectFromDatabaseMode.everything,
+            (data) =>
             {
                 for (int i = 0; i < data.Count; i++)
                 {
                     names.Add(data[i][0].StringValue);
                     Debug.Log(data[i][0].StringValue);
                 }
-
+                dropdown.ClearOptions();
                 dropdown.AddOptions(names);
             });
     }

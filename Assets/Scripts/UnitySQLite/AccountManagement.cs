@@ -16,15 +16,14 @@ namespace UnitySQLite
         [SerializeField]
         public string DatabaseName;
         [SerializeField]
-        private Account _currentAccount;
+        public Account CurrentAccount;
         public static Action<Account> onSuccessfulLogin;
         private static bool validLogin;
         public static Action<bool, Account> onAfterLogin;
         public static Action onLogout;
         public static Action<bool, string> onLoginAttempt;
 
-        public TMP_InputField username, password, output;
-        public Button login;
+        public TMP_InputField usernameField, passwordField, output;
 #if TESTING 
         public Button createAccount;
 #endif
@@ -34,14 +33,14 @@ namespace UnitySQLite
             base.Awake();
 
            // onLoginAttempt += (b, text) => output.text = text;
-            onSuccessfulLogin += (acc) => { _currentAccount = acc; };
-            login.onClick.AddListener(() => Login(username.text, password.text));
+            onSuccessfulLogin += (acc) => { CurrentAccount = acc; };
+            
 #if TESTING
             createAccount.onClick.AddListener(() =>
             {
                 Account acc;
-                if (username.text != "" & password.text != "")
-                    acc = new Account(username.text, password.text, (int)_currentAccount.AccessLevel);
+                if (usernameField.text != "" & passwordField.text != "")
+                    acc = new Account(usernameField.text, passwordField.text, (int)CurrentAccount.AccessLevel);
             });
 #endif
         }
@@ -65,11 +64,13 @@ namespace UnitySQLite
 
         public void ClearCurrentAccount()
         {
-            _currentAccount = new Account();
+            CurrentAccount = new Account();
         }
 
-        public void Login(string username, string password)
+        public void Login()
         {
+            string username = usernameField.text;
+            string password = passwordField.text;
             if (username == string.Empty | password == string.Empty)
                 return;
 
@@ -83,14 +84,14 @@ namespace UnitySQLite
 
         private IEnumerator GetAccount(int ID)
         {
-            _currentAccount = null;
+            CurrentAccount = null;
             Account.RetrieveAccount(ID);
             while (Account.CurrentAccount == null)
             {
                 yield return null;
             }
 #if UNITY_EDITOR
-            _currentAccount = Account.CurrentAccount;
+            CurrentAccount = Account.CurrentAccount;
 #endif
             onSuccessfulLogin?.Invoke(Account.CurrentAccount);
             onSuccessfulLogin = null;
@@ -98,22 +99,37 @@ namespace UnitySQLite
 
         private IEnumerator GetAccount(string username)
         {
-            _currentAccount = null;
+            CurrentAccount = null;
             Account.RetrieveAccount(username);
             while (Account.CurrentAccount == null)
             {
                 yield return null;
             }
 #if UNITY_EDITOR
-            _currentAccount = Account.CurrentAccount;
+            CurrentAccount = Account.CurrentAccount;
 #endif
             onSuccessfulLogin?.Invoke(Account.CurrentAccount);
             onAfterLogin?.Invoke(validLogin, Account.CurrentAccount);
             onSuccessfulLogin = null;
         }
 
+        public void ChangeInterfaceLayout(InterfaceManager.LoginInterfaceSetup setup)
+        {
+            switch (setup)
+            {
+                case InterfaceManager.LoginInterfaceSetup.login:
+                    passwordField.transform.parent.gameObject.SetActive(true);
+                    usernameField.transform.parent.gameObject.SetActive(true);
+                    break;
+                case InterfaceManager.LoginInterfaceSetup.changePW:
+                    passwordField.transform.parent.gameObject.SetActive(true);
+                    usernameField.transform.parent.gameObject.SetActive(false);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
-
 
 }
 
