@@ -1,3 +1,5 @@
+#define TESTING
+
 using System;
 using System.Collections.Generic;
 using System.Collections;
@@ -22,8 +24,10 @@ namespace UnitySQLite
         public static Action<bool, string> onLoginAttempt;
 
         public TMP_InputField username, password, output;
-        public Button login, createAccount;
-
+        public Button login;
+#if TESTING 
+        public Button createAccount;
+#endif
         public TableRow content;
         public override void Awake()
         {
@@ -32,12 +36,14 @@ namespace UnitySQLite
            // onLoginAttempt += (b, text) => output.text = text;
             onSuccessfulLogin += (acc) => { _currentAccount = acc; };
             login.onClick.AddListener(() => Login(username.text, password.text));
+#if TESTING
             createAccount.onClick.AddListener(() =>
             {
                 Account acc;
                 if (username.text != "" & password.text != "")
                     acc = new Account(username.text, password.text, (int)_currentAccount.AccessLevel);
             });
+#endif
         }
 
         //private void Start()

@@ -601,13 +601,13 @@ namespace UnitySQLite
                 return;
 
             //this sql command will show names and if the columns are primary keys
-            string query = string.Format("PRAGMA table_info({0});", tableName);
+            string query = string.Format("PRAGMA table_info('{0}');", tableName);
             sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
             SqliteDataReader reader = sm_dbCommand.ExecuteReader();
             sm_dbCommand.Dispose();
 
             //this command will show if the columns are unique (if the 3rd value is not 0)
-            query = string.Format("PRAGMA INDEX_LIST({0});", tableName);
+            query = string.Format("PRAGMA INDEX_LIST('{0}');", tableName);
             sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
             SqliteDataReader reader1 = sm_dbCommand.ExecuteReader();
             sm_dbCommand.Dispose();
