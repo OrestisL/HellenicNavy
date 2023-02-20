@@ -85,7 +85,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     {
         addServiceEntryButton.onClick.AddListener(AddServiceEntry);
         addMachineryButton.onClick.AddListener(AddMachinery);
-        createSystemEntryButton.onClick.AddListener(() => AddSystem(addSystemName.text));
+        //createSystemEntryButton.onClick.AddListener(() => AddSystem(addSystemName.text));
+        createSystemEntryButton.onClick.AddListener(() => ShowSystems(systemDropdown));
     }
 
     void AddServiceEntry() 
@@ -123,7 +124,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             List<DataEntry> entries = new List<DataEntry>() { new DataEntry(name) };
             List<TableColumn> columns = tables.systemsList.columns;
             TableRow row = new TableRow(columns, entries);
-            DatabaseManager.Instance.ThreadedWriteToDatabase("Systems List", row);
+            DatabaseManager.Instance.ThreadedWriteToDatabase("Systems List", row, true /*,TODO add functionality here to show that entry exists (output field)*/);
             Debug.Log("test");
         });
     }
@@ -144,9 +145,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                     names.Add(data[i][0].StringValue);
                     Debug.Log(data[i][0].StringValue);
                 }
-            }
-            );
 
-        dropdown.AddOptions(names);
+                dropdown.AddOptions(names);
+            });
     }
 }
