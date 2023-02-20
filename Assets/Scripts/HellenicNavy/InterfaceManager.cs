@@ -79,11 +79,16 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 AccountManagement.Instance.usernameField.text = "";
 
                 //show info depending on account
+                SetupInterface(AccountManagement.Instance.CurrentAccount.AccessLevel);
             }
         };
 
         AccountManagement.onLogout += () =>
         {
+            //clear input fields
+            AccountManagement.Instance.passwordField.text = "";
+            AccountManagement.Instance.usernameField.text = "";
+
             //hide all info first
             AccountManagement.Instance.ClearCurrentAccount();
             userPanel.SetActive(false);
@@ -116,7 +121,11 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
         menuButton.onClick.AddListener(() => menuPanel.SetActive(!menuPanel.activeSelf));
 
-        changePWButton.onClick.AddListener(() => SetupLoginInterface(LoginInterfaceSetup.changePW));
+        changePWButton.onClick.AddListener(() => 
+        { 
+            SetupLoginInterface(LoginInterfaceSetup.changePW);
+            loginPanel.SetActive(!loginPanel.activeSelf);
+        });
         updatePasswordButton.onClick.AddListener(() =>
         {
             AccountManagement.Instance.CurrentAccount.ChangePassword(AccountManagement.Instance.passwordField.text);
@@ -136,6 +145,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 updatePasswordButton.transform.parent.gameObject.SetActive(false);
                 loginButton.transform.parent.gameObject.SetActive(true);
                 ResetUI();
+                loginPanel.SetActive(true);
                 break;
             case LoginInterfaceSetup.changePW:
                 updatePasswordButton.transform.parent.gameObject.SetActive(true);
@@ -143,7 +153,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 break;
         }
 
-        loginPanel.SetActive(true);
     }
 
     void ResetUI()
