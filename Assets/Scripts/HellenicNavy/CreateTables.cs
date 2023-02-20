@@ -12,7 +12,7 @@ public class CreateTables : MonoBehaviour
     private void Start()
     {
         DatabaseManager.Instance.Initialize("Databases", "Machinery");
-       // DatabaseManager.Instance.CreateTableOnDatabase("Users", users.GetColumns());
+        DatabaseManager.Instance.CreateTableOnDatabase("Users", users.GetColumns());
         DatabaseManager.Instance.CreateTableOnDatabase("Machinery list", machineryList.GetColumns());
     }
 }

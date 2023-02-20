@@ -46,7 +46,7 @@ namespace UnitySQLite.Utilities
         None = 0,
         user,
         supervisor,
-        master
+        admin
     }
 
     [Serializable]
@@ -148,7 +148,7 @@ namespace UnitySQLite.Utilities
             string names = string.Empty;
             for (int i = 0; i < columns.Count; i++)
             {
-                names += string.Format("{0},", columns[i].ColumnName);
+                names += string.Format("'{0}',", columns[i].ColumnName);
             }
             names = names.Remove(names.Length - 1);
 
@@ -315,12 +315,9 @@ namespace UnitySQLite.Utilities
         private string _accountName, _accountPasswordHash, _salt;
         [SerializeField]
         private AccessLevel _accessLevel;
-        [SerializeField]
-        private Department _dept;
         public string AccountName { get { return _accountName; } }
         public string Salt { get { return _salt; } }
         public AccessLevel AccessLevel { get { return _accessLevel; } }
-        public Department Dept { get { return _dept; } }
 
         private static Account _currentAccount;
         public static Account CurrentAccount { get { return _currentAccount; } }
@@ -346,10 +343,9 @@ namespace UnitySQLite.Utilities
             _accountPasswordHash = null;
             _salt = null;
             _accessLevel = AccessLevel.None;
-            _dept = Department.None;
         }
 
-        public Account(string accountName, string accountPassword, int dept, int accecssLevel)
+        public Account(string accountName, string accountPassword, int accecssLevel)
         {
             using (RandomNumberGenerator rng = new RNGCryptoServiceProvider())
             {
@@ -360,17 +356,15 @@ namespace UnitySQLite.Utilities
 
             _accountName = accountName;
             _accountPasswordHash = CreateSHA256(accountPassword, _salt);
-            _dept = (Department)dept;
             _accessLevel = (AccessLevel)accecssLevel;
             CreateAccount();
         }
 
-        private Account(string name, string pass, string salt, int _dep, int _accLv)
+        private Account(string name, string pass, string salt, int _accLv)
         {
             _accountName = name;
             _accountPasswordHash = pass;
             _salt = salt;
-            _dept = (Department)_dep;
             _accessLevel = (AccessLevel)_accLv;
         }
 
@@ -400,8 +394,7 @@ namespace UnitySQLite.Utilities
                                    data[idx][0].StringValue,
                                    data[idx][1].StringValue,
                                    data[idx][2].StringValue,
-                                   data[idx][3].IntegerValue,
-                                   data[idx][4].IntegerValue);
+                                   data[idx][3].IntegerValue);
         }
 
         public void ChangePassword(string newPassword)
@@ -427,7 +420,7 @@ namespace UnitySQLite.Utilities
         /// </summary>
         private void CreateAccount()
         {
-            DatabaseManager.Instance.ReadData("UserData", SelectFromDatabaseMode.everything, (data) =>
+            DatabaseManager.Instance.ReadData("Users", SelectFromDatabaseMode.everything, (data) =>
             {
 
                 List<DataEntry> content = new List<DataEntry>
@@ -436,7 +429,6 @@ namespace UnitySQLite.Utilities
                     new DataEntry(_accountPasswordHash),
                     new DataEntry(_salt),
                     new DataEntry((int)_accessLevel),
-                    new DataEntry((int)_dept),
                 };
 
                 List<TableColumn> cols = AccountManagement.Instance.content.columns;
@@ -467,7 +459,7 @@ namespace UnitySQLite.Utilities
 
         public override string ToString()
         {
-            string s = string.Format("Username:{0}\nAccessLevel:{1}\nDepartment:{2}\n", _accountName, _accessLevel, _dept);
+            string s = string.Format("Username:{0}\nAccessLevel:{1}\nDepartment:{2}\n", _accountName, _accessLevel);
             Debug.Log(s);
             return s;
         }

@@ -32,18 +32,18 @@ namespace UnitySQLite
            // onLoginAttempt += (b, text) => output.text = text;
             onSuccessfulLogin += (acc) => { _currentAccount = acc; };
             login.onClick.AddListener(() => Login(username.text, password.text));
-            //createAccount.onClick.AddListener(() =>
-            //{
-            //    Account acc;
-            //    if (username.text != "" & password.text != "")
-            //        acc = new Account(username.text, password.text, (int)_currentAccount.Dept, (int)_currentAccount.AccessLevel);
-            //});
+            createAccount.onClick.AddListener(() =>
+            {
+                Account acc;
+                if (username.text != "" & password.text != "")
+                    acc = new Account(username.text, password.text, (int)_currentAccount.AccessLevel);
+            });
         }
 
         //private void Start()
         //{
         //    DatabaseManager.Instance.Initialize("Databases", DatabaseName);
-            
+
         //    DatabaseManager.Instance.CreateTableOnDatabase("UserData", content.GetColumns());    
         //} 
 
