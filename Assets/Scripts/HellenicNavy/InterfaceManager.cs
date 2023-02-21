@@ -19,7 +19,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public GameObject loginPanel;
     public Button loginButton;
     public Button updatePasswordButton;
-    public Button showPasswordButton;
 
     [Header("User panel")]
     public GameObject userPanel;
@@ -137,8 +136,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             loginPanel.SetActive(false);
             //show message
         });
-
-        showPasswordButton.onClick.AddListener(() => ShowPassword());
     }
 
     void SetupLoginInterface(LoginInterfaceSetup setup)
@@ -166,21 +163,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         userPanel.SetActive(false);
         addSystemPanel.SetActive(false);
         addMachineryPanel.SetActive(false);
-    }
-
-    void ShowPassword() 
-    {
-        TMP_InputField.ContentType current = AccountManagement.Instance.passwordField.contentType;
-        if (current == TMP_InputField.ContentType.Password)
-        {
-            AccountManagement.Instance.passwordField.contentType = TMP_InputField.ContentType.Standard;
-        }
-        else if (current == TMP_InputField.ContentType.Standard) 
-        {
-            AccountManagement.Instance.passwordField.contentType = TMP_InputField.ContentType.Password;
-        }
-
-        AccountManagement.Instance.passwordField.ForceLabelUpdate();
     }
 
     void AddServiceEntry()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using UnityEngine;
@@ -502,6 +503,51 @@ namespace UnitySQLite.Utilities
                 byte[] bytes = sha.ComputeHash(toHash.SerializeToByteArray());
                 return bytes.ByteArrayToString();
             }
+        }
+    }
+
+    public class MessageBoxSettings
+    {
+        public bool useRightButton, useLeftButton;
+        public bool showLabel;
+        public Action onRightButtonClick, onLeftButtonClick;
+        public string label, rightButtonLabel, leftButtonLabel;
+        public string mainText;
+
+        public MessageBoxSettings()
+        {
+            useRightButton = false;
+            useLeftButton = false;
+            showLabel = false;
+            onRightButtonClick = null;
+            onLeftButtonClick = null;
+        }
+
+        public MessageBoxSettings(bool _right, bool _left, bool _showLabel, Action _onRightButtonClick, Action _onLeftButtonClick,
+                 string _label, string _rightButtonLabel, string _leftButtonLabel, string _mainText)
+        {
+            useRightButton = _right;
+            if (_right)
+            {
+                onRightButtonClick = _onRightButtonClick;
+                rightButtonLabel = _rightButtonLabel;
+            }
+
+            useLeftButton = _left;
+            if (_left)
+            {
+
+                onLeftButtonClick = _onLeftButtonClick;
+                leftButtonLabel = _leftButtonLabel;
+            }
+
+            showLabel = _showLabel;
+            if (showLabel)
+            {
+                label = _label;
+            }
+
+            mainText = _mainText;
         }
     }
 
