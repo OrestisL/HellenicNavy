@@ -42,7 +42,7 @@ public class MessageBox : GenericSingleton<MessageBox>
         mainText.text = settings.mainText;
         gameObject.SetActive(true);
 
-        StartCoroutine(HideWithDelay(2.5f));
+        StartCoroutine(HideWithDelay(2f));
     }
 
     public void HideMessageBox()

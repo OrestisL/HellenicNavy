@@ -221,7 +221,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                     useRightButton = false,
                     useLeftButton = false,
                     showLabel = false,
-                    mainText = string.Format("To σύστημα \"{0\"} υπάρχει ήδη στη βάση δεδομένων.", name),
+                    mainText = string.Format("To σύστημα \"{0}\" υπάρχει ήδη στη βάση δεδομένων.", name),
                 }
                 ),
                 () => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()

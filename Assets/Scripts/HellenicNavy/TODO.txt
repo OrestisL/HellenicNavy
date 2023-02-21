@@ -1,4 +1,4 @@
-- create accounts (5x users (1 for each dept), 1x supervisor, 1x master) done
+- create accounts (5x users (1 for each dept), 1x supervisor, 1x master) (done)
 - add change password functionality (done)
 - add password to database (and change password) (needs new dll)
 - loading message (done - message box)
