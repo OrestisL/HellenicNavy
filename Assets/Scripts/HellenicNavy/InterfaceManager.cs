@@ -113,7 +113,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     void SetupButtons()
     {
-        loginButton.onClick.AddListener(() => {
+        loginButton.onClick.AddListener(() =>
+        {
             MessageBoxSettings settings = new MessageBoxSettings()
             {
                 showLabel = false,
@@ -123,7 +124,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
             };
             MessageBox.Instance.ShowMessageBox(settings);
-            AccountManagement.Instance.Login(); 
+            AccountManagement.Instance.Login();
         });
 
         addMachineryButton.onClick.AddListener(() =>
@@ -206,7 +207,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     {
         if (name.Equals(string.Empty))
         {
-            Debug.Log("empty name");
             return;
         }
 
@@ -215,8 +215,23 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             List<DataEntry> entries = new List<DataEntry>() { new DataEntry(name) };
             List<TableColumn> columns = tables.systemsList.columns;
             TableRow row = new TableRow(columns, entries);
-            DatabaseManager.Instance.ThreadedWriteToDatabase("Systems List", row, true /*,TODO add functionality here to show that entry exists (output field)*/);
-            Debug.Log(string.Format("successfully added system {0} to the database", name));
+            DatabaseManager.Instance.ThreadedWriteToDatabase("SystemsList", row, true,
+                () => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+                {
+                    useRightButton = false,
+                    useLeftButton = false,
+                    showLabel = false,
+                    mainText = string.Format("To σύστημα \"{0\"} υπάρχει ήδη στη βάση δεδομένων.", name),
+                }
+                ),
+                () => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+                {
+                    useRightButton = false,
+                    useLeftButton = false,
+                    showLabel = false,
+                    mainText = string.Format("To σύστημα \"{0}\" προστέθηκε στη βάση δεδομένων επιτυχώς.", name),
+                }));
+            //Debug.Log(string.Format("successfully added system {0} to the database", name));
         });
     }
 
@@ -228,7 +243,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     {
         List<string> names = new List<string>();
         //read systems list table
-        DatabaseManager.Instance.ReadData("Systems List", SelectFromDatabaseMode.everything,
+        DatabaseManager.Instance.ReadData("SystemsList", SelectFromDatabaseMode.everything,
             (data) =>
             {
                 for (int i = 0; i < data.Count; i++)

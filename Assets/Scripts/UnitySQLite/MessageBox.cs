@@ -1,4 +1,4 @@
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
 using TMPro;
 using UnityEngine;
 using UnitySQLite.Utilities;
@@ -14,6 +14,16 @@ public class MessageBox : GenericSingleton<MessageBox>
     {
         base.Awake();
         gameObject.SetActive(false);
+
+        Account.onAccountNotExists += () => {
+            ShowMessageBox(new MessageBoxSettings()
+            {
+                showLabel = false,
+                useLeftButton= false,
+                useRightButton= false,
+                mainText = "Ο λογιαριασμός δεν υπάρχει."              
+            }); ;
+        };
     }
 
     public void ShowMessageBox(MessageBoxSettings settings)
@@ -32,7 +42,7 @@ public class MessageBox : GenericSingleton<MessageBox>
         mainText.text = settings.mainText;
         gameObject.SetActive(true);
 
-        StartCoroutine(HideWithDelay(2f));
+        StartCoroutine(HideWithDelay(2.5f));
     }
 
     public void HideMessageBox()
@@ -43,6 +53,10 @@ public class MessageBox : GenericSingleton<MessageBox>
 
     private IEnumerator HideWithDelay(float delay) 
     {
+        if (isRunning) 
+        {
+            delay += delay;
+        }
         isRunning = true;
         yield return new WaitForSeconds(delay);
         HideMessageBox();

@@ -14,8 +14,8 @@ public class CreateTables : MonoBehaviour
     {
         DatabaseManager.Instance.Initialize("Databases", "Machinery");
         DatabaseManager.Instance.CreateTableOnDatabase("Users", users.GetColumns());
-        DatabaseManager.Instance.CreateTableOnDatabase("Systems List", systemsList.GetColumns());
-        DatabaseManager.Instance.CreateTableOnDatabase("Machinery List", machineryList.GetColumns());
+        DatabaseManager.Instance.CreateTableOnDatabase("SystemsList", systemsList.GetColumns());
+        DatabaseManager.Instance.CreateTableOnDatabase("MachineryList", machineryList.GetColumns());
         yield return new WaitForEndOfFrame();
         Account.CreateDefaultAccounts();
     }

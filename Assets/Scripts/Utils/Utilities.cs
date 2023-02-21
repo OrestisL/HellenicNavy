@@ -281,7 +281,7 @@ namespace UnitySQLite.Utilities
             string value = "{0} {1}";
             if (SingleValue != float.MinValue) { value = string.Format(value, SingleValue, "FLOAT"); }
             else if (DoubleValue != double.MinValue) { value = string.Format(value, DoubleValue, "DOUBLE"); }
-            else if (StringValue != null) { value = string.Format("\"{0}\" {1}", StringValue, "TEXT"); }
+            else if (StringValue != null) { value = string.Format("\'{0}\' {1}", StringValue, "TEXT"); }
             else if (IntegerValue != int.MinValue) { value = string.Format(value, IntegerValue, "INT"); }
 
             return value;
@@ -292,7 +292,7 @@ namespace UnitySQLite.Utilities
             string value = "{0}";
             if (SingleValue != float.MinValue) { value = string.Format(value, SingleValue); }
             else if (DoubleValue != double.MinValue) { value = string.Format(value, DoubleValue); }
-            else if (StringValue != null) { value = string.Format("\"{0}\"", StringValue); }
+            else if (StringValue != null) { value = string.Format("\'{0}\'", StringValue); }
             else if (IntegerValue != int.MinValue) { value = string.Format(value, IntegerValue); }
 
             return value;

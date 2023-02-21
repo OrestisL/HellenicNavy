@@ -110,7 +110,7 @@ public class ServiceEntry : MonoBehaviour
     private void Start()
     {
         //validator for input
-        TMP_InputValidator validator = new TextValidator();
+        TextValidator validator = ScriptableObject.CreateInstance<TextValidator>();
         validator.name = "Input Validation for Hours and Days";
         hoursField.inputValidator = validator;
         daysField.inputValidator = validator;

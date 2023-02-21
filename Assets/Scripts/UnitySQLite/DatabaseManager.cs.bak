@@ -194,9 +194,9 @@ namespace UnitySQLite
                 if (row.columns[current].Unique)
                 {
                     value = val.Slice(startIdx, idx - startIdx).ToString();
-                    query = string.Format("SELECT {0} FROM {1} WHERE {0}={2}", row.columns[current].ColumnName, TableName, value);
+                    query = string.Format("SELECT '{0}' FROM '{1}' WHERE '{0}'={2}", row.columns[current].ColumnName, TableName, value);
                     //table should have 1 primary key
-                    value = string.Format("{0} = {1}", row.columns[current].ColumnName, value);
+                    value = string.Format("'{0}' = {1}", row.columns[current].ColumnName, value);
                     sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
                     SqliteDataReader reader = sm_dbCommand.ExecuteReader();
                     sm_dbCommand.Dispose();
@@ -233,7 +233,7 @@ namespace UnitySQLite
             string[] commaSeparatedValues = values.Split(',');
             for (int i = 0; i < commaSeparatedValues.Length; i++)
             {
-                query = string.Format("INSERT INTO {0}({1}) VALUES ({2});", TableName, columnName, commaSeparatedValues[i]);
+                query = string.Format("INSERT INTO '{0}'({1}) VALUES ({2});", TableName, columnName, commaSeparatedValues[i]);
                 sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
                 sm_dbCommand.ExecuteReader().Dispose();
                 sm_dbCommand.Dispose();
@@ -245,7 +245,7 @@ namespace UnitySQLite
             Logger.Instance.AddMessage(query);
         }
 
-        private void WriteToDatabase(string tableName, TableRow tableRow, Action onSucessfulWrite = null)
+        private void WriteToDatabase(string tableName, TableRow tableRow)
         {
             if (!CheckIfTableExists(tableName))
             {
@@ -283,7 +283,7 @@ namespace UnitySQLite
                 }
 
                 ReadOnlySpan<char> slice = newlinesSeparatedSpan.Slice(startIdx, nextNLIndex - startIdx);
-                query = string.Format("INSERT OR IGNORE INTO {0}({1}) VALUES ({2});", tableName, tableRow.GetColumnNames(), slice.ToString());
+                query = string.Format("INSERT OR IGNORE INTO '{0}'({1}) VALUES ({2});", tableName, tableRow.GetColumnNames(), slice.ToString());
                 sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
                 sm_dbCommand.ExecuteNonQuery();
                 sm_dbCommand.Dispose();
@@ -296,7 +296,6 @@ namespace UnitySQLite
             //commit changes
             //transaction.Commit();
             //dbConnection.Close();
-            UnityMainThreadDispatcher.Instance.Enqueue(() => onSucessfulWrite?.Invoke());
             Logger.Instance.AddMessage(query);
         }
 
@@ -338,10 +337,10 @@ namespace UnitySQLite
             switch (mode)
             {
                 case SelectFromDatabaseMode.everything:
-                    query = string.Format("SELECT * FROM {0}", TableName);
+                    query = string.Format("SELECT * FROM '{0}'", TableName);
                     break;
                 case SelectFromDatabaseMode.specificColumns:
-                    query = string.Format("SELECT {0} FROM {1}", ColumnNames, TableName);
+                    query = string.Format("SELECT {0} FROM '{1}'", ColumnNames, TableName);
                     break;
                 case SelectFromDatabaseMode.specificRows:
                     if (maxRow == 0)
@@ -353,7 +352,7 @@ namespace UnitySQLite
                         return;
                     }
 
-                    query = string.Format("SELECT {0} FROM {1} WHERE {2}", ColumnNames, TableName, string.Format("rowid BETWEEN {0} AND {1}", minRow, maxRow));
+                    query = string.Format("SELECT {0} FROM '{1}' WHERE {2}", ColumnNames, TableName, string.Format("rowid BETWEEN {0} AND {1}", minRow, maxRow));
                     break;
             }
 
@@ -521,7 +520,7 @@ namespace UnitySQLite
                 return -1;
             }
             //create database command
-            string query = string.Format("SELECT MAX(rowid) FROM {0};", tableName);
+            string query = string.Format("SELECT MAX(rowid) FROM '{0}';", tableName);
             //create command
 
             sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
@@ -649,7 +648,7 @@ namespace UnitySQLite
         /// <summary>
         /// Uses a separate thread to write to the database.
         /// </summary>
-        public void ThreadedWriteToDatabase(string TableName, TableRow row, bool check = false, Action onEntyExists = null, Action onSuccessfulWrite = null)
+        public void ThreadedWriteToDatabase(string TableName, TableRow row, bool check = false, Action onEntyExists = null)
         {
             //this is necessary because otherwise the thread keeps spamming writes
             //sleep at the beginning to avoid null reference exception table row
@@ -666,7 +665,7 @@ namespace UnitySQLite
                     return;
                 }
             }
-            WriteToDatabase(TableName, row, onSuccessfulWrite);
+            WriteToDatabase(TableName, row);
             //write to log file
             string log = string.Format("Successfully wrote to database {0}, {1}, at {2}\n",
                     m_dbName, row.GetValues(), DateTime.Now.ToString("HH:mm:ss"));
@@ -729,7 +728,7 @@ namespace UnitySQLite
             {
                 //for strings, we need to add ""
                 if (values[i].GetType() == typeof(string))
-                    result += string.Format("\"{0}\",", values[i].ToString().Replace(',', '.')); //result will be a string which will contain "" 
+                    result += string.Format("\'{0}\',", values[i].ToString().Replace(',', '.')); //result will be a string which will contain "" 
                 else
                     result += string.Format("{0},", values[i].ToString().Replace(',', '.'));
 
