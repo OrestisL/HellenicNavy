@@ -22,7 +22,10 @@ namespace UnitySQLite
         private static bool validLogin;
         public static Action<bool, Account> onAfterLogin;
         public static Action onLogout;
-        public static Action<bool, string> onLoginAttempt;
+        public static Action<bool, string> onLoginAttempt = delegate
+        {
+            Debug.Log(string.Format("login attempt"));
+        };
 
         public TMP_InputField usernameField, passwordField, output;
 #if TESTING 
@@ -122,13 +125,6 @@ namespace UnitySQLite
                 default:
                     break;
             }
-        }
-
-        public void InitializeAccounts() 
-        {
-            Account user = new Account("user", "user", 1);
-            Account supervisor = new Account("supervisor", "supervisor", 2);
-            Account admin = new Account("admin", "admin", 3);
         }
     }
 

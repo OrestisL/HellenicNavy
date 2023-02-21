@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnitySQLite;
 using UnitySQLite.Utilities;
@@ -8,12 +9,14 @@ public class CreateTables : MonoBehaviour
     public TableRow machineryList;
     public TableRow systemsList;
 
-    private void Start()
+
+    IEnumerator Start() 
     {
         DatabaseManager.Instance.Initialize("Databases", "Machinery");
         DatabaseManager.Instance.CreateTableOnDatabase("Users", users.GetColumns());
-        AccountManagement.Instance.InitializeAccounts();
         DatabaseManager.Instance.CreateTableOnDatabase("Systems List", systemsList.GetColumns());
         DatabaseManager.Instance.CreateTableOnDatabase("Machinery List", machineryList.GetColumns());
+        yield return new WaitForEndOfFrame();
+        Account.CreateDefaultAccounts();
     }
 }

@@ -345,7 +345,7 @@ namespace UnitySQLite.Utilities
             _accessLevel = AccessLevel.None;
         }
 
-        public Account(string accountName, string accountPassword, int accecssLevel)
+        public Account(string accountName, string accountPassword, int accecssLevel, bool create = true)
         {
             using (RandomNumberGenerator rng = new RNGCryptoServiceProvider())
             {
@@ -357,7 +357,8 @@ namespace UnitySQLite.Utilities
             _accountName = accountName;
             _accountPasswordHash = CreateSHA256(accountPassword, _salt);
             _accessLevel = (AccessLevel)accecssLevel;
-            CreateAccount();
+            if (create)
+                CreateAccount();
         }
 
         private Account(string name, string pass, string salt, int _accLv)
@@ -438,6 +439,36 @@ namespace UnitySQLite.Utilities
                 {
                     DatabaseManager.Instance.ThreadedWriteToDatabase("Users", row, true, Account.onEntryExists);
                 });
+            });
+        }
+
+        public static void CreateDefaultAccounts()
+        {
+            List<Account> accounts = new List<Account>()
+            {
+                 new Account("user", "user", 1, false),
+                 new Account("supervisor", "supervisor", 2),
+                 new Account("admin", "admin", 3)
+            };
+
+            DatabaseManager.Instance.WriteOnce(() =>
+            {
+                for (int i = 0; i < accounts.Count; i++)
+                {
+                    Account current = accounts[i];
+
+                    List<DataEntry> content = new List<DataEntry>
+                {
+                    new DataEntry(current._accountName),
+                    new DataEntry(current._accountPasswordHash),
+                    new DataEntry(current._salt),
+                    new DataEntry((int)current._accessLevel),
+                };
+
+                    List<TableColumn> cols = AccountManagement.Instance.content.columns;
+                    TableRow row = new TableRow(cols, content);
+                    DatabaseManager.Instance.ThreadedWriteToDatabase("Users", row, true);
+                }
             });
         }
 
