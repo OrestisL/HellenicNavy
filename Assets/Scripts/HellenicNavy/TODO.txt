@@ -1,9 +1,10 @@
 - create accounts (5x users (1 for each dept), 1x supervisor, 1x master) done
 - add change password functionality (done)
 - add password to database (and change password) (needs new dll)
-- loading message
+- loading message (done - message box)
 - export/import database
 - limit hours/days input to comma separated ints only (done)
 - add a way to add the assignment types (done)
 - add a way to show a machinery that's been added
-- finish menu panel (vertical pos = - (no. items* (height + spacing) + bottom offset) /2 - 100 )
+- finish menu panel (vertical pos = - (no. items* (height + spacing) + bottom offset) /2 - 100 ) (will probably be hardcoded in a position)
+- change how input fields are shown in the add service entry
