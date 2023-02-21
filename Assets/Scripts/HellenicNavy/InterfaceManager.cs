@@ -29,6 +29,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     [Header("Service Interface")]
     public GameObject addMachineryPanel;
     public Button addMachineryButton;
+    public Button createMachineryButton;
     public Button addServiceEntryButton;
     public RectTransform serviceEntryParent;
     public TMP_InputField nameInput;
@@ -112,8 +113,12 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     {
         loginButton.onClick.AddListener(() => AccountManagement.Instance.Login());
 
+        addMachineryButton.onClick.AddListener(() => {
+            ShowSystems(systemDropdown);
+            addMachineryPanel.SetActive(!addMachineryPanel.activeSelf);
+        });
         addServiceEntryButton.onClick.AddListener(AddServiceEntry);
-        addMachineryButton.onClick.AddListener(AddMachinery);
+        createMachineryButton.onClick.AddListener(AddMachinery);
 
         createSystemEntryButton.onClick.AddListener(() => AddSystem(addSystemName.text));
         addSystemButton.onClick.AddListener(() => addSystemPanel.SetActive(!addSystemPanel.activeSelf));
@@ -214,7 +219,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             List<TableColumn> columns = tables.systemsList.columns;
             TableRow row = new TableRow(columns, entries);
             DatabaseManager.Instance.ThreadedWriteToDatabase("Systems List", row, true /*,TODO add functionality here to show that entry exists (output field)*/);
-            Debug.Log("test");
+            Debug.Log(string.Format("successfully added system {0} to the database", name));
         });
     }
 
