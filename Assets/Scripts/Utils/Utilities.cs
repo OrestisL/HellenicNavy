@@ -417,7 +417,6 @@ namespace UnitySQLite.Utilities
         }
         /// <summary>
         /// Create account on database if not exists. 
-        /// First get UID and increase it by 1, then create.
         /// </summary>
         private void CreateAccount()
         {
@@ -447,8 +446,8 @@ namespace UnitySQLite.Utilities
             List<Account> accounts = new List<Account>()
             {
                  new Account("user", "user", 1, false),
-                 new Account("supervisor", "supervisor", 2),
-                 new Account("admin", "admin", 3)
+                 new Account("supervisor", "supervisor", 2, false),
+                 new Account("admin", "admin", 3, false)
             };
 
             DatabaseManager.Instance.WriteOnce(() =>

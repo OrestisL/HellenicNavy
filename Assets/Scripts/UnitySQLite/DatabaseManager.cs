@@ -926,7 +926,7 @@ namespace UnitySQLite
 
 #if UNITY_EDITOR
             //display change in the editor
-            ReadOnlySpan<char> conn = sm_CurrentConnection;
+            ReadOnlySpan<char> conn = sm_CurrentConnection.AsSpan();
             int idx = conn.LastIndexOf('\\') + 1;
             m_dbName = conn.Slice(idx, conn.Length - idx).ToString();
 #endif
