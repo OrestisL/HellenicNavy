@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
 using UnitySQLite;
@@ -78,6 +78,9 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 AccountManagement.Instance.passwordField.text = "";
                 AccountManagement.Instance.usernameField.text = "";
 
+                //close message box
+                MessageBox.Instance.HideMessageBox();
+
                 //show info depending on account
                 SetupInterface(AccountManagement.Instance.CurrentAccount.AccessLevel);
             }
@@ -110,9 +113,21 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     void SetupButtons()
     {
-        loginButton.onClick.AddListener(() => AccountManagement.Instance.Login());
+        loginButton.onClick.AddListener(() => {
+            MessageBoxSettings settings = new MessageBoxSettings()
+            {
+                showLabel = false,
+                useRightButton = false,
+                useLeftButton = false,
+                mainText = "Παρακαλώ περιμένετε...",
 
-        addMachineryButton.onClick.AddListener(() => {
+            };
+            MessageBox.Instance.ShowMessageBox(settings);
+            AccountManagement.Instance.Login(); 
+        });
+
+        addMachineryButton.onClick.AddListener(() =>
+        {
             ShowSystems(systemDropdown);
             addMachineryPanel.SetActive(!addMachineryPanel.activeSelf);
         });
@@ -125,8 +140,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
         menuButton.onClick.AddListener(() => menuPanel.SetActive(!menuPanel.activeSelf));
 
-        changePWButton.onClick.AddListener(() => 
-        { 
+        changePWButton.onClick.AddListener(() =>
+        {
             SetupLoginInterface(LoginInterfaceSetup.changePW);
             loginPanel.SetActive(!loginPanel.activeSelf);
         });
