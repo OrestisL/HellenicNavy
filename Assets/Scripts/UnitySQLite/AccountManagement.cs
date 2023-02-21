@@ -7,6 +7,7 @@ using UnityEngine;
 using UnitySQLite.Utilities;
 using TMPro;
 using UnityEngine.UI;
+using Unity.VisualScripting;
 
 namespace UnitySQLite
 {
@@ -44,13 +45,6 @@ namespace UnitySQLite
             });
 #endif
         }
-
-        //private void Start()
-        //{
-        //    DatabaseManager.Instance.Initialize("Databases", DatabaseName);
-
-        //    DatabaseManager.Instance.CreateTableOnDatabase("UserData", content.GetColumns());    
-        //} 
 
         public void SetCurrentAccount(int id)
         {
@@ -128,6 +122,13 @@ namespace UnitySQLite
                 default:
                     break;
             }
+        }
+
+        public void InitializeAccounts() 
+        {
+            Account user = new Account("user", "user", 1);
+            Account supervisor = new Account("supervisor", "supervisor", 2);
+            Account admin = new Account("admin", "admin", 3);
         }
     }
 

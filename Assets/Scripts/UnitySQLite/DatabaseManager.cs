@@ -87,10 +87,6 @@ namespace UnitySQLite
         {
             //initialize singleton
             base.Awake();
-
-#if UNITY_ANDROID
-            Screen.orientation = ScreenOrientation.LandscapeLeft;
-#endif
         }
 
         public void Initialize(string dbLocation, string dbName)
@@ -249,7 +245,6 @@ namespace UnitySQLite
             Logger.Instance.AddMessage(query);
         }
 
-
         private void WriteToDatabase(string tableName, TableRow tableRow)
         {
             if (!CheckIfTableExists(tableName))
@@ -303,66 +298,7 @@ namespace UnitySQLite
             //dbConnection.Close();
             Logger.Instance.AddMessage(query);
         }
-
-        /// <summary>
-        /// Inserts values to multiple columns of a table. Make sure values string has rows separated by new lines.
-        /// </summary>
-        //private void InsertMultipleColumnValueToTable(string TableName, string ColumnNames, string values)
-        //{
-        //    //remove spaces because it no work
-        //    if (TableName.Contains(" "))
-        //        TableName = TableName.Replace(" ", "_");
-
-        //    if (!CheckIfTableExists(TableName))
-        //    {
-        //        Logger.Instance.AddMessage(string.Format("Attempt to insert values to table {0} but it doesnt exist.", TableName));
-        //        return;
-        //    }
-
-        //    //dbConnection = CreateConnectionToDB(pathToDatabase);
-        //    //dbConnection.Open();
-        //    string query = string.Empty;
-
-        //    sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
-        //    //sm_dbTransaction = sm_dbConnection.BeginTransaction();
-
-        //    //string[] newlineSeparatedLines = values.Split('\n');
-        //    ReadOnlySpan<char> newlineSeparatedSpan = values.AsSpan();
-        //    int nextNLIndex = 0;
-        //    bool isLastLoop = false;
-        //    while (!isLastLoop)
-        //    {
-        //        int startIdx = nextNLIndex;
-        //        nextNLIndex = values.IndexOf('\n', startIdx);
-
-        //        isLastLoop = (nextNLIndex == -1);
-        //        if (isLastLoop)
-        //        {
-        //            nextNLIndex = values.Length;
-        //        }
-
-        //        ReadOnlySpan<char> slice = newlineSeparatedSpan.Slice(startIdx, nextNLIndex - startIdx);
-        //        query = string.Format("INSERT OR IGNORE INTO {0}({1}) VALUES ({2});", TableName, ColumnNames, slice.ToString());
-        //        sm_dbCommand.CommandText = query;
-        //        sm_dbCommand.ExecuteReader();
-        //    }
-
-        //    //sm_dbTransaction.Commit();
-        //    //for (int i = 0; i < newlineSeparatedLines.Length; i++)
-        //    //{
-        //    //    query = string.Format("INSERT OR IGNORE INTO {0}({1}) VALUES ({2});", TableName, ColumnNames, newlineSeparatedLines[i]);
-        //    //    dbCommand.CommandText = query;
-        //    //    dbCommand.ExecuteReader();
-        //    //}
-        //    if (m_limitRows)
-        //        CheckNumberOfRows(sm_dbConnection, TableName);
-
-        //    //commit changes
-        //    //transaction.Commit();
-        //    //dbConnection.Close();
-        //    Logger.Instance.AddMessage(query);
-        //}
-
+      
         private bool CheckIfTableExists(string tableName)
         {
             //check if table exists first
@@ -623,44 +559,7 @@ namespace UnitySQLite
             reader1.Dispose();
             reader.Dispose();
             //sm_dbTransaction.Commit();
-        }
-        /// <summary>
-        /// Updates values in the databse. Make sure ValueNames and NewValues are separated by commas.
-        /// </summary>
-        //public void UpdateValuesOnTable(string TableName, string ValueNames, string NewValues, string SearchCondition = "")
-        //{
-        //    string[] commaSeparatedNames = string.Create(ValueNames.Length, ValueNames, (chars, state) =>
-        //    {
-        //        state.AsSpan().CopyTo(chars);
-        //    }).Split(",");
-
-        //    string[] commaSeparatedValues = string.Create(NewValues.Length, NewValues, (chars, state) =>
-        //    {
-        //        state.AsSpan().CopyTo(chars);
-        //    }).Split(",");
-
-        //    if (commaSeparatedNames.Length != commaSeparatedValues.Length)
-        //    {
-        //        Debug.LogWarning("The amount of values to update are not the same as the amount of columns. Not updating.");
-        //        return;
-        //    }
-        //    //create query
-        //    string query = string.Format("UPDATE {0} SET ", TableName);
-        //    for (int i = 0; i < commaSeparatedNames.Length; i++)
-        //    {
-        //        query += string.Format("{0}={1},\n", commaSeparatedNames[i], commaSeparatedValues[i]);
-        //    }
-        //    //remove last comma and newline
-        //    query = query.Remove(query.Length - 2, 2);
-
-        //    if (SearchCondition != "")
-        //        query += string.Format("\nWHERE {0}", SearchCondition);
-
-        //    dbCommand = new SqliteCommand(query, dbConnection, transaction);
-        //    dbCommand.ExecuteReader();
-
-        //    Logger.Instance.AddMessage(query);
-        //}
+        }       
 
         /// <summary>
         /// Updates values in the databse. Make sure ValueNames and NewValues are separated by commas.
@@ -768,26 +667,6 @@ namespace UnitySQLite
             Logger.Instance.AddMessage(log);
         }
 
-        ///// <summary>
-        ///// Uses a separate thread to write to the database.
-        ///// </summary>
-        //public void ThreadedWriteToDatabase(string TableName, string ColumnNames, string values)
-        //{
-        //    //this is necessary because otherwise the thread keeps spamming writes
-        //    //sleep at the beginning to avoid null reference exception on values string
-        //    //(since this thread isnt the main thread, it might run before the main thread
-        //    //actually calculates the values)
-        //    Thread.Sleep((int)(m_writeFrequency * 1000));
-        //    if (CheckIfEntryExists(TableName, values)) { return; }
-
-        //    InsertMultipleColumnValueToTable(TableName, ColumnNames, values);
-        //    //write to log file
-        //    string log = string.Format("Successfully wrote to database {0}, {1}, at {2}\n",
-        //            m_dbName, values, DateTime.Now.ToString("HH:mm:ss"));
-
-        //    Logger.Instance.AddMessage(log);
-        //} //TODO: consider refactoring this to a command pattern 
-
         /// <summary>
         /// Use  this function to create another table on the database.
         /// Don't forget to subscribe to onCreateTable event BEFORE calling this function. Event will be cleared after calling.
@@ -818,71 +697,7 @@ namespace UnitySQLite
         }
 
         #endregion // threaded functions
-
-        #region Tasks
-        //public async Task<List<List<DataEntry>>> ReadFromDatabaseTask(string TableName, SelectFromDatabaseMode mode, string ColumnNames = "", int minRow = 0, int maxRow = 0)
-        //{
-        //    return await Task.Run(() =>
-        //    {
-        //        ReadFromDatabase(TableName, mode, out List<List<DataEntry>> objs, ColumnNames, minRow, maxRow);
-        //        Debug.Log(string.Format("Read values from table {0} from colums {1}", TableName, ColumnNames));
-        //        return objs;
-        //    });
-        //    //return result;
-        //}
-
-        //private Task WriteToDatabaseTask(string TableName, string ColumnNames, string values)
-        //{
-        //    return Task.Run(() =>
-        //    {
-        //        InsertMultipleColumnValueToTable(TableName, ColumnNames, values);
-        //        Debug.Log(string.Format("Wrote values to table {0} to colums {1}", TableName, ColumnNames));
-        //    });
-        //}
-
-        //private Task CreateTableTask(string TableName, string columns)
-        //{
-        //    return Task.Run(() =>
-        //    {
-        //        CreateTableOnDatabase(TableName, columns);
-        //        Debug.Log(string.Format("Created table {0} with columns {1} at database {2}", TableName, columns));
-        //    });
-        //}
-
-        //private Task DeleteTableTask(string path, string tableName)
-        //{
-        //    return Task.Run(() =>
-        //    {
-        //        DeleteTableFromDatabase(tableName);
-        //        Debug.Log(string.Format("Deleted table {0} from database {1}", tableName, path));
-        //    });
-        //}
-
-
-        //#endregion // tasks
-
-        //#region Async functions
-        //public async Task<List<List<DataEntry>>> ReadFromDatabaseAsync(string TableName, SelectFromDatabaseMode mode, string ColumnNames = "", int minRow = 0, int maxRow = 0)
-        //{
-        //    return await ReadFromDatabaseTask(TableName, mode, ColumnNames, minRow, maxRow);
-        //}
-
-        //public async void InsertToDatabaseAsync(string TableName, string ColumnNames, string values)
-        //{
-        //    await WriteToDatabaseTask(TableName, ColumnNames, values);
-        //}
-
-        //public async void CreateTableAsync(string TableName, string columns)
-        //{
-        //    await CreateTableTask(TableName, columns);
-        //}
-
-        //public async void DeleteTableAsync(string path, string TableName)
-        //{
-        //    await DeleteTableTask(path, TableName);
-        //}
-        #endregion
-
+       
         #region Format values for table insert
         /// <summary>
         /// Formats values of any type in a string separated by commas.
