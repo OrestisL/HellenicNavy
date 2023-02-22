@@ -78,8 +78,13 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 AccountManagement.Instance.passwordField.text = "";
                 AccountManagement.Instance.usernameField.text = "";
 
-                //close message box
-                MessageBox.Instance.HideMessageBox();
+                MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+                {
+                    useRightButton = false,
+                    useLeftButton= false,
+                    showLabel = false,
+                    mainText = string.Format("Επιτυχής σύνδεση {0}.", acc.AccountName),
+                });
 
                 //show info depending on account
                 SetupInterface(AccountManagement.Instance.CurrentAccount.AccessLevel);
