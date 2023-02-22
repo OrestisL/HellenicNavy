@@ -40,6 +40,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     [Header("Menu")]
     public GameObject menuPanel;
     public Button menuButton;
+    public Button createDeptButton;
     public Button addSystemButton;
     public Button changePWButton;
 
@@ -48,6 +49,12 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public Button createSystemEntryButton;
     public TMP_InputField addSystemName;
     public Button closeAddSystemPanel;
+
+    [Header("Add Department Interface")]
+    public GameObject addDeptPanel;
+    public Button createDeptEntryButton;
+    public TMP_InputField addDeptName;
+    public Button closeDeptPanel;
 
     [Header("Prefabs")]
     public GameObject serviceEntryPrefab;
@@ -81,7 +88,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
                 {
                     useRightButton = false,
-                    useLeftButton= false,
+                    useLeftButton = false,
                     showLabel = false,
                     mainText = string.Format("Επιτυχής σύνδεση {0}.", acc.AccountName),
                 });
@@ -134,7 +141,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
         addMachineryButton.onClick.AddListener(() =>
         {
-            ShowSystems(systemDropdown);
+            ShowDepartmentsAndSystems(deptDropdown, systemDropdown);
             addMachineryPanel.SetActive(!addMachineryPanel.activeSelf);
         });
         addServiceEntryButton.onClick.AddListener(AddServiceEntry);
@@ -144,8 +151,12 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         addSystemButton.onClick.AddListener(() => addSystemPanel.SetActive(!addSystemPanel.activeSelf));
         closeAddSystemPanel.onClick.AddListener(() => addSystemPanel.SetActive(false));
 
-        menuButton.onClick.AddListener(() => 
-        { 
+        createDeptEntryButton.onClick.AddListener(() => AddDepartment(addDeptName.text));
+        createDeptButton.onClick.AddListener(() => addDeptPanel.SetActive(!addDeptPanel.activeSelf));
+        closeDeptPanel.onClick.AddListener(() => addDeptPanel.SetActive(false));
+
+        menuButton.onClick.AddListener(() =>
+        {
             menuPanel.SetActive(!menuPanel.activeSelf);
             menuButton.transform.GetChild(1).rotation *= Quaternion.Euler(0, 0, 180);
         });
@@ -208,6 +219,39 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         Debug.Log(_currentService.ToJson());
     }
 
+
+    void AddDepartment(string name)
+    {
+        if (name.Equals(string.Empty))
+        {
+            return;
+        }
+
+        DatabaseManager.Instance.WriteOnce(() =>
+        {
+            List<DataEntry> entries = new List<DataEntry>() { new DataEntry(name), new DataEntry(0) };
+            List<TableColumn> columns = tables.systemsDepartmentsList.columns;
+            TableRow row = new TableRow(columns, entries);
+            DatabaseManager.Instance.ThreadedWriteToDatabase("SystemsDepartmentsList", row, true,
+                () => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+                {
+                    useRightButton = false,
+                    useLeftButton = false,
+                    showLabel = false,
+                    mainText = string.Format("Η επιστασία \"{0}\" υπάρχει ήδη στη βάση δεδομένων.", name),
+                }
+                ),
+                () => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+                {
+                    useRightButton = false,
+                    useLeftButton = false,
+                    showLabel = false,
+                    mainText = string.Format("Η επιστασία \"{0}\" προστέθηκε στη βάση δεδομένων επιτυχώς.", name),
+                }));
+            //Debug.Log(string.Format("successfully added system {0} to the database", name));
+        });
+    }
+
     /// <summary>
     /// When adding a system, it should be written to the systems list table.
     /// </summary>
@@ -221,10 +265,10 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
         DatabaseManager.Instance.WriteOnce(() =>
         {
-            List<DataEntry> entries = new List<DataEntry>() { new DataEntry(name) };
-            List<TableColumn> columns = tables.systemsList.columns;
+            List<DataEntry> entries = new List<DataEntry>() { new DataEntry(name), new DataEntry(1) };
+            List<TableColumn> columns = tables.systemsDepartmentsList.columns;
             TableRow row = new TableRow(columns, entries);
-            DatabaseManager.Instance.ThreadedWriteToDatabase("SystemsList", row, true,
+            DatabaseManager.Instance.ThreadedWriteToDatabase("SystemsDepartmentsList", row, true,
                 () => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
                 {
                     useRightButton = false,
@@ -245,23 +289,32 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     }
 
     /// <summary>
-    /// When adding/editing machinery info, a dropdown that contains all systems should appear.
+    /// When adding/editing machinery info, a dropdown that contains all departments & systems should appear.
     /// </summary>
-    /// <param name="dropdown">Dropdown containing all systems.</param>
-    void ShowSystems(TMP_Dropdown dropdown)
+    /// <param name="departments">Dropdown containing all departments.</param>
+    /// <param name="systems">Dropdown containing all systems.</param>
+    void ShowDepartmentsAndSystems(TMP_Dropdown departments, TMP_Dropdown systems)
     {
-        List<string> names = new List<string>();
-        //read systems list table
-        DatabaseManager.Instance.ReadData("SystemsList", SelectFromDatabaseMode.everything,
+        List<string> deptNames = new List<string>();
+        List<string> systemNames = new List<string>();
+        //read departments table
+        DatabaseManager.Instance.ReadData("SystemsDepartmentsList", SelectFromDatabaseMode.everything,
             (data) =>
             {
+                
                 for (int i = 0; i < data.Count; i++)
                 {
-                    names.Add(data[i][0].StringValue);
-                    Debug.Log(data[i][0].StringValue);
+                    if (data[i][1].IntegerValue == 0)
+                        deptNames.Add(data[i][0].StringValue);
+                    else if (data[i][1].IntegerValue == 1)
+                        systemNames.Add(data[i][0].StringValue);
                 }
-                dropdown.ClearOptions();
-                dropdown.AddOptions(names);
+                departments.ClearOptions();
+                systems.ClearOptions();
+
+                departments.AddOptions(deptNames);
+                systems.AddOptions(systemNames);
             });
     }
+
 }
