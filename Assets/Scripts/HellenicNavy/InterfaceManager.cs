@@ -144,7 +144,11 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         addSystemButton.onClick.AddListener(() => addSystemPanel.SetActive(!addSystemPanel.activeSelf));
         closeAddSystemPanel.onClick.AddListener(() => addSystemPanel.SetActive(false));
 
-        menuButton.onClick.AddListener(() => menuPanel.SetActive(!menuPanel.activeSelf));
+        menuButton.onClick.AddListener(() => 
+        { 
+            menuPanel.SetActive(!menuPanel.activeSelf);
+            menuButton.transform.GetChild(1).rotation *= Quaternion.Euler(0, 0, 180);
+        });
 
         changePWButton.onClick.AddListener(() =>
         {
