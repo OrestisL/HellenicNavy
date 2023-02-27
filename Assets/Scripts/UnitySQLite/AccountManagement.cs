@@ -1,4 +1,4 @@
-#define TESTING
+﻿#define TESTING
 
 using System;
 using System.Collections.Generic;
@@ -22,9 +22,17 @@ namespace UnitySQLite
         private static bool validLogin;
         public static Action<bool, Account> onAfterLogin;
         public static Action onLogout;
-        public static Action<bool, string> onLoginAttempt = delegate
+        public static Action<bool, string> onLoginAttempt = delegate (bool success, string message)
         {
-            Debug.Log(string.Format("login attempt"));
+            Debug.Log(string.Format("login attempt: {0}", message));
+            if (!success)
+                MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+                {
+                    useRightButton = false,
+                    useLeftButton = false,
+                    showLabel = false,
+                    mainText = "Λανθασμένος κωδικός πρόσβασης"
+                });
         };
 
         public TMP_InputField usernameField, passwordField, output;
@@ -36,9 +44,9 @@ namespace UnitySQLite
         {
             base.Awake();
 
-           // onLoginAttempt += (b, text) => output.text = text;
+            // onLoginAttempt += (b, text) => output.text = text;
             onSuccessfulLogin += (acc) => { CurrentAccount = acc; };
-            
+
 #if TESTING
             createAccount.onClick.AddListener(() =>
             {
