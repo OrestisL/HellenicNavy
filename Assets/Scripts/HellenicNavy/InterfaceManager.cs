@@ -309,7 +309,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         DatabaseManager.Instance.ReadData("SystemsDepartmentsList", SelectFromDatabaseMode.everything,
             (data) =>
             {
-                
+
                 for (int i = 0; i < data.Count; i++)
                 {
                     if (data[i][1].IntegerValue == 0)
@@ -317,27 +317,26 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                     else if (data[i][1].IntegerValue == 1)
                         systemNames.Add(data[i][0].StringValue);
                 }
-                if (departments!= null) { departments.ClearOptions(); departments.AddOptions(deptNames); }
-                
-                if (systems!= null) { systems.ClearOptions(); systems.AddOptions(systemNames); }             
+                if (departments != null) { departments.ClearOptions(); departments.AddOptions(deptNames); }
+
+                if (systems != null) { systems.ClearOptions(); systems.AddOptions(systemNames); }
             });
     }
 
 
-    void SetupDeptSelectionInterface() 
+    void SetupDeptSelectionInterface()
     {
-        List<string> deptNames = new List<string>();
-        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+        if (!selectDeptPanel.activeSelf)
         {
-            showLabel = false,
-            useRightButton = false,
-            useLeftButton = false,
-            mainText = "Παρακαλώ περιμένετε, ανάγνωση δεδομένων...",
-        });
-        DatabaseManager.Instance.ReadData("SystemsDepartmentsList", SelectFromDatabaseMode.everything,
-            (data) => 
+            MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
             {
-                if (!selectDeptPanel.activeInHierarchy)
+                showLabel = false,
+                useRightButton = false,
+                useLeftButton = false,
+                mainText = "Παρακαλώ περιμένετε, ανάγνωση δεδομένων...",
+            });
+            DatabaseManager.Instance.ReadData("SystemsDepartmentsList", SelectFromDatabaseMode.everything,
+                (data) =>
                 {
                     MessageBox.Instance.HideMessageBox();
                     for (int i = 0; i < data.Count; i++)
@@ -346,33 +345,41 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                         b.name = data[i][0].StringValue;
                         b.GetComponentInChildren<TextMeshProUGUI>().text = b.name;
                         b.onClick.AddListener(() =>
-                                             MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
-                                             {
-                                                 showLabel = true,
-                                                 label = "Επιλογή Επιστασίας",
-                                                 useRightButton = true,
-                                                 rightButtonLabel = "ΝΑΙ",
-                                                 //onRightButtonClick = () => read all machinery from database
-                                                 useLeftButton = true,
-                                                 leftButtonLabel = "ΟΧΙ",
-                                                 onLeftButtonClick = () => MessageBox.Instance.HideMessageBox(),
-                                                 mainText = string.Format("Είστε σίγουροι ότι θέλετε να επιλέξετε {0};", b.name),
-                                             }, -1));
+                                         MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+                                         {
+                                             showLabel = true,
+                                             label = "Επιλογή Επιστασίας",
+                                             useRightButton = true,
+                                             rightButtonLabel = "ΝΑΙ",
+                                             //onRightButtonClick = () => read all machinery from database
+                                             useLeftButton = true,
+                                             leftButtonLabel = "ΟΧΙ",
+                                             onLeftButtonClick = () => MessageBox.Instance.HideMessageBox(),
+                                             mainText = string.Format("Είστε σίγουροι ότι θέλετε να επιλέξετε {0};", b.name),
+                                         }, -1));
                     }
                     selectDeptPanel.SetActive(true);
-                }
-                else
-                {
-                    selectDeptPanel.SetActive(false);
-                    Transform[] children = selectDeptPanel?.GetComponentsInChildren<Transform>();
-                    for (int i = 1; i < children.Length ; i++)
-                    {
-                        Destroy(children[i].gameObject);
-                    }
-                }
+                    MessageBox.Instance.HideMessageBox();
+                }, SortResultsBy.none, null, "", 0, 0, "WHERE Type = 0");
 
-                MessageBox.Instance.HideMessageBox();
-            }, SortResultsBy.none, null,"",0,0,"WHERE Type = 0");
+        }
+        else
+        {
+            selectDeptPanel.SetActive(false);
+            Transform[] children = selectDeptPanel?.GetComponentsInChildren<Transform>();
+            for (int i = 0; i < children.Length; i++)
+            {
+                if (children[i].name.Equals("Label") | children[i] == selectDeptPanel.transform)
+                    continue;
+
+                Destroy(children[i].gameObject);
+            }
+        }
+
+
     }
-
 }
+
+    
+
+//List<string> deptNames = new List<string>();
