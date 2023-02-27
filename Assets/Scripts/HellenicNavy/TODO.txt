@@ -9,4 +9,4 @@
 - add a way to show a machinery that's been added
 - change how input fields are shown in the add service entry
 - choosing department button should open a dialogue to change the department > choosing YES should load all machinery in that department
-- read/write json for service entry
+- read/write json for service entry (write works, reading would need to change all . to , (?))

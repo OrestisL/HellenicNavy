@@ -119,7 +119,7 @@ namespace SPS
 
         public string ToJson()
         { 
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(this);
         }
 
     }

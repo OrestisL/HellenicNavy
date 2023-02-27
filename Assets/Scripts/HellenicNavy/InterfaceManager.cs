@@ -33,6 +33,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public Button addServiceEntryButton;
     public RectTransform serviceEntryParent;
     public TMP_InputField nameInput;
+    public TMP_InputField serialInput;
     public TMP_InputField idInput;
     public TMP_Dropdown deptDropdown;
     public TMP_Dropdown systemDropdown;
@@ -226,6 +227,44 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
         _currentService = new Service(nameInput.text, idInput.text, hoursInput.text.Length > 0 ? int.Parse(hoursInput.text) : 0, serviceEntries);
         Debug.Log(_currentService.ToJson());
+        //write to database
+        DatabaseManager.Instance.WriteOnce(() =>
+        {
+            TableRow row = new TableRow(new TableColumn[] { new TableColumn("Name", "TEXT", false, true), new TableColumn("ServiceDescr", "TEXT") });
+            row.AddValues(new DataEntry[] { new DataEntry(nameInput.text), new DataEntry(string.Format("\"{0}\"", _currentService.ToJson())) });
+
+            DatabaseManager.Instance.CreateTableOnDatabase(nameInput.text, row.GetColumns());
+            TableRow rowList = tables.machineryList;
+            DataEntry[] entries = new DataEntry[]
+            {
+                new DataEntry(nameInput.text),
+                new DataEntry(serialInput.text),
+                new DataEntry(idInput.text),
+                new DataEntry(deptDropdown.value),
+                new DataEntry(systemDropdown.options[systemDropdown.value].text),
+                new DataEntry(int.Parse(hoursInput.text)),
+                new DataEntry(5),
+                new DataEntry(1)
+            };
+            rowList.AddValues(entries);
+            DatabaseManager.Instance.ThreadedWriteToDatabase("MachineryList", rowList, true);
+
+            DatabaseManager.Instance.ThreadedWriteToDatabase(nameInput.text, row, true,
+                () => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings() 
+                {
+                    showLabel = false,
+                    useRightButton = false,
+                    useLeftButton = false,
+                    mainText = "Τα δεδομένα υπάρχουν ήδη"
+                }), 
+                () => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings() 
+                {
+                    showLabel = false,
+                    useRightButton = false,
+                    useLeftButton = false,
+                    mainText = "Επιτυχής εγγραφή δεδομένων"
+                }));
+        });
     }
 
 
@@ -352,12 +391,13 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                                              label = "Επιλογή Επιστασίας",
                                              useRightButton = true,
                                              rightButtonLabel = "ΝΑΙ",
-                                             onRightButtonClick = () => {
+                                             onRightButtonClick = () =>
+                                             {
                                                  /* read all machinery for specific dept from database (should open message box), then close*/
                                                  Debug.Log("Reading data");
                                                  selectDeptPanel.SetActive(false);
                                                  MessageBox.Instance.HideMessageBox();
-                                             }, 
+                                             },
                                              useLeftButton = true,
                                              leftButtonLabel = "ΟΧΙ",
                                              onLeftButtonClick = () => MessageBox.Instance.HideMessageBox(),
@@ -386,6 +426,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     }
 }
 
-    
+
 
 //List<string> deptNames = new List<string>();
