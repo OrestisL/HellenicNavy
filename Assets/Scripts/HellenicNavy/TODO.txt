@@ -2,9 +2,11 @@
 - add change password functionality (done)
 - add password to database (and change password) (needs new dll)
 - loading message (done - message box)
+- message box should disable buttons and inputs etc
 - export/import database
 - limit hours/days input to comma separated ints only (done)
 - add a way to add the assignment types (done)
 - add a way to show a machinery that's been added
-- finish menu panel (vertical pos = - (no. items* (height + spacing) + bottom offset) /2 - 100 ) (will probably be hardcoded in a position)
 - change how input fields are shown in the add service entry
+- choosing department button should open a dialogue to change the department > choosing YES should load all machinery in that department
+- read/write json for service entry

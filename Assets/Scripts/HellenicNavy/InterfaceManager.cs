@@ -56,9 +56,14 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public TMP_InputField addDeptName;
     public Button closeDeptPanel;
 
+    [Header("Select department interface")]
+    public Button selectDeptButton;
+    public GameObject selectDeptPanel;
+
     [Header("Prefabs")]
     public GameObject serviceEntryPrefab;
     public GameObject serviceTypePrefab;
+    public GameObject selectDeptPrefab;
 
     [SerializeField]
     List<ServiceEntry> serviceEntries;
@@ -155,6 +160,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         createDeptButton.onClick.AddListener(() => addDeptPanel.SetActive(!addDeptPanel.activeSelf));
         closeDeptPanel.onClick.AddListener(() => addDeptPanel.SetActive(false));
 
+        selectDeptButton.onClick.AddListener(() => SetupDeptSelectionInterface());
+
         menuButton.onClick.AddListener(() =>
         {
             menuPanel.SetActive(!menuPanel.activeSelf);
@@ -199,6 +206,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         userPanel.SetActive(false);
         addSystemPanel.SetActive(false);
         addMachineryPanel.SetActive(false);
+        selectDeptPanel.SetActive(false);
     }
 
     void AddServiceEntry()
@@ -309,12 +317,62 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                     else if (data[i][1].IntegerValue == 1)
                         systemNames.Add(data[i][0].StringValue);
                 }
-                departments.ClearOptions();
-                systems.ClearOptions();
-
-                departments.AddOptions(deptNames);
-                systems.AddOptions(systemNames);
+                if (departments!= null) { departments.ClearOptions(); departments.AddOptions(deptNames); }
+                
+                if (systems!= null) { systems.ClearOptions(); systems.AddOptions(systemNames); }             
             });
+    }
+
+
+    void SetupDeptSelectionInterface() 
+    {
+        List<string> deptNames = new List<string>();
+        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+        {
+            showLabel = false,
+            useRightButton = false,
+            useLeftButton = false,
+            mainText = "Παρακαλώ περιμένετε, ανάγνωση δεδομένων...",
+        });
+        DatabaseManager.Instance.ReadData("SystemsDepartmentsList", SelectFromDatabaseMode.everything,
+            (data) => 
+            {
+                if (!selectDeptPanel.activeInHierarchy)
+                {
+                    MessageBox.Instance.HideMessageBox();
+                    for (int i = 0; i < data.Count; i++)
+                    {
+                        Button b = Instantiate(selectDeptPrefab, selectDeptPanel.transform).GetComponent<Button>();
+                        b.name = data[i][0].StringValue;
+                        b.GetComponentInChildren<TextMeshProUGUI>().text = b.name;
+                        b.onClick.AddListener(() =>
+                                             MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+                                             {
+                                                 showLabel = true,
+                                                 label = "Επιλογή Επιστασίας",
+                                                 useRightButton = true,
+                                                 rightButtonLabel = "ΝΑΙ",
+                                                 //onRightButtonClick = () => read all machinery from database
+                                                 useLeftButton = true,
+                                                 leftButtonLabel = "ΟΧΙ",
+                                                 onLeftButtonClick = () => MessageBox.Instance.HideMessageBox(),
+                                                 mainText = string.Format("Είστε σίγουροι ότι θέλετε να επιλέξετε {0};", b.name),
+                                             }, -1));
+                    }
+                    selectDeptPanel.SetActive(true);
+                }
+                else
+                {
+                    selectDeptPanel.SetActive(false);
+                    Transform[] children = selectDeptPanel?.GetComponentsInChildren<Transform>();
+                    for (int i = 1; i < children.Length ; i++)
+                    {
+                        Destroy(children[i].gameObject);
+                    }
+                }
+
+                MessageBox.Instance.HideMessageBox();
+            }, SortResultsBy.none, null,"",0,0,"WHERE Type = 0");
     }
 
 }
