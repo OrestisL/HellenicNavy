@@ -1448,6 +1448,8 @@ MonoBehaviour:
   leftButton: {fileID: 8691103248394717579}
   mainText: {fileID: 8691103246971557090}
   label: {fileID: 8691103248347009459}
+  rightButtonLabel: {fileID: 8691103248164917049}
+  leftButtonLabel: {fileID: 8691103247763864189}
 --- !u!1 &8691103248660711946
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,7 +7,7 @@ using System.Collections;
 public class MessageBox : GenericSingleton<MessageBox>
 {
     public Button rightButton, leftButton;
-    public TextMeshProUGUI mainText, label;
+    public TextMeshProUGUI mainText, label, rightButtonLabel, leftButtonLabel;
     private bool isRunning;
 
     public override void Awake()
@@ -30,10 +30,18 @@ public class MessageBox : GenericSingleton<MessageBox>
     public void ShowMessageBox(MessageBoxSettings settings, float delay = 2f)
     {
         rightButton.gameObject.SetActive(settings.useRightButton);
-        if (settings.useRightButton) { rightButton.onClick.AddListener(() => settings.onRightButtonClick?.Invoke()); }
+        if (settings.useRightButton)
+        {
+            rightButton.onClick.AddListener(() => settings.onRightButtonClick?.Invoke());
+            rightButtonLabel.text = settings.rightButtonLabel;
+        }
 
         leftButton.gameObject.SetActive(settings.useLeftButton);
-        if (settings.useLeftButton) { leftButton.onClick.AddListener(() => settings.onLeftButtonClick?.Invoke()); }
+        if (settings.useLeftButton) 
+        { 
+            leftButton.onClick.AddListener(() => settings.onLeftButtonClick?.Invoke());
+            leftButtonLabel.text = settings.leftButtonLabel;
+        }
 
         if (settings.useRightButton | settings.useLeftButton) { leftButton.transform.parent.gameObject.SetActive(true); }
 

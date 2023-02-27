@@ -5,6 +5,7 @@ using UnitySQLite;
 using System.Collections.Generic;
 using SPS;
 using UnitySQLite.Utilities;
+using Unity.VisualScripting;
 
 public class InterfaceManager : GenericSingleton<InterfaceManager>
 {
@@ -351,7 +352,12 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                                              label = "Επιλογή Επιστασίας",
                                              useRightButton = true,
                                              rightButtonLabel = "ΝΑΙ",
-                                             //onRightButtonClick = () => read all machinery from database
+                                             onRightButtonClick = () => {
+                                                 /* read all machinery for specific dept from database (should open message box), then close*/
+                                                 Debug.Log("Reading data");
+                                                 selectDeptPanel.SetActive(false);
+                                                 MessageBox.Instance.HideMessageBox();
+                                             }, 
                                              useLeftButton = true,
                                              leftButtonLabel = "ΟΧΙ",
                                              onLeftButtonClick = () => MessageBox.Instance.HideMessageBox(),
