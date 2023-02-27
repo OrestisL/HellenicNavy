@@ -63,7 +63,7 @@ namespace SPS
 
         public Service(string json)
         {
-            Service s = JsonConvert.DeserializeObject<Service>(json);
+            Service s = JsonConvert.DeserializeObject<Service>(json.Replace(".",","));
             name = s.name;
             id = s.id;
             CurrentHours = s.CurrentHours;
