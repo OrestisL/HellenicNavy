@@ -184,7 +184,7 @@ namespace UnitySQLite.Utilities
             string values = string.Empty;
             for (int i = 0; i < rowEntries.Count; i++)
             {
-                values += string.Format("{0},", rowEntries[i].GetValue().Replace(",", "."));
+                values += string.Format("{0},", rowEntries[i].GetValue().Replace(",", ".")) ;
             }
             values = values.Remove(values.Length - 1);
             return values;

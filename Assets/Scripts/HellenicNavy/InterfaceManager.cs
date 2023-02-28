@@ -246,7 +246,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 new DataEntry(nameInput.text),
                 new DataEntry(serialInput.text),
                 new DataEntry(idInput.text),
-                new DataEntry(deptDropdown.value),
+                new DataEntry(deptDropdown.captionText.text),
                 new DataEntry(systemDropdown.options[systemDropdown.value].text),
                 new DataEntry(int.Parse(hoursInput.text)),
                 new DataEntry(5),

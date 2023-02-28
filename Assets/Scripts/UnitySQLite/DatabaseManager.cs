@@ -194,7 +194,7 @@ namespace UnitySQLite
                 if (row.columns[current].Unique)
                 {
                     value = val.Slice(startIdx, idx - startIdx).ToString();
-                    query = string.Format("SELECT {0} FROM {1} WHERE {0}={2}", row.columns[current].ColumnName, TableName, value);
+                    query = string.Format("SELECT {0} FROM '{1}' WHERE {0}={2}", row.columns[current].ColumnName, TableName, value);
                     //table should have 1 primary key
                     value = string.Format("{0} = {1}", row.columns[current].ColumnName, value);
                     sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
@@ -309,10 +309,7 @@ namespace UnitySQLite
             SqliteDataReader reader = sm_dbCommand.ExecuteReader();
             sm_dbCommand.Dispose();
             bool exists = reader.Read();
-            //if (!exists)
-            //{
-            //    DataVisualizer.Instance.ChangeDefaultMessage(string.Format("Table {0} does not exist in database", tableName));
-            //}
+
             reader.Dispose();
             return exists;
         }
