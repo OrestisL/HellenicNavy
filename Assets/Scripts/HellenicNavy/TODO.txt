@@ -10,4 +10,5 @@
 - change how input fields are shown in the add service entry
 - choosing department button should open a dialogue to change the department > choosing YES should load all machinery in that department
 - read/write json for service entry (write works, reading would need to change all . to , (?))
-- each dept should have its own systems -> database should be changed
+- each dept should have its own systems -> database should be changed (done)
+- when adding machinery, the avaialble systems should load after picking dept

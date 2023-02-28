@@ -744,11 +744,11 @@ RectTransform:
   - {fileID: 1051503540}
   - {fileID: 301305026}
   m_Father: {fileID: 960501707}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1385, y: -75}
+  m_AnchoredPosition: {x: 1180, y: -75}
   m_SizeDelta: {x: 200, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &50517503
@@ -3513,7 +3513,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -3527,7 +3527,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 364397219}
   m_Template: {fileID: 1114517745}
   m_CaptionText: {fileID: 1229817971}
@@ -7446,8 +7446,8 @@ RectTransform:
   m_Children:
   - {fileID: 495093993}
   - {fileID: 1802478550}
-  - {fileID: 2140834472}
   - {fileID: 50517502}
+  - {fileID: 2140834472}
   - {fileID: 498635095}
   m_Father: {fileID: 1181864065}
   m_RootOrder: 1
@@ -12378,11 +12378,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8691103246828986666, guid: 3cb1e3c37ab938d4cb3a5a20d1a4baa8, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8691103246828986666, guid: 3cb1e3c37ab938d4cb3a5a20d1a4baa8, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8691103246828986666, guid: 3cb1e3c37ab938d4cb3a5a20d1a4baa8, type: 3}
       propertyPath: m_SizeDelta.x
@@ -12394,19 +12394,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8691103246828986666, guid: 3cb1e3c37ab938d4cb3a5a20d1a4baa8, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 250
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8691103246828986666, guid: 3cb1e3c37ab938d4cb3a5a20d1a4baa8, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -145
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8691103246971557088, guid: 3cb1e3c37ab938d4cb3a5a20d1a4baa8, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8691103246971557088, guid: 3cb1e3c37ab938d4cb3a5a20d1a4baa8, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8691103246971557088, guid: 3cb1e3c37ab938d4cb3a5a20d1a4baa8, type: 3}
       propertyPath: m_SizeDelta.y
@@ -12418,7 +12418,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8691103246971557088, guid: 3cb1e3c37ab938d4cb3a5a20d1a4baa8, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -35.175
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8691103247208435891, guid: 3cb1e3c37ab938d4cb3a5a20d1a4baa8, type: 3}
       propertyPath: m_AnchorMax.y
@@ -14168,7 +14168,7 @@ MonoBehaviour:
       isUnique: 1
       isPrimaryKey: 0
     - columnName: Department
-      columnType: INT
+      columnType: TEXT
       isUnique: 0
       isPrimaryKey: 0
 --- !u!4 &1766214920
@@ -17433,11 +17433,11 @@ RectTransform:
   - {fileID: 643963224}
   - {fileID: 364397217}
   m_Father: {fileID: 960501707}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1180, y: -75}
+  m_AnchoredPosition: {x: 1385, y: -75}
   m_SizeDelta: {x: 200, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2140834473

@@ -150,13 +150,13 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
         addMachineryButton.onClick.AddListener(() =>
         {
-            ShowDepartmentsAndSystems(deptDropdown, systemDropdown);
+            ShowSystems(systemDropdown);
             addMachineryPanel.SetActive(!addMachineryPanel.activeSelf);
         });
         addServiceEntryButton.onClick.AddListener(AddServiceEntry);
         createMachineryButton.onClick.AddListener(AddMachinery);
 
-        createSystemEntryButton.onClick.AddListener(() => AddSystem(addSystemName.text, addSystemDept.value));
+        createSystemEntryButton.onClick.AddListener(() => AddSystem(addSystemName.text, addSystemDept.options[addSystemDept.value].text));
         addSystemButton.onClick.AddListener(() =>
         {
             ShowDepartments(addSystemDept);
@@ -310,7 +310,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     /// When adding a system, it should be written to the systems list table.
     /// </summary>
     /// <param name="name">System name.</param>
-    void AddSystem(string name, int dept)
+    void AddSystem(string name, string dept)
     {
         if (name.Equals(string.Empty))
         {
@@ -394,7 +394,13 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                    systemNames.Add(data[i][0].StringValue);
                }
 
-               if (systems != null) { systems.ClearOptions(); systems.AddOptions(systemNames); }
+               if (systems != null)
+               {
+                   systems.ClearOptions();
+                   systems.AddOptions(systemNames);
+                   systems.onValueChanged.AddListener((i) => deptDropdown.GetComponentInChildren<TextMeshProUGUI>().text = data[i][1].StringValue);
+                   systems.onValueChanged?.Invoke(0);
+               }
            });
     }
 
