@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using SPS;
 using UnitySQLite.Utilities;
 using Unity.VisualScripting;
+using UnityEngine.Rendering.VirtualTexturing;
 
 public class InterfaceManager : GenericSingleton<InterfaceManager>
 {
@@ -50,6 +51,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public GameObject addSystemPanel;
     public Button createSystemEntryButton;
     public TMP_InputField addSystemName;
+    public TMP_Dropdown addSystemDept;
     public Button closeAddSystemPanel;
 
     [Header("Add Department Interface")]
@@ -154,8 +156,12 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         addServiceEntryButton.onClick.AddListener(AddServiceEntry);
         createMachineryButton.onClick.AddListener(AddMachinery);
 
-        createSystemEntryButton.onClick.AddListener(() => AddSystem(addSystemName.text));
-        addSystemButton.onClick.AddListener(() => addSystemPanel.SetActive(!addSystemPanel.activeSelf));
+        createSystemEntryButton.onClick.AddListener(() => AddSystem(addSystemName.text, addSystemDept.value));
+        addSystemButton.onClick.AddListener(() =>
+        {
+            ShowDepartments(addSystemDept);
+            addSystemPanel.SetActive(!addSystemPanel.activeSelf);
+        });
         closeAddSystemPanel.onClick.AddListener(() => addSystemPanel.SetActive(false));
 
         createDeptEntryButton.onClick.AddListener(() => AddDepartment(addDeptName.text));
@@ -250,14 +256,14 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             DatabaseManager.Instance.ThreadedWriteToDatabase("MachineryList", rowList, true);
 
             DatabaseManager.Instance.ThreadedWriteToDatabase(nameInput.text, row, true,
-                () => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings() 
+                () => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
                 {
                     showLabel = false,
                     useRightButton = false,
                     useLeftButton = false,
                     mainText = "Τα δεδομένα υπάρχουν ήδη"
-                }), 
-                () => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings() 
+                }),
+                () => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
                 {
                     showLabel = false,
                     useRightButton = false,
@@ -277,10 +283,10 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
         DatabaseManager.Instance.WriteOnce(() =>
         {
-            List<DataEntry> entries = new List<DataEntry>() { new DataEntry(name), new DataEntry(0) };
-            List<TableColumn> columns = tables.systemsDepartmentsList.columns;
+            List<DataEntry> entries = new List<DataEntry>() { new DataEntry(name) };
+            List<TableColumn> columns = tables.departmentsList.columns;
             TableRow row = new TableRow(columns, entries);
-            DatabaseManager.Instance.ThreadedWriteToDatabase("SystemsDepartmentsList", row, true,
+            DatabaseManager.Instance.ThreadedWriteToDatabase("DepartmentsList", row, true,
                 () => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
                 {
                     useRightButton = false,
@@ -304,7 +310,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     /// When adding a system, it should be written to the systems list table.
     /// </summary>
     /// <param name="name">System name.</param>
-    void AddSystem(string name)
+    void AddSystem(string name, int dept)
     {
         if (name.Equals(string.Empty))
         {
@@ -313,10 +319,10 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
         DatabaseManager.Instance.WriteOnce(() =>
         {
-            List<DataEntry> entries = new List<DataEntry>() { new DataEntry(name), new DataEntry(1) };
-            List<TableColumn> columns = tables.systemsDepartmentsList.columns;
+            List<DataEntry> entries = new List<DataEntry>() { new DataEntry(name), new DataEntry(dept) };
+            List<TableColumn> columns = tables.systemsList.columns;
             TableRow row = new TableRow(columns, entries);
-            DatabaseManager.Instance.ThreadedWriteToDatabase("SystemsDepartmentsList", row, true,
+            DatabaseManager.Instance.ThreadedWriteToDatabase("SystemsList", row, true,
                 () => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
                 {
                     useRightButton = false,
@@ -363,6 +369,34 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             });
     }
 
+    void ShowDepartments(TMP_Dropdown departments)
+    {
+        List<string> deptNames = new List<string>();
+        DatabaseManager.Instance.ReadData("DepartmentsList", SelectFromDatabaseMode.everything,
+           (data) =>
+           {
+               for (int i = 0; i < data.Count; i++)
+               {
+                   deptNames.Add(data[i][0].StringValue);
+               }
+               if (departments != null) { departments.ClearOptions(); departments.AddOptions(deptNames); }
+           });
+    }
+
+    void ShowSystems(TMP_Dropdown systems)
+    {
+        List<string> systemNames = new List<string>();
+        DatabaseManager.Instance.ReadData("SystemsList", SelectFromDatabaseMode.everything,
+           (data) =>
+           {
+               for (int i = 0; i < data.Count; i++)
+               {
+                   systemNames.Add(data[i][0].StringValue);
+               }
+
+               if (systems != null) { systems.ClearOptions(); systems.AddOptions(systemNames); }
+           });
+    }
 
     void SetupDeptSelectionInterface()
     {
@@ -375,7 +409,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 useLeftButton = false,
                 mainText = "Παρακαλώ περιμένετε, ανάγνωση δεδομένων...",
             });
-            DatabaseManager.Instance.ReadData("SystemsDepartmentsList", SelectFromDatabaseMode.everything,
+            DatabaseManager.Instance.ReadData("DepartmentsList", SelectFromDatabaseMode.everything,
                 (data) =>
                 {
                     MessageBox.Instance.HideMessageBox();
@@ -406,7 +440,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                     }
                     selectDeptPanel.SetActive(true);
                     MessageBox.Instance.HideMessageBox();
-                }, SortResultsBy.none, null, "", 0, 0, "WHERE Type = 0");
+                });
 
         }
         else
