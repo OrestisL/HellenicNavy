@@ -28,7 +28,7 @@ public class MessageBox : GenericSingleton<MessageBox>
     }
 
     public void ShowMessageBox(MessageBoxSettings settings, float delay = 2f)
-    {
+    { 
         rightButton.gameObject.SetActive(settings.useRightButton);
         if (settings.useRightButton)
         {
@@ -58,6 +58,8 @@ public class MessageBox : GenericSingleton<MessageBox>
 
     public void HideMessageBox()
     {
+        rightButton.onClick.RemoveAllListeners();
+        leftButton.onClick.RemoveAllListeners();
         gameObject.SetActive(false);
         //ChangeUIItemsStatus(true);
         if (isRunning) { StopCoroutine("HideWithDelay"); }

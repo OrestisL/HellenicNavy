@@ -422,7 +422,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                     for (int i = 0; i < data.Count; i++)
                     {
                         Button b = Instantiate(selectDeptPrefab, selectDeptPanel.transform).GetComponent<Button>();
-                        b.name = data[i][0].StringValue;
+                        string currentDept = data[i][0].StringValue;
+                        b.name = currentDept;
                         b.GetComponentInChildren<TextMeshProUGUI>().text = b.name;
                         b.onClick.AddListener(() =>
                                          MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
@@ -436,12 +437,30 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                                                  /* read all machinery for specific dept from database (should open message box), then close*/
                                                  Debug.Log("Reading data");
                                                  selectDeptPanel.SetActive(false);
-                                                 MessageBox.Instance.HideMessageBox();
+                                                 //MessageBox.Instance.HideMessageBox();
+                                                 MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+                                                 {
+                                                     showLabel = false,
+                                                     useRightButton = false,
+                                                     useLeftButton = false,
+                                                     mainText = string.Format("Ανάγνωση δεδομένων για {0}, παρακαλώ περιμένετε...", currentDept),
+                                                 }, -1); //message box should close when the data is read
+                                                 DatabaseManager.Instance.ReadData("SystemsList", SelectFromDatabaseMode.everything,
+                                                     (data) =>
+                                                     {
+                                                         for (int i = 0; i < data.Count; i++)
+                                                         {
+                                                             if (data[i][1].StringValue.Equals(currentDept))
+                                                                 Debug.Log(data[i][0].StringValue);
+                                                         }
+                                                         MessageBox.Instance.HideMessageBox();
+                                                         Debug.Log($"read all for {currentDept}");
+                                                     });
                                              },
                                              useLeftButton = true,
                                              leftButtonLabel = "ΟΧΙ",
                                              onLeftButtonClick = () => MessageBox.Instance.HideMessageBox(),
-                                             mainText = string.Format("Είστε σίγουροι ότι θέλετε να επιλέξετε {0};", b.name),
+                                             mainText = string.Format("Είστε σίγουροι ότι θέλετε να επιλέξετε {0};", currentDept),
                                          }, -1));
                     }
                     selectDeptPanel.SetActive(true);
