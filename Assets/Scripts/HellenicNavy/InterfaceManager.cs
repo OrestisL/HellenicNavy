@@ -5,8 +5,7 @@ using UnitySQLite;
 using System.Collections.Generic;
 using SPS;
 using UnitySQLite.Utilities;
-using Unity.VisualScripting;
-using UnityEngine.Rendering.VirtualTexturing;
+using System.Collections;
 
 public class InterfaceManager : GenericSingleton<InterfaceManager>
 {
@@ -64,10 +63,16 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public Button selectDeptButton;
     public GameObject selectDeptPanel;
 
+    [Header("Select System Interface")]
+    public GameObject selectSystemPanel;
+    public int buttonsPerRow;
+    private GameObject _currentRow;
+
     [Header("Prefabs")]
     public GameObject serviceEntryPrefab;
     public GameObject serviceTypePrefab;
     public GameObject selectDeptPrefab;
+    public GameObject buttonRow;
 
     [SerializeField]
     List<ServiceEntry> serviceEntries;
@@ -443,19 +448,10 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                                                      showLabel = false,
                                                      useRightButton = false,
                                                      useLeftButton = false,
-                                                     mainText = string.Format("Ανάγνωση δεδομένων για {0}, παρακαλώ περιμένετε...", currentDept),
+                                                     mainText = string.Format("Ανάγνωση δεδομένων για \"{0}\", παρακαλώ περιμένετε...", currentDept),
                                                  }, -1); //message box should close when the data is read
                                                  DatabaseManager.Instance.ReadData("SystemsList", SelectFromDatabaseMode.everything,
-                                                     (data) =>
-                                                     {
-                                                         for (int i = 0; i < data.Count; i++)
-                                                         {
-                                                             if (data[i][1].StringValue.Equals(currentDept))
-                                                                 Debug.Log(data[i][0].StringValue);
-                                                         }
-                                                         MessageBox.Instance.HideMessageBox();
-                                                         Debug.Log($"read all for {currentDept}");
-                                                     });
+                                                   (data) => StartCoroutine(SetupSystemsButtons(data, currentDept)));
                                              },
                                              useLeftButton = true,
                                              leftButtonLabel = "ΟΧΙ",
@@ -482,6 +478,48 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         }
 
 
+    }
+
+    IEnumerator SetupSystemsButtons(List<List<DataEntry>> data, string currentDept)
+    {
+        //setup interaface
+        selectSystemPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = string.Format("{0}\nΕπιλογή Συστήματος", currentDept);
+
+        if (data.Count == 0 | data == null)
+        {
+            MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+            {
+                showLabel = true,
+                label = string.Format("Επιστασία {0}", currentDept),
+                useRightButton = false,
+                useLeftButton = false,
+                mainText = string.Format("Δεν υπάρχουν συστήματα στην επιστασία \"{0}\".", currentDept)
+            });
+        }
+
+        int buttonCount = 0;
+        for (int i = 0; i < data.Count; i++)
+        {
+            if (data[i][1].StringValue.Equals(currentDept))
+            {
+                if (buttonCount % buttonsPerRow == 0)
+                {
+                    _currentRow = Instantiate(buttonRow, selectSystemPanel.transform.GetChild(1));
+                }
+                string systemName = data[i][0].StringValue;
+                //instantiate buttons here
+                Button current = Instantiate(selectDeptButton, _currentRow.transform);
+                current.name = systemName;
+                current.GetComponentInChildren<TextMeshProUGUI>().text = systemName;
+                yield return new WaitForEndOfFrame();
+                buttonCount++;
+            }
+        }
+        selectSystemPanel.SetActive(true);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(selectSystemPanel.GetComponent<RectTransform>());
+        MessageBox.Instance.HideMessageBox();
+
+        Debug.Log($"read all for {currentDept}");
     }
 }
 
