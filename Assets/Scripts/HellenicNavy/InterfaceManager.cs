@@ -31,6 +31,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public Button addMachineryButton;
     public Button createMachineryButton;
     public Button addServiceEntryButton;
+    public Button deleteSelectionButton;
     public RectTransform serviceEntryParent;
     public TMP_InputField nameInput;
     public TMP_InputField serialInput;
@@ -159,6 +160,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             addMachineryPanel.SetActive(!addMachineryPanel.activeSelf);
         });
         addServiceEntryButton.onClick.AddListener(AddServiceEntry);
+        deleteSelectionButton.onClick.AddListener(DeleteSelectedServiceEntries);
         createMachineryButton.onClick.AddListener(AddMachinery);
 
         createSystemEntryButton.onClick.AddListener(() => AddSystem(addSystemName.text, addSystemDept.options[addSystemDept.value].text));
@@ -225,6 +227,15 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     void AddServiceEntry()
     {
         Instantiate(serviceEntryPrefab, serviceEntryParent);
+    }
+
+    void DeleteSelectedServiceEntries() 
+    {
+        ServiceEntry[] currentEntries = serviceEntryParent.GetComponentsInChildren<ServiceEntry>();
+        foreach (ServiceEntry entry in currentEntries) 
+        {
+            if (entry.IsSelected) { Destroy(entry.gameObject); }
+        }
     }
 
     void AddMachinery()
