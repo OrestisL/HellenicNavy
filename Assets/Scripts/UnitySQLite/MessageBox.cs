@@ -3,12 +3,14 @@ using TMPro;
 using UnityEngine;
 using UnitySQLite.Utilities;
 using System.Collections;
+using System;
 
 public class MessageBox : GenericSingleton<MessageBox>
 {
     public Button rightButton, leftButton;
     public TextMeshProUGUI mainText, label, rightButtonLabel, leftButtonLabel;
     private bool isRunning;
+    private Action onShow, onHide;
 
     public override void Awake()
     {
@@ -28,7 +30,11 @@ public class MessageBox : GenericSingleton<MessageBox>
     }
 
     public void ShowMessageBox(MessageBoxSettings settings, float delay = 2f)
-    { 
+    {
+        onShow += settings.onShow;
+        onShow?.Invoke();
+        onShow = null;
+
         rightButton.gameObject.SetActive(settings.useRightButton);
         if (settings.useRightButton)
         {
@@ -48,6 +54,8 @@ public class MessageBox : GenericSingleton<MessageBox>
         label.gameObject.SetActive(settings.showLabel);
         if (settings.showLabel) { label.text = settings.label; label.gameObject.SetActive(true); }
 
+        onHide += settings.onHide;
+
         mainText.text = settings.mainText;
         //ChangeUIItemsStatus(false);
         gameObject.SetActive(true);
@@ -60,6 +68,8 @@ public class MessageBox : GenericSingleton<MessageBox>
     {
         rightButton.onClick.RemoveAllListeners();
         leftButton.onClick.RemoveAllListeners();
+        onHide?.Invoke();
+        onHide = null;
         gameObject.SetActive(false);
         //ChangeUIItemsStatus(true);
         if (isRunning) { StopCoroutine("HideWithDelay"); }

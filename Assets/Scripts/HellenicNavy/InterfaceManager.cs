@@ -431,33 +431,33 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                         b.name = currentDept;
                         b.GetComponentInChildren<TextMeshProUGUI>().text = b.name;
                         b.onClick.AddListener(() =>
-                                         MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
-                                         {
-                                             showLabel = true,
-                                             label = "Επιλογή Επιστασίας",
-                                             useRightButton = true,
-                                             rightButtonLabel = "ΝΑΙ",
-                                             onRightButtonClick = () =>
-                                             {
-                                                 /* read all machinery for specific dept from database (should open message box), then close*/
-                                                 Debug.Log("Reading data");
-                                                 selectDeptPanel.SetActive(false);
-                                                 //MessageBox.Instance.HideMessageBox();
-                                                 MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
-                                                 {
-                                                     showLabel = false,
-                                                     useRightButton = false,
-                                                     useLeftButton = false,
-                                                     mainText = string.Format("Ανάγνωση δεδομένων για \"{0}\", παρακαλώ περιμένετε...", currentDept),
-                                                 }, -1); //message box should close when the data is read
-                                                 DatabaseManager.Instance.ReadData("SystemsList", SelectFromDatabaseMode.everything,
-                                                   (data) => StartCoroutine(SetupSystemsButtons(data, currentDept)), SortResultsBy.none, null, "", 0, 0, $"Where Department = '{currentDept}'");
-                                             },
-                                             useLeftButton = true,
-                                             leftButtonLabel = "ΟΧΙ",
-                                             onLeftButtonClick = () => MessageBox.Instance.HideMessageBox(),
-                                             mainText = string.Format("Είστε σίγουροι ότι θέλετε να επιλέξετε {0};", currentDept),
-                                         }, -1));
+                            MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+                            {
+                                showLabel = true,
+                                label = "Επιλογή Επιστασίας",
+                                useRightButton = true,
+                                rightButtonLabel = "ΝΑΙ",
+                                onRightButtonClick = () =>
+                                {
+                                    /* read all machinery for specific dept from database (should open message box), then close*/
+                                    Debug.Log("Reading data");
+                                    selectDeptPanel.SetActive(false);
+                                    //MessageBox.Instance.HideMessageBox();
+                                    MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+                                    {
+                                        showLabel = false,
+                                        useRightButton = false,
+                                        useLeftButton = false,
+                                        mainText = string.Format("Ανάγνωση δεδομένων για \"{0}\", παρακαλώ περιμένετε...", currentDept),
+                                    }, -1); //message box should close when the data is read
+                                    DatabaseManager.Instance.ReadData("SystemsList", SelectFromDatabaseMode.everything,
+                                      (data) => StartCoroutine(SetupSystemsButtons(data, currentDept)), SortResultsBy.none, null, "", 0, 0, $"Where Department = '{currentDept}'");
+                                },
+                                useLeftButton = true,
+                                leftButtonLabel = "ΟΧΙ",
+                                onLeftButtonClick = () => MessageBox.Instance.HideMessageBox(),
+                                mainText = string.Format("Είστε σίγουροι ότι θέλετε να επιλέξετε {0};", currentDept),
+                            }, -1));
                     }
                     selectDeptPanel.SetActive(true);
                     MessageBox.Instance.HideMessageBox();
@@ -483,7 +483,11 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     IEnumerator SetupSystemsButtons(List<List<DataEntry>> data, string currentDept)
     {
         //setup interaface
-        selectSystemPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = string.Format("<b>{0}</b>\nΕπιλογή Συστήματος", currentDept);
+        Transform labelParent = selectSystemPanel.transform.GetChild(0);
+        labelParent.GetChild(0).GetComponent<TextMeshProUGUI>().text = string.Format("<b>{0}</b>\nΕπιλογή Συστήματος", currentDept);
+        Button closeButton = selectSystemPanel.transform.GetChild(0).GetChild(1).GetComponent<Button>();
+        closeButton.onClick.RemoveAllListeners();
+        closeButton.onClick.AddListener(() => { selectSystemPanel.SetActive(false); SetupDeptSelectionInterface(); });
 
         if (data.Count == 0 | data == null)
         {
@@ -493,8 +497,10 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 label = string.Format("<b>Επιστασία {0}</b>", currentDept),
                 useRightButton = false,
                 useLeftButton = false,
-                mainText = string.Format("Δεν υπάρχουν συστήματα στην επιστασία \"{0}\".", currentDept)
+                mainText = string.Format("Δεν υπάρχουν συστήματα στην επιστασία \"{0}\".", currentDept),
+                onHide = () => { SetupDeptSelectionInterface(); },
             }, 1.5f);
+
             yield break;
         }
 
@@ -517,7 +523,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         LayoutRebuilder.ForceRebuildLayoutImmediate(selectSystemPanel.GetComponent<RectTransform>());
         MessageBox.Instance.HideMessageBox();
 
-        Debug.Log($"read all for {currentDept}");
+        Debug.Log($"read all systems for {currentDept}");
     }
 }
 

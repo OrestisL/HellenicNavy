@@ -510,7 +510,7 @@ namespace UnitySQLite.Utilities
     {
         public bool useRightButton, useLeftButton;
         public bool showLabel;
-        public Action onRightButtonClick, onLeftButtonClick;
+        public Action onRightButtonClick, onLeftButtonClick, onShow, onHide;
         public string label, rightButtonLabel, leftButtonLabel;
         public string mainText;
 
@@ -524,7 +524,7 @@ namespace UnitySQLite.Utilities
         }
 
         public MessageBoxSettings(bool _right, bool _left, bool _showLabel, Action _onRightButtonClick, Action _onLeftButtonClick,
-                 string _label, string _rightButtonLabel, string _leftButtonLabel, string _mainText)
+                 string _label, string _rightButtonLabel, string _leftButtonLabel, string _mainText, Action _onShow, Action _onHide)
         {
             useRightButton = _right;
             if (_right)
@@ -548,6 +548,9 @@ namespace UnitySQLite.Utilities
             }
 
             mainText = _mainText;
+
+            onShow += _onShow;
+            onHide += _onHide;
         }
     }
 

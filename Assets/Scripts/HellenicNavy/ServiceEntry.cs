@@ -4,12 +4,16 @@ using System.Collections.Generic;
 using SPS;
 using System;
 using System.Linq;
+using UnityEngine.UI;
 
 public class ServiceEntry : MonoBehaviour
 {
     public TMP_InputField descriptionField;
     public TMP_InputField hoursField;
     public TMP_InputField daysField;
+    public Toggle selectionToggle;
+    public Image bgImg;
+    public Color normalColor, selectedColor;
     public RectTransform serviceTypesParentHours;
     public RectTransform serviceTypesParentDays;
     public List<ServiceAssignmentType> serviceAssignmentTypesHours;
@@ -19,28 +23,28 @@ public class ServiceEntry : MonoBehaviour
     {
         get
         {
-            hoursField.text = hoursField.text.Trim();        
+            hoursField.text = hoursField.text.Trim();
             List<int> result = new List<int>();
             if (hoursField.text.Length == 0)
             {
                 return result;
             }
             ReadOnlySpan<char> text = hoursField.text.AsSpan();
-            int nextCommaIndex = 0;
+            int nextNLIndex = 0;
             bool isLastLoop = false;
-            while(!isLastLoop) 
+            while (!isLastLoop)
             {
-                int indexStart = nextCommaIndex;
-                nextCommaIndex = hoursField.text.IndexOf('\n', indexStart);
+                int indexStart = nextNLIndex;
+                nextNLIndex = hoursField.text.IndexOf('\n', indexStart);
 
-                isLastLoop = nextCommaIndex == -1;
-                if (isLastLoop) 
+                isLastLoop = nextNLIndex == -1;
+                if (isLastLoop)
                 {
-                    nextCommaIndex = hoursField.text.Length;
+                    nextNLIndex = hoursField.text.Length;
                 }
-                ReadOnlySpan<char> nameSlice = text.Slice(indexStart, nextCommaIndex - indexStart);
+                ReadOnlySpan<char> nameSlice = text.Slice(indexStart, nextNLIndex - indexStart);
                 result.Add(int.Parse(nameSlice.ToString()));
-                nextCommaIndex++;
+                nextNLIndex++;
             }
             return result;
         }
@@ -56,21 +60,21 @@ public class ServiceEntry : MonoBehaviour
                 return result;
             }
             ReadOnlySpan<char> text = daysField.text.AsSpan();
-            int nextCommaIndex = 0;
+            int nextNLIndex = 0;
             bool isLastLoop = false;
             while (!isLastLoop)
             {
-                int indexStart = nextCommaIndex;
-                nextCommaIndex = daysField.text.IndexOf('\n', indexStart);
+                int indexStart = nextNLIndex;
+                nextNLIndex = daysField.text.IndexOf('\n', indexStart);
 
-                isLastLoop = nextCommaIndex == -1;
+                isLastLoop = nextNLIndex == -1;
                 if (isLastLoop)
                 {
-                    nextCommaIndex = daysField.text.Length;
+                    nextNLIndex = daysField.text.Length;
                 }
-                ReadOnlySpan<char> nameSlice = text.Slice(indexStart, nextCommaIndex - indexStart);
+                ReadOnlySpan<char> nameSlice = text.Slice(indexStart, nextNLIndex - indexStart);
                 result.Add(int.Parse(nameSlice.ToString()));
-                nextCommaIndex++;
+                nextNLIndex++;
             }
             return result;
         }
@@ -106,6 +110,8 @@ public class ServiceEntry : MonoBehaviour
             return serviceAssignmentTypesDays;
         }
     }
+
+    public bool IsSelected { get { return selectionToggle.isOn; } }
 
     private void Start()
     {
@@ -177,6 +183,8 @@ public class ServiceEntry : MonoBehaviour
                 }
             }
         });
+
+        selectionToggle.onValueChanged.AddListener((b) => bgImg.color = b ? selectedColor : normalColor);
     }
     void ClearChildren(Transform parent)
     {
