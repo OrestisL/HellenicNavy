@@ -560,7 +560,3 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     }
 }
-
-
-
-//List<string> deptNames = new List<string>();

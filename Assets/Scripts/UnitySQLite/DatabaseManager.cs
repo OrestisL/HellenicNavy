@@ -137,10 +137,7 @@ namespace UnitySQLite
             //dbcommand.CommandText = query;
             sm_dbCommand.ExecuteNonQuery();
             sm_dbCommand.Dispose();
-            //commit changes
-            //sm_dbTransaction.Commit();
-            //close connection
-            //dbConnection.Close();
+
             Logger.Instance.AddMessage(query);
         }
 
@@ -159,10 +156,7 @@ namespace UnitySQLite
             //execute command
             sm_dbCommand.ExecuteReader().Dispose();
             sm_dbCommand.Dispose();
-            //commit changes
-            //sm_dbTransaction.Commit();
-            //close connection
-            //dbConnection.Close();
+
             Logger.Instance.AddMessage(query);
         }
 
@@ -238,10 +232,7 @@ namespace UnitySQLite
                 sm_dbCommand.ExecuteReader().Dispose();
                 sm_dbCommand.Dispose();
             }
-            //sm_dbTransaction.Commit();
-            //commit changes
-            //transaction.Commit();
-            //dbConnection.Close();
+
             Logger.Instance.AddMessage(query);
         }
 
@@ -483,7 +474,6 @@ namespace UnitySQLite
                 current++;
             }
             reader.Dispose();
-            //sm_dbTransaction.Commit();
             //index was out of range
             return false;
         }
@@ -557,7 +547,6 @@ namespace UnitySQLite
 
             reader1.Dispose();
             reader.Dispose();
-            //sm_dbTransaction.Commit();
         }
 
         /// <summary>
@@ -617,10 +606,8 @@ namespace UnitySQLite
                 query += string.Format("WHERE {0}", SearchCondition);
 
             sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
-            //sm_dbTransaction = sm_dbConnection.BeginTransaction();
 
             sm_dbCommand.ExecuteNonQuery();
-            //sm_dbTransaction.Commit();
 
             Logger.Instance.AddMessage(query);
         }
@@ -704,21 +691,6 @@ namespace UnitySQLite
         #endregion // threaded functions
 
         #region Format values for table insert
-        /// <summary>
-        /// Formats values of any type in a string separated by commas.
-        /// </summary>
-        //public static string FormatValues<T>(T[] values)
-        //{
-        //    string result = string.Empty;
-        //    for (int i = 0; i < values.Length; i++)
-        //    {
-        //        result += values[i].ToString() + ",";
-        //    }
-
-        //    result = result.Remove(result.Length - 1);
-        //    return result;
-        //}
-
         public static string FormatValues<T>(T[] values)
         {
             string result = string.Empty;
