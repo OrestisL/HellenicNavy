@@ -20,6 +20,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public GameObject loginPanel;
     public Button loginButton;
     public Button updatePasswordButton;
+    public Button quitButton;
 
     [Header("User panel")]
     public GameObject userPanel;
@@ -140,6 +141,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     void SetupButtons()
     {
+        #region login panel
         loginButton.onClick.AddListener(() =>
         {
             MessageBoxSettings settings = new MessageBoxSettings()
@@ -153,7 +155,10 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             MessageBox.Instance.ShowMessageBox(settings);
             AccountManagement.Instance.Login();
         });
+        quitButton.onClick.AddListener(QuitApplication);
+        #endregion
 
+        #region machinery
         addMachineryButton.onClick.AddListener(() =>
         {
             ShowSystems(systemDropdown);
@@ -162,7 +167,9 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         addServiceEntryButton.onClick.AddListener(AddServiceEntry);
         deleteSelectionButton.onClick.AddListener(DeleteSelectedServiceEntries);
         createMachineryButton.onClick.AddListener(AddMachinery);
+        #endregion
 
+        #region system entry
         createSystemEntryButton.onClick.AddListener(() => AddSystem(addSystemName.text, addSystemDept.options[addSystemDept.value].text));
         addSystemButton.onClick.AddListener(() =>
         {
@@ -170,13 +177,17 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             addSystemPanel.SetActive(!addSystemPanel.activeSelf);
         });
         closeAddSystemPanel.onClick.AddListener(() => addSystemPanel.SetActive(false));
+        #endregion
 
+        #region department panel
         createDeptEntryButton.onClick.AddListener(() => AddDepartment(addDeptName.text));
         createDeptButton.onClick.AddListener(() => addDeptPanel.SetActive(!addDeptPanel.activeSelf));
         closeDeptPanel.onClick.AddListener(() => addDeptPanel.SetActive(false));
 
         selectDeptButton.onClick.AddListener(() => SetupDeptSelectionInterface());
+        #endregion
 
+        #region menu
         menuButton.onClick.AddListener(() =>
         {
             menuPanel.SetActive(!menuPanel.activeSelf);
@@ -194,6 +205,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             loginPanel.SetActive(false);
             //show message
         });
+        #endregion
     }
 
     void SetupLoginInterface(LoginInterfaceSetup setup)
@@ -229,10 +241,10 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         Instantiate(serviceEntryPrefab, serviceEntryParent);
     }
 
-    void DeleteSelectedServiceEntries() 
+    void DeleteSelectedServiceEntries()
     {
         ServiceEntry[] currentEntries = serviceEntryParent.GetComponentsInChildren<ServiceEntry>();
-        foreach (ServiceEntry entry in currentEntries) 
+        foreach (ServiceEntry entry in currentEntries)
         {
             if (entry.IsSelected) { Destroy(entry.gameObject); }
         }
@@ -535,6 +547,17 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         MessageBox.Instance.HideMessageBox();
 
         Debug.Log($"read all systems for {currentDept}");
+    }
+
+    void QuitApplication()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+
+#else
+        Application.Quit();
+#endif
+
     }
 }
 
