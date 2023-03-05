@@ -59,15 +59,14 @@ public class MessageBox : GenericSingleton<MessageBox>
 
         mainText.text = settings.mainText;
         //ChangeUIItemsStatus(false);
-        gameObject.SetActive(true);
-
         loadingIndicatorParent.gameObject.SetActive(settings.showLoadingIndicator);
+
+        gameObject.SetActive(true);
 
         if (settings.showLoadingIndicator)
         {
             StartCoroutine(RotateLoadingIndicator());
         }
-
 
         if (delay > 0)
             StartCoroutine(HideWithDelay(delay));

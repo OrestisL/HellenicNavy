@@ -51,7 +51,7 @@ namespace SPS
             get { return _currentHours; }
             set { _currentHours = value; }
         }
-
+        public int systemName;
         public List<string> descriptions;
         public List<List<int>> serviceHours;
         public List<List<int>> serviceDays;
@@ -63,9 +63,10 @@ namespace SPS
 
         public Service(string json)
         {
-            Service s = JsonConvert.DeserializeObject<Service>(json.Replace(".",","));
+            Service s = JsonConvert.DeserializeObject<Service>(json.Replace(".", ","));
             name = s.name;
             id = s.id;
+            systemName = s.systemName;
             CurrentHours = s.CurrentHours;
             descriptions = s.descriptions;
             serviceHours = s.serviceHours;
@@ -75,11 +76,12 @@ namespace SPS
             serviceAssignments = s.serviceAssignments;
         }
 
-        public Service(string name, string id, int hours, List<ServiceEntry> entries)
+        public Service(string name, string id, int hours, int system, List<ServiceEntry> entries)
         {
             this.name = name;
             this.id = id;
             CurrentHours = hours;
+            this.systemName = system;
 
             serviceHours = new List<List<int>>();
             serviceDays = new List<List<int>>();
@@ -118,7 +120,7 @@ namespace SPS
         }
 
         public string ToJson()
-        { 
+        {
             return JsonConvert.SerializeObject(this);
         }
 

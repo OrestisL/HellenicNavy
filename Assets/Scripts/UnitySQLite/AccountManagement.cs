@@ -7,7 +7,6 @@ using UnityEngine;
 using UnitySQLite.Utilities;
 using TMPro;
 using UnityEngine.UI;
-using Unity.VisualScripting;
 
 namespace UnitySQLite
 {

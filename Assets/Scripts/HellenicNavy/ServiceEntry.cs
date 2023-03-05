@@ -186,6 +186,30 @@ public class ServiceEntry : MonoBehaviour
 
         selectionToggle.onValueChanged.AddListener((b) => bgImg.color = b ? selectedColor : normalColor);
     }
+
+    public void DisplayFromData(string descr, List<int> hours, List<ServiceAssignmentType> serviceTypesHours, List<ServiceAssignmentType> serviceTypesDays) 
+    {
+        descriptionField.text = descr;
+        for (int i = 0; i < hours.Count; i++)
+        {
+            hoursField.text += string.Format("{0}\n", hours[i]);
+        }
+        hoursField.text.TrimEnd();
+
+        for (int j = 0; j < serviceTypesHours.Count; j++)
+        {
+            TMP_Dropdown d = Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentHours).GetComponent<TMP_Dropdown>();
+            d.value = (int)serviceTypesHours[j];
+        }
+
+        for (int k = 0; k < serviceTypesDays.Count; k++)
+        {
+            TMP_Dropdown d = Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentHours).GetComponent<TMP_Dropdown>();
+            d.value = (int)serviceTypesDays[k];
+        }
+
+
+    }
     void ClearChildren(Transform parent)
     {
         Transform[] children = parent.GetComponentsInChildren<Transform>();

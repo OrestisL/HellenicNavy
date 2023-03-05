@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using SPS;
 using UnitySQLite.Utilities;
 using System.Collections;
+using System;
+using System.Linq;
 
 public class InterfaceManager : GenericSingleton<InterfaceManager>
 {
@@ -13,6 +15,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     Service _currentService;
     [SerializeField]
     CreateTables tables;
+    Dictionary<string, string> systemsDict;
 
     public GameObject canvas;
 
@@ -27,7 +30,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public Button logoutButton;
     public TextMeshProUGUI username;
 
-    [Header("Service Interface")]
+    [Header("Add Service Interface")]
     public GameObject addMachineryPanel;
     public Button addMachineryButton;
     public Button createMachineryButton;
@@ -40,6 +43,19 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public TMP_Dropdown deptDropdown;
     public TMP_Dropdown systemDropdown;
     public TMP_InputField hoursInput;
+
+    [Header("Display Machinery interface")]
+    public GameObject displayMachineryPanel;
+    public Button updateMachineryButton;
+    public Button displayAddServiceEntryButton;
+    public Button displaydDeleteSelectionButton;
+    public RectTransform displayServiceEntryParent;
+    public TMP_InputField displayNameInput;
+    public TMP_InputField displaySerialInput;
+    public TMP_InputField displayIdInput;
+    public TMP_Dropdown displayDeptDropdown;
+    public TMP_Dropdown displaySystemDropdown;
+    public TMP_InputField displayHoursInput;
 
     [Header("Menu")]
     public GameObject menuPanel;
@@ -88,8 +104,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public override void Awake()
     {
         base.Awake();
-        Application.targetFrameRate = 30;
-        
+        //Application.targetFrameRate = 30;
+
         AccountManagement.onAfterLogin += (valid, acc) =>
         {
             if (valid)
@@ -151,6 +167,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 useRightButton = false,
                 useLeftButton = false,
                 mainText = "Παρακαλώ περιμένετε...",
+                showLoadingIndicator = true,
 
             };
             MessageBox.Instance.ShowMessageBox(settings);
@@ -162,7 +179,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         #region machinery
         addMachineryButton.onClick.AddListener(() =>
         {
-            ShowSystems(systemDropdown);
+            ShowSystems(systemDropdown, deptDropdown);
             addMachineryPanel.SetActive(!addMachineryPanel.activeSelf);
         });
         addServiceEntryButton.onClick.AddListener(AddServiceEntry);
@@ -260,7 +277,10 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             serviceEntries.Add(serviceEntryParent.GetChild(i).GetComponent<ServiceEntry>());
         }
 
-        _currentService = new Service(nameInput.text, idInput.text, hoursInput.text.Length > 0 ? int.Parse(hoursInput.text) : 0, serviceEntries);
+        _currentService = new Service(
+            nameInput.text, idInput.text, hoursInput.text.Length > 0 ? int.Parse(hoursInput.text) : 0, 
+            systemDropdown.value, 
+            serviceEntries);
         Debug.Log(_currentService.ToJson());
         //write to database
         DatabaseManager.Instance.WriteOnce(() =>
@@ -302,7 +322,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         });
     }
 
-
     void AddDepartment(string name)
     {
         if (name.Equals(string.Empty))
@@ -335,10 +354,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         });
     }
 
-    /// <summary>
-    /// When adding a system, it should be written to the systems list table.
-    /// </summary>
-    /// <param name="name">System name.</param>
     void AddSystem(string name, string dept)
     {
         if (name.Equals(string.Empty))
@@ -371,11 +386,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         });
     }
 
-    /// <summary>
-    /// When adding/editing machinery info, a dropdown that contains all departments & systems should appear.
-    /// </summary>
-    /// <param name="departments">Dropdown containing all departments.</param>
-    /// <param name="systems">Dropdown containing all systems.</param>
     void ShowDepartmentsAndSystems(TMP_Dropdown departments, TMP_Dropdown systems)
     {
         List<string> deptNames = new List<string>();
@@ -412,22 +422,23 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
            });
     }
 
-    void ShowSystems(TMP_Dropdown systems)
+    void ShowSystems(TMP_Dropdown systems, TMP_Dropdown depts)
     {
-        List<string> systemNames = new List<string>();
         DatabaseManager.Instance.ReadData("SystemsList", SelectFromDatabaseMode.everything,
            (data) =>
            {
+               systemsDict = new Dictionary<string, string>();
                for (int i = 0; i < data.Count; i++)
                {
-                   systemNames.Add(data[i][0].StringValue);
+                   systemsDict.Add(data[i][0].StringValue, data[i][1].StringValue);
                }
+               List<string> sys = systemsDict.Select(x => x.Key).ToList();
 
                if (systems != null)
                {
                    systems.ClearOptions();
-                   systems.AddOptions(systemNames);
-                   systems.onValueChanged.AddListener((i) => deptDropdown.GetComponentInChildren<TextMeshProUGUI>().text = data[i][1].StringValue);
+                   systems.AddOptions(sys);
+                   systems.onValueChanged.AddListener((i) => depts.GetComponentInChildren<TextMeshProUGUI>().text = systemsDict[sys[i]]);
                    systems.onValueChanged?.Invoke(0);
                }
            });
@@ -474,7 +485,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                                         useRightButton = false,
                                         useLeftButton = false,
                                         mainText = string.Format("Ανάγνωση δεδομένων για \"{0}\", παρακαλώ περιμένετε...", currentDept),
-                                        showLoadingIndicator= true,
+                                        showLoadingIndicator = true,
                                     }, -1); //message box should close when the data is read
                                     DatabaseManager.Instance.ReadData("SystemsList", SelectFromDatabaseMode.everything,
                                       (data) => StartCoroutine(SetupSystemsButtons(data, currentDept)), SortResultsBy.none, null, "", 0, 0, $"Where Department = '{currentDept}'");
@@ -503,18 +514,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             }
         }
 
-    }
-
-    void SetupMachineryForSystem(List<List<DataEntry>> data, string systemName) 
-    {
-        MessageBox.Instance.HideMessageBox();
-        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings() 
-        {
-            showLabel = false,
-            useRightButton = false,
-            useLeftButton = false,
-            mainText = "Παρακαλώ περιμένετε, ανάγνωση δεδομένων...",
-        });
     }
 
     IEnumerator SetupSystemsButtons(List<List<DataEntry>> data, string currentDept)
@@ -572,5 +571,37 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         Application.Quit();
 #endif
 
+    }
+
+    void ShowMachineryEntry(string machineryName)
+    {
+        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+        {
+            showLabel = false,
+            mainText = string.Format("Ανάγνωση δεδομένων για {0}.", machineryName),
+            showLoadingIndicator = true,
+            useLeftButton = false,
+            useRightButton = false,
+        });
+        DatabaseManager.Instance.ReadData(machineryName, SelectFromDatabaseMode.everything,
+            (data) =>
+            {
+                //create new service from json
+                Service serv = new Service(data[0][1].StringValue);
+
+                displayNameInput.text = serv.name;
+                idInput.text = serv.id;
+                displaySystemDropdown.value = serv.systemName;
+                displayDeptDropdown.value = serv.systemName;
+                displayHoursInput.text = serv.CurrentHours.ToString();
+
+                for (int i = 0; i < serv.descriptions.Count; i++)
+                {
+                    ServiceEntry currentEntry = Instantiate(serviceEntryPrefab, displayServiceEntryParent).GetComponent<ServiceEntry>();
+                    currentEntry.DisplayFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceTypesHours[i], serv.serviceTypesDays[i]);
+                }
+
+                MessageBox.Instance.HideMessageBox();
+            });
     }
 }
