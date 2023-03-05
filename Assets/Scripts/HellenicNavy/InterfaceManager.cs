@@ -84,7 +84,11 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     [Header("Select System Interface")]
     public GameObject selectSystemPanel;
     public int buttonsPerRow;
-    private GameObject _currentRow;
+    private GameObject _currentRowSystems;
+
+    [Header("Select Machinery Panel")]
+    public GameObject selectMachineryPanel;
+    private GameObject _currentRowMachinery;
 
     [Header("Prefabs")]
     public GameObject serviceEntryPrefab;
@@ -104,7 +108,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public override void Awake()
     {
         base.Awake();
-        //Application.targetFrameRate = 30;
+        Application.targetFrameRate = 30;
 
         AccountManagement.onAfterLogin += (valid, acc) =>
         {
@@ -278,8 +282,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         }
 
         _currentService = new Service(
-            nameInput.text, idInput.text, hoursInput.text.Length > 0 ? int.Parse(hoursInput.text) : 0, 
-            systemDropdown.value, 
+            nameInput.text, idInput.text, hoursInput.text.Length > 0 ? int.Parse(hoursInput.text) : 0,
+            systemDropdown.value,
             serviceEntries);
         Debug.Log(_currentService.ToJson());
         //write to database
@@ -523,7 +527,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         labelParent.GetChild(0).GetComponent<TextMeshProUGUI>().text = string.Format("<b>{0}</b>\nΕπιλογή Συστήματος", currentDept);
         Button closeButton = selectSystemPanel.transform.GetChild(0).GetChild(1).GetComponent<Button>();
         closeButton.onClick.RemoveAllListeners();
-        closeButton.onClick.AddListener(() => { selectSystemPanel.SetActive(false); SetupDeptSelectionInterface(); });
+        closeButton.onClick.AddListener(() => { selectSystemPanel.SetActive(false); selectSystemPanel.transform.GetChild(1).ClearChildren(); SetupDeptSelectionInterface(); });
 
         if (data.Count == 0 | data == null)
         {
@@ -545,13 +549,15 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         {
             if (buttonCount % buttonsPerRow == 0)
             {
-                _currentRow = Instantiate(buttonRow, selectSystemPanel.transform.GetChild(1));
+                _currentRowSystems = Instantiate(buttonRow, selectSystemPanel.transform.GetChild(1));
             }
             string systemName = data[i][0].StringValue;
             //instantiate buttons here
-            Button current = Instantiate(selectDeptButton, _currentRow.transform);
+            Button current = Instantiate(selectDeptButton, _currentRowSystems.transform);
             current.name = systemName;
             current.GetComponentInChildren<TextMeshProUGUI>().text = systemName;
+            //each button should setup the machinery buttons for the system
+            current.onClick.AddListener(() => SetupMachinerySelectionInterface(systemName));
             yield return new WaitForEndOfFrame();
             buttonCount++;
         }
@@ -562,15 +568,75 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         Debug.Log($"read all systems for {currentDept}");
     }
 
-    void QuitApplication()
+    void SetupMachinerySelectionInterface(string currentSystem)
     {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
+        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+        {
+            showLabel = false,
+            useRightButton = false,
+            useLeftButton = false,
+            mainText = string.Format("Ανάγνωση δεδομένων για \"{0}\", παρακαλώ περιμένετε...", currentSystem),
+            showLoadingIndicator = true,
+        }, -1); //message box should close when the data is read
 
-#else
-        Application.Quit();
-#endif
+        DatabaseManager.Instance.ReadData("MachineryList", SelectFromDatabaseMode.everything,
+            (data) =>
+            {
+                StartCoroutine(SetupMachineryButtons(data, currentSystem));
+                
+            },
+            SortResultsBy.none, null, "", 0, 0, string.Format("Where System = '{0}'", currentSystem));
+    }
 
+    IEnumerator SetupMachineryButtons(List<List<DataEntry>> data, string currentSystem)
+    {
+        selectSystemPanel.SetActive(false);
+        Transform labelParent = selectMachineryPanel.transform.GetChild(0);
+        labelParent.GetChild(0).GetComponent<TextMeshProUGUI>().text = string.Format("<b>{0}</b>\nΕπιλογή Μηχανήματος", currentSystem);
+        Button closeButton = selectMachineryPanel.transform.GetChild(0).GetChild(1).GetComponent<Button>();
+        closeButton.onClick.RemoveAllListeners();
+        closeButton.onClick.AddListener(() => 
+        { 
+            selectMachineryPanel.SetActive(false);
+            selectMachineryPanel.transform.GetChild(1).ClearChildren();
+            selectSystemPanel.SetActive(true);
+        });
+
+        if (data.Count == 0 | data == null)
+        {
+            MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+            {
+                showLabel = true,
+                label = string.Format("<b>Σύστημα {0}</b>", currentSystem),
+                useRightButton = false,
+                useLeftButton = false,
+                mainText = string.Format("Δεν υπάρχουν μηχανήματα στο σύστημα \"{0}\".", currentSystem),
+                onHide = () => { selectSystemPanel.SetActive(true); },
+            }, 1.5f);
+
+            yield break;
+        }
+
+        int buttonCount = 0;
+        for (int i = 0; i < data.Count; i++)
+        {
+            if (buttonCount % buttonsPerRow == 0)
+            {
+                _currentRowMachinery = Instantiate(buttonRow, selectMachineryPanel.transform.GetChild(1));
+            }
+            string machineryName = data[i][0].StringValue;
+            //instantiate buttons here
+            Button current = Instantiate(selectDeptButton, _currentRowMachinery.transform);
+            current.name = machineryName;
+            current.GetComponentInChildren<TextMeshProUGUI>().text = machineryName;
+            //each button should setup the machinery buttons for the system
+            current.onClick.AddListener(() => ShowMachineryEntry(machineryName));
+            yield return new WaitForEndOfFrame();
+            buttonCount++;
+        }
+        selectMachineryPanel.SetActive(true);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(selectMachineryPanel.GetComponent<RectTransform>());
+        MessageBox.Instance.HideMessageBox();
     }
 
     void ShowMachineryEntry(string machineryName)
@@ -586,22 +652,41 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         DatabaseManager.Instance.ReadData(machineryName, SelectFromDatabaseMode.everything,
             (data) =>
             {
-                //create new service from json
-                Service serv = new Service(data[0][1].StringValue);
-
-                displayNameInput.text = serv.name;
-                idInput.text = serv.id;
-                displaySystemDropdown.value = serv.systemName;
-                displayDeptDropdown.value = serv.systemName;
-                displayHoursInput.text = serv.CurrentHours.ToString();
-
-                for (int i = 0; i < serv.descriptions.Count; i++)
-                {
-                    ServiceEntry currentEntry = Instantiate(serviceEntryPrefab, displayServiceEntryParent).GetComponent<ServiceEntry>();
-                    currentEntry.DisplayFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceTypesHours[i], serv.serviceTypesDays[i]);
-                }
-
-                MessageBox.Instance.HideMessageBox();
+                StartCoroutine(PopulateServiceEntriesForDisplayMachinery(data));
             });
+    }
+
+    IEnumerator PopulateServiceEntriesForDisplayMachinery(List<List<DataEntry>> data)
+    {
+        //create new service from json
+        Service serv = new Service(data[0][1].StringValue);
+
+        displayNameInput.text = serv.name;
+        idInput.text = serv.id;
+        displaySystemDropdown.value = serv.systemName;
+        displayDeptDropdown.value = serv.systemName;
+        displayHoursInput.text = serv.CurrentHours.ToString();
+
+        for (int i = 0; i < serv.descriptions.Count; i++)
+        {
+            ServiceEntry currentEntry = Instantiate(serviceEntryPrefab, displayServiceEntryParent).GetComponent<ServiceEntry>();
+            currentEntry.DisplayFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceTypesHours[i], serv.serviceTypesDays[i]);
+            yield return new WaitForEndOfFrame();
+        }
+        displayMachineryPanel.SetActive(true);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(displayMachineryPanel.GetComponent<RectTransform>());
+
+        MessageBox.Instance.HideMessageBox();
+    }
+
+    void QuitApplication()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+
+#else
+        Application.Quit();
+#endif
+
     }
 }

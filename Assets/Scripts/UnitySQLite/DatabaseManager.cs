@@ -327,10 +327,10 @@ namespace UnitySQLite
             switch (mode)
             {
                 case SelectFromDatabaseMode.everything:
-                    query = string.Format("SELECT * FROM {0}", TableName);
+                    query = string.Format("SELECT * FROM '{0}'", TableName);
                     break;
                 case SelectFromDatabaseMode.specificColumns:
-                    query = string.Format("SELECT {0} FROM {1}", ColumnNames, TableName);
+                    query = string.Format("SELECT {0} FROM '{1}'", ColumnNames, TableName);
                     break;
                 case SelectFromDatabaseMode.specificRows:
                     if (maxRow == 0)
@@ -342,7 +342,7 @@ namespace UnitySQLite
                         return;
                     }
 
-                    query = string.Format("SELECT {0} FROM {1} WHERE {2}", ColumnNames, TableName, string.Format("rowid BETWEEN {0} AND {1}", minRow, maxRow));
+                    query = string.Format("SELECT {0} FROM '{1}' WHERE {2}", ColumnNames, TableName, string.Format("rowid BETWEEN {0} AND {1}", minRow, maxRow));
                     break;
             }
 

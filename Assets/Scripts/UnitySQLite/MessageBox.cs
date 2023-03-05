@@ -62,6 +62,8 @@ public class MessageBox : GenericSingleton<MessageBox>
         loadingIndicatorParent.gameObject.SetActive(settings.showLoadingIndicator);
 
         gameObject.SetActive(true);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(GetComponent<RectTransform>());
+
 
         if (settings.showLoadingIndicator)
         {

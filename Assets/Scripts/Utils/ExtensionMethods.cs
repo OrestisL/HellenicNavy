@@ -54,4 +54,14 @@ public static class ExtensionMethods
         }
         return builder.ToString();
     }
+
+    public static void ClearChildren(this Transform trans)
+    {
+
+            for (int i = 0; i < trans.childCount; i++)
+            {
+                Transform.Destroy(trans.GetChild(i).gameObject);
+            }
+        
+    }
 }
