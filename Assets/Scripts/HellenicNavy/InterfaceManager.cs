@@ -442,6 +442,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 useRightButton = false,
                 useLeftButton = false,
                 mainText = "Παρακαλώ περιμένετε, ανάγνωση δεδομένων...",
+                showLoadingIndicator = true,
             });
             DatabaseManager.Instance.ReadData("DepartmentsList", SelectFromDatabaseMode.everything,
                 (data) =>
@@ -472,6 +473,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                                         useRightButton = false,
                                         useLeftButton = false,
                                         mainText = string.Format("Ανάγνωση δεδομένων για \"{0}\", παρακαλώ περιμένετε...", currentDept),
+                                        showLoadingIndicator= true,
                                     }, -1); //message box should close when the data is read
                                     DatabaseManager.Instance.ReadData("SystemsList", SelectFromDatabaseMode.everything,
                                       (data) => StartCoroutine(SetupSystemsButtons(data, currentDept)), SortResultsBy.none, null, "", 0, 0, $"Where Department = '{currentDept}'");
@@ -500,7 +502,18 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             }
         }
 
+    }
 
+    void SetupMachineryForSystem(List<List<DataEntry>> data, string systemName) 
+    {
+        MessageBox.Instance.HideMessageBox();
+        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings() 
+        {
+            showLabel = false,
+            useRightButton = false,
+            useLeftButton = false,
+            mainText = "Παρακαλώ περιμένετε, ανάγνωση δεδομένων...",
+        });
     }
 
     IEnumerator SetupSystemsButtons(List<List<DataEntry>> data, string currentDept)
