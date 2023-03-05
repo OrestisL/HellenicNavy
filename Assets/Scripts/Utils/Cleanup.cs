@@ -15,5 +15,7 @@ public class Cleanup : MonoBehaviour
         }
 
         if (clearSelf) { Destroy(gameObject); }
+
+        Resources.UnloadUnusedAssets();
     }
 }
