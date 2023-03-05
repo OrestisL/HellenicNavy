@@ -63,7 +63,8 @@ namespace SPS
 
         public Service(string json)
         {
-            Service s = JsonConvert.DeserializeObject<Service>(json.Replace(".", ","));
+            json = json.Replace(".", ",");
+            Service s = JsonConvert.DeserializeObject<Service>(json);
             name = s.name;
             id = s.id;
             systemName = s.systemName;
