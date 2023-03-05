@@ -88,7 +88,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public override void Awake()
     {
         base.Awake();
-
+        Application.targetFrameRate = 30;
+        
         AccountManagement.onAfterLogin += (valid, acc) =>
         {
             if (valid)
