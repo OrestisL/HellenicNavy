@@ -290,7 +290,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         DatabaseManager.Instance.WriteOnce(() =>
         {
             TableRow row = new TableRow(new TableColumn[] { new TableColumn("Name", "TEXT", false, true), new TableColumn("ServiceDescr", "TEXT") });
-            row.AddValues(new DataEntry[] { new DataEntry(nameInput.text), new DataEntry(string.Format("\"{0}\"", _currentService.ToJson())) });
+            row.AddValues(new DataEntry[] { new DataEntry(nameInput.text), new DataEntry(string.Format("{0}", _currentService.ToJson())) });
 
             DatabaseManager.Instance.CreateTableOnDatabase(nameInput.text, row.GetColumns());
             TableRow rowList = tables.machineryList;
@@ -662,7 +662,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         Service serv = new Service(data[0][1].StringValue);
 
         displayNameInput.text = serv.name;
-        idInput.text = serv.id;
+        displayIdInput.text = serv.id;
         displaySystemDropdown.value = serv.systemName;
         displayDeptDropdown.value = serv.systemName;
         displayHoursInput.text = serv.CurrentHours.ToString();
@@ -670,7 +670,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         for (int i = 0; i < serv.descriptions.Count; i++)
         {
             ServiceEntry currentEntry = Instantiate(serviceEntryPrefab, displayServiceEntryParent).GetComponent<ServiceEntry>();
-            currentEntry.DisplayFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceTypesHours[i], serv.serviceTypesDays[i]);
+            currentEntry.DisplayFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceDays[i], serv.serviceTypesHours[i], serv.serviceTypesDays[i]);
             yield return new WaitForEndOfFrame();
         }
         displayMachineryPanel.SetActive(true);

@@ -187,28 +187,24 @@ public class ServiceEntry : MonoBehaviour
         selectionToggle.onValueChanged.AddListener((b) => bgImg.color = b ? selectedColor : normalColor);
     }
 
-    public void DisplayFromData(string descr, List<int> hours, List<ServiceAssignmentType> serviceTypesHours, List<ServiceAssignmentType> serviceTypesDays) 
+    public void DisplayFromData(string descr, List<int> hours, List<int> days, List<ServiceAssignmentType> serviceTypesHours, List<ServiceAssignmentType> serviceTypesDays) 
     {
         descriptionField.text = descr;
         for (int i = 0; i < hours.Count; i++)
         {
             hoursField.text += string.Format("{0}\n", hours[i]);
+            TMP_Dropdown d = Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentHours).GetComponent<TMP_Dropdown>();
+            d.value = (int)serviceTypesHours[i];
         }
         hoursField.text.TrimEnd();
 
-        for (int j = 0; j < serviceTypesHours.Count; j++)
+        for (int j = 0; j < days.Count; j++)
         {
-            TMP_Dropdown d = Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentHours).GetComponent<TMP_Dropdown>();
-            d.value = (int)serviceTypesHours[j];
+            daysField.text += string.Format("{0}\n", days[j]);
+            TMP_Dropdown d = Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentDays).GetComponent<TMP_Dropdown>();
+            d.value = (int)serviceTypesDays[j];
         }
-
-        for (int k = 0; k < serviceTypesDays.Count; k++)
-        {
-            TMP_Dropdown d = Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentHours).GetComponent<TMP_Dropdown>();
-            d.value = (int)serviceTypesDays[k];
-        }
-
-
+        daysField.text.TrimEnd();
     }
     void ClearChildren(Transform parent)
     {
