@@ -183,7 +183,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         #region machinery
         addMachineryButton.onClick.AddListener(() =>
         {
-            ShowSystems(systemDropdown, deptDropdown);
+            //ShowSystems(systemDropdown, deptDropdown);
             addMachineryPanel.SetActive(!addMachineryPanel.activeSelf);
         });
         addServiceEntryButton.onClick.AddListener(AddServiceEntry);
@@ -206,7 +206,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         createDeptButton.onClick.AddListener(() => addDeptPanel.SetActive(!addDeptPanel.activeSelf));
         closeDeptPanel.onClick.AddListener(() => addDeptPanel.SetActive(false));
 
-        selectDeptButton.onClick.AddListener(() => SetupDeptSelectionInterface());
+        selectDeptButton.onClick.AddListener(() => { SetupDeptSelectionInterface();});
         #endregion
 
         #region menu
@@ -442,8 +442,11 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                {
                    systems.ClearOptions();
                    systems.AddOptions(sys);
+                   displaySystemDropdown.ClearOptions();
+                   displaySystemDropdown.AddOptions(sys);
                    systems.onValueChanged.AddListener((i) => depts.GetComponentInChildren<TextMeshProUGUI>().text = systemsDict[sys[i]]);
                    systems.onValueChanged?.Invoke(0);
+                   displaySystemDropdown.onValueChanged.AddListener((i) => displayDeptDropdown.GetComponentInChildren<TextMeshProUGUI>().text = systemsDict[sys[i]]);
                }
            });
     }
@@ -664,7 +667,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         displayNameInput.text = serv.name;
         displayIdInput.text = serv.id;
         displaySystemDropdown.value = serv.systemName;
-        displayDeptDropdown.value = serv.systemName;
+        displaySystemDropdown.onValueChanged?.Invoke(serv.systemName);
         displayHoursInput.text = serv.CurrentHours.ToString();
 
         for (int i = 0; i < serv.descriptions.Count; i++)
