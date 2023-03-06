@@ -3,14 +3,17 @@
 - add password to database (and change password) (needs new dll)
 - loading message (done - message box)
 - message box should disable buttons and inputs etc
-- export/import database
+- export/import database (change extension? does it matter?)
 - limit hours/days input to comma separated ints only (done)
 - add a way to add the assignment types (done)
-- change how input fields are shown in the add service entry (maybe not)
+- change how input fields are shown in the add service entry (maybe not)(done)
 - choosing department button should open a dialogue to change the department > 
 			choosing YES should load all systems (button array) > 
-			each button should load all machinery in that system (button array)
-- read/write json for service entry 
-			(write works but all , are turned to . just need to make sure you change back after reading)
+			each button should load all machinery in that system (button array) (done)
+- read/write json for service entry (add close button to interface) (interface should close and reset on logout)
+			(write works but all , are turned to . just need to make sure you change back after reading) (works except system and dept)
 - each dept should have its own systems -> database should be changed (done)
 - when adding machinery, the avaialble systems should load after picking dept (done - picking system automatically adds the dept)
+- refactor database manager to command pattern (read write) (consider message box hide)
+- dictionary with depts and systems should be populated on start + when new system/dept is added
+- fix weird ui behavior (force update layout immediate does not work)
