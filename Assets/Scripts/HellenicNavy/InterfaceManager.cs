@@ -464,6 +464,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         {
             systems.ClearOptions();
             systems.AddOptions(systemsFromDict);
+            depts.ClearOptions();
             depts.AddOptions(deptsFromDict);
             systems.value = defaultValue;
             systems.onValueChanged.AddListener((i) => 
