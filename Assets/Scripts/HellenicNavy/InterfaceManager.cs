@@ -114,6 +114,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         {
             if (valid)
             {
+                CreateSystemDepartmentDictionary();
                 username.text = acc.AccountName;
                 loginPanel.SetActive(false);
                 userPanel.SetActive(true);
@@ -145,6 +146,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             AccountManagement.Instance.ClearCurrentAccount();
             userPanel.SetActive(false);
             SetupLoginInterface(LoginInterfaceSetup.login);
+            DisableUIOnLogout();
         };
 
         logoutButton.onClick.AddListener(() => AccountManagement.onLogout?.Invoke());
@@ -195,7 +197,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         #region machinery
         addMachineryButton.onClick.AddListener(() =>
         {
-            //ShowSystems(systemDropdown, deptDropdown);
+            ShowSystems(systemDropdown, deptDropdown);
             addMachineryPanel.SetActive(!addMachineryPanel.activeSelf);
         });
         addServiceEntryButton.onClick.AddListener(AddServiceEntry);
@@ -268,6 +270,23 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         addSystemPanel.SetActive(false);
         addMachineryPanel.SetActive(false);
         selectDeptPanel.SetActive(false);
+    }
+
+    void CreateSystemDepartmentDictionary()
+    {
+        DatabaseManager.Instance.ReadData("SystemsList", SelectFromDatabaseMode.everything,
+             (data) =>
+             {
+                 if (data == null | data.Count == 0)
+                     return;
+
+                 systemsDict = new Dictionary<string, string>();
+                 for (int i = 0; i < data.Count; i++)
+                 {
+                     systemsDict.Add(data[i][0].StringValue, data[i][1].StringValue);
+                     Debug.Log(string.Format("Key: {0}, Value: {1}", data[i][0].StringValue, data[i][1].StringValue));
+                 }
+             });
     }
 
     void AddServiceEntry()
@@ -391,13 +410,17 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                     mainText = string.Format("To σύστημα \"{0}\" υπάρχει ήδη στη βάση δεδομένων.", name),
                 }
                 ),
-                () => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+                () =>
                 {
-                    useRightButton = false,
-                    useLeftButton = false,
-                    showLabel = false,
-                    mainText = string.Format("To σύστημα \"{0}\" προστέθηκε στη βάση δεδομένων επιτυχώς.", name),
-                }));
+                    MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+                    {
+                        useRightButton = false,
+                        useLeftButton = false,
+                        showLabel = false,
+                        mainText = string.Format("To σύστημα \"{0}\" προστέθηκε στη βάση δεδομένων επιτυχώς.", name),
+                    });
+                    CreateSystemDepartmentDictionary();
+                });
             //Debug.Log(string.Format("successfully added system {0} to the database", name));
         });
     }
@@ -440,27 +463,40 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     void ShowSystems(TMP_Dropdown systems, TMP_Dropdown depts)
     {
-        DatabaseManager.Instance.ReadData("SystemsList", SelectFromDatabaseMode.everything,
-           (data) =>
-           {
-               systemsDict = new Dictionary<string, string>();
-               for (int i = 0; i < data.Count; i++)
-               {
-                   systemsDict.Add(data[i][0].StringValue, data[i][1].StringValue);
-               }
-               List<string> sys = systemsDict.Select(x => x.Key).ToList();
+        //DatabaseManager.Instance.ReadData("SystemsList", SelectFromDatabaseMode.everything,
+        //   (data) =>
+        //   {
+        //       systemsDict = new Dictionary<string, string>();
+        //       for (int i = 0; i < data.Count; i++)
+        //       {
+        //           systemsDict.Add(data[i][0].StringValue, data[i][1].StringValue);
+        //       }
+        //       List<string> sys = systemsDict.Select(x => x.Key).ToList();
 
-               if (systems != null)
-               {
-                   systems.ClearOptions();
-                   systems.AddOptions(sys);
-                   displaySystemDropdown.ClearOptions();
-                   displaySystemDropdown.AddOptions(sys);
-                   systems.onValueChanged.AddListener((i) => depts.GetComponentInChildren<TextMeshProUGUI>().text = systemsDict[sys[i]]);
-                   systems.onValueChanged?.Invoke(0);
-                   displaySystemDropdown.onValueChanged.AddListener((i) => displayDeptDropdown.GetComponentInChildren<TextMeshProUGUI>().text = systemsDict[sys[i]]);
-               }
-           });
+        //       if (systems != null)
+        //       {
+        //           systems.ClearOptions();
+        //           systems.AddOptions(sys);
+        //           displaySystemDropdown.ClearOptions();
+        //           displaySystemDropdown.AddOptions(sys);
+        //           systems.onValueChanged.AddListener((i) => depts.GetComponentInChildren<TextMeshProUGUI>().text = systemsDict[sys[i]]);
+        //           systems.onValueChanged?.Invoke(0);
+        //           displaySystemDropdown.onValueChanged.AddListener((i) => displayDeptDropdown.GetComponentInChildren<TextMeshProUGUI>().text = systemsDict[sys[i]]);
+        //       }
+        //   });
+
+        List<string> sys = systemsDict.Select(x => x.Key).ToList();
+
+        if (systems != null)
+        {
+            systems.ClearOptions();
+            systems.AddOptions(sys);
+            displaySystemDropdown.ClearOptions();
+            displaySystemDropdown.AddOptions(sys);
+            systems.onValueChanged.AddListener((i) => depts.GetComponentInChildren<TextMeshProUGUI>().text = systemsDict[sys[i]]);
+            systems.onValueChanged?.Invoke(0);
+            displaySystemDropdown.onValueChanged.AddListener((i) => displayDeptDropdown.GetComponentInChildren<TextMeshProUGUI>().text = systemsDict[sys[i]]);
+        }
     }
 
     void SetupDeptSelectionInterface()
