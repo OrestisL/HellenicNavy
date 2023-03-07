@@ -160,6 +160,18 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         //TODO hide UI elements according to access level
     }
 
+    void DisableUIOnLogout()
+    {
+        Transform[] uiPanels = canvas.GetComponentsInChildren<Transform>();
+        for (int i = 0; i < uiPanels.Length; i++)
+        {
+            if (uiPanels[i].name.Equals(loginPanel.name))
+                continue;
+
+            uiPanels[i].gameObject.SetActive(false);
+        }
+    }
+
     void SetupButtons()
     {
         #region login panel
@@ -206,7 +218,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         createDeptButton.onClick.AddListener(() => addDeptPanel.SetActive(!addDeptPanel.activeSelf));
         closeDeptPanel.onClick.AddListener(() => addDeptPanel.SetActive(false));
 
-        selectDeptButton.onClick.AddListener(() => { SetupDeptSelectionInterface();});
+        selectDeptButton.onClick.AddListener(() => { SetupDeptSelectionInterface(); });
         #endregion
 
         #region menu
@@ -586,7 +598,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             (data) =>
             {
                 StartCoroutine(SetupMachineryButtons(data, currentSystem));
-                
+
             },
             SortResultsBy.none, null, "", 0, 0, string.Format("Where System = '{0}'", currentSystem));
     }
@@ -598,8 +610,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         labelParent.GetChild(0).GetComponent<TextMeshProUGUI>().text = string.Format("<b>{0}</b>\nΕπιλογή Μηχανήματος", currentSystem);
         Button closeButton = selectMachineryPanel.transform.GetChild(0).GetChild(1).GetComponent<Button>();
         closeButton.onClick.RemoveAllListeners();
-        closeButton.onClick.AddListener(() => 
-        { 
+        closeButton.onClick.AddListener(() =>
+        {
             selectMachineryPanel.SetActive(false);
             selectMachineryPanel.transform.GetChild(1).ClearChildren();
             selectSystemPanel.SetActive(true);
@@ -638,7 +650,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             buttonCount++;
         }
         selectMachineryPanel.SetActive(true);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(selectMachineryPanel.GetComponent<RectTransform>());
         MessageBox.Instance.HideMessageBox();
     }
 
@@ -677,7 +688,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             yield return new WaitForEndOfFrame();
         }
         displayMachineryPanel.SetActive(true);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(displayMachineryPanel.GetComponent<RectTransform>());
 
         MessageBox.Instance.HideMessageBox();
     }
