@@ -46,6 +46,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     [Header("Display Machinery interface")]
     public GameObject displayMachineryPanel;
+    public TextMeshProUGUI displayMachineryLabel;
     public Button updateMachineryButton;
     public Button displayAddServiceEntryButton;
     public Button displaydDeleteSelectionButton;
@@ -277,6 +278,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                  {
                      systemsDict.Add(data[i][0].StringValue, data[i][1].StringValue);
                  }
+
+                 Debug.Log($"Remade dictionary, new size is {systemsDict.Count}.");
              });
     }
 
@@ -454,19 +457,21 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     void ShowSystems(TMP_Dropdown systems, TMP_Dropdown depts, int defaultValue = 0)
     {
-        List<string> sys = systemsDict.Select(x => x.Key).ToList();
+        List<string> systemsFromDict = systemsDict.Select(x => x.Key).ToList();
+        List<string> deptsFromDict = systemsDict.Select(x => x.Value).ToList();
 
         if (systems != null)
         {
             systems.ClearOptions();
-            systems.AddOptions(sys);
+            systems.AddOptions(systemsFromDict);
+            depts.AddOptions(deptsFromDict);
             systems.value = defaultValue;
             systems.onValueChanged.AddListener((i) => 
-            { 
-                depts.GetComponentInChildren<TextMeshProUGUI>().text = systemsDict[sys[i]];
+            {
+                depts.value = i;
             });
-            //systems.onValueChanged.Invoke(defaultValue); //this does not work
-            depts.GetComponentInChildren<TextMeshProUGUI>().text = systemsDict[sys[defaultValue]];
+            systems.onValueChanged.Invoke(defaultValue); //this does not work
+            //depts.GetComponentInChildren<TextMeshProUGUI>().text = systemsDict[systemsFromDict[defaultValue]];
         }
     }
 
@@ -684,6 +689,9 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         Service serv = new Service(data[0][1].StringValue);
 
         ShowSystems(displaySystemDropdown, displayDeptDropdown, serv.systemName);
+        //change label
+        displayMachineryLabel.text = string.Format("<u>Επιστασία {0}, Σύστημα {1}, Πληροφορίες Μηχανήματος {2}</u>",
+            displayDeptDropdown.options[serv.systemName].text, displaySystemDropdown.options[serv.systemName].text, serv.name);
 
         displayNameInput.text = serv.name;
         displayIdInput.text = serv.id;
