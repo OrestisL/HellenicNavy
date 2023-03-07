@@ -110,6 +110,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         base.Awake();
         Application.targetFrameRate = 30;
 
+        ResetUI();
         AccountManagement.onAfterLogin += (valid, acc) =>
         {
             if (valid)
@@ -146,7 +147,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             AccountManagement.Instance.ClearCurrentAccount();
             userPanel.SetActive(false);
             SetupLoginInterface(LoginInterfaceSetup.login);
-            DisableUIOnLogout();
         };
 
         logoutButton.onClick.AddListener(() => AccountManagement.onLogout?.Invoke());
@@ -160,18 +160,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     void SetupInterface(AccessLevel accessLevel)
     {
         //TODO hide UI elements according to access level
-    }
-
-    void DisableUIOnLogout()
-    {
-        Transform[] uiPanels = canvas.GetComponentsInChildren<Transform>();
-        for (int i = 0; i < uiPanels.Length; i++)
-        {
-            if (uiPanels[i].name.Equals(loginPanel.name))
-                continue;
-
-            uiPanels[i].gameObject.SetActive(false);
-        }
     }
 
     void SetupButtons()
@@ -270,6 +258,10 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         addSystemPanel.SetActive(false);
         addMachineryPanel.SetActive(false);
         selectDeptPanel.SetActive(false);
+        displayMachineryPanel.SetActive(false);
+        addDeptPanel.SetActive(false);
+        selectSystemPanel.SetActive(false);
+        selectMachineryPanel.SetActive(false);
     }
 
     void CreateSystemDepartmentDictionary()
@@ -284,7 +276,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                  for (int i = 0; i < data.Count; i++)
                  {
                      systemsDict.Add(data[i][0].StringValue, data[i][1].StringValue);
-                     Debug.Log(string.Format("Key: {0}, Value: {1}", data[i][0].StringValue, data[i][1].StringValue));
                  }
              });
     }
@@ -470,8 +461,12 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             systems.ClearOptions();
             systems.AddOptions(sys);
             systems.value = defaultValue;
-            systems.onValueChanged.AddListener((i) => depts.GetComponentInChildren<TextMeshProUGUI>().text = systemsDict[sys[i]]);
-            systems.onValueChanged.Invoke(defaultValue);
+            systems.onValueChanged.AddListener((i) => 
+            { 
+                depts.GetComponentInChildren<TextMeshProUGUI>().text = systemsDict[sys[i]];
+            });
+            //systems.onValueChanged.Invoke(defaultValue); //this does not work
+            depts.GetComponentInChildren<TextMeshProUGUI>().text = systemsDict[sys[defaultValue]];
         }
     }
 
@@ -589,7 +584,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             buttonCount++;
         }
         selectSystemPanel.SetActive(true);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(selectSystemPanel.GetComponent<RectTransform>());
+        LayoutRebuilder.ForceRebuildLayoutImmediate(selectSystemPanel.GetComponent<RectTransform>());   
         MessageBox.Instance.HideMessageBox();
 
         Debug.Log($"read all systems for {currentDept}");
@@ -610,7 +605,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             (data) =>
             {
                 StartCoroutine(SetupMachineryButtons(data, currentSystem));
-
             },
             SortResultsBy.none, null, "", 0, 0, string.Format("Where System = '{0}'", currentSystem));
     }
@@ -661,7 +655,9 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             yield return new WaitForEndOfFrame();
             buttonCount++;
         }
+        yield return new WaitForEndOfFrame();
         selectMachineryPanel.SetActive(true);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(selectMachineryPanel.GetComponent<RectTransform>());
         MessageBox.Instance.HideMessageBox();
     }
 
@@ -691,8 +687,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
         displayNameInput.text = serv.name;
         displayIdInput.text = serv.id;
-        //displaySystemDropdown.value = serv.systemName;
-        //displaySystemDropdown.onValueChanged?.Invoke(serv.systemName);
         displayHoursInput.text = serv.CurrentHours.ToString();
 
         for (int i = 0; i < serv.descriptions.Count; i++)
