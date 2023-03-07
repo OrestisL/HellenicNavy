@@ -605,7 +605,6 @@ namespace UnitySQLite
             if (SearchCondition != "")
                 query += string.Format(" WHERE {0}", SearchCondition);
 
-            Debug.Log(query);
             sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
 
             sm_dbCommand.ExecuteNonQuery();

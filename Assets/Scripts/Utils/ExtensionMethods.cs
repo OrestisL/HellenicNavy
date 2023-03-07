@@ -57,11 +57,10 @@ public static class ExtensionMethods
 
     public static void ClearChildren(this Transform trans)
     {
+        for (int i = 0; i < trans.childCount; i++)
+        {
+            UnityEngine.Object.Destroy(trans.GetChild(i).gameObject);
+        }
 
-            for (int i = 0; i < trans.childCount; i++)
-            {
-                Transform.Destroy(trans.GetChild(i).gameObject);
-            }
-        
     }
 }

@@ -17,3 +17,7 @@
 - refactor database manager to command pattern (read write) (consider message box hide)
 - dictionary with depts and systems should be populated on start + when new system/dept is added (done)
 - fix weird ui behavior (force update layout immediate does not work) (this is weird and still doesnt work properly, workaround is to have all panels enabled before starting and disable them in awake)
+- add button for updating info on machinery (done)
+- update machinery list on system interface after updating info
+- disable ui elements depending on user
+- add edit and fix other buttons on display machinery interface

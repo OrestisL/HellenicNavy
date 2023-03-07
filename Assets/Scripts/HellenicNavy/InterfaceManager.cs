@@ -49,7 +49,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public TextMeshProUGUI displayMachineryLabel;
     public Button updateMachineryButton;
     public Button displayAddServiceEntryButton;
-    public Button displaydDeleteSelectionButton;
+    public Button displayDeleteSelectionButton;
     public RectTransform displayServiceEntryParent;
     public TMP_InputField displayNameInput;
     public TMP_InputField displaySerialInput;
@@ -183,18 +183,25 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         quitButton.onClick.AddListener(QuitApplication);
         #endregion
 
-        #region machinery
+        #region add machinery
         addMachineryButton.onClick.AddListener(() =>
         {
             ShowSystems(systemDropdown, deptDropdown);
             addMachineryPanel.SetActive(!addMachineryPanel.activeSelf);
         });
-        addServiceEntryButton.onClick.AddListener(AddServiceEntry);
-        deleteSelectionButton.onClick.AddListener(DeleteSelectedServiceEntries);
+        addServiceEntryButton.onClick.AddListener(() => AddServiceEntry(serviceEntryParent));
+        deleteSelectionButton.onClick.AddListener(() => DeleteSelectedServiceEntries(serviceEntryParent));
         createMachineryButton.onClick.AddListener(AddMachinery);
 
+        #endregion
+
+        #region display machinery
+        
+        displayDeleteSelectionButton.onClick.AddListener(() => DeleteSelectedServiceEntries(displayServiceEntryParent));
+        displayAddServiceEntryButton.onClick.AddListener(() => AddServiceEntry(displayServiceEntryParent));
         updateMachineryButton.onClick.AddListener(UpdateMachineryInfo);
         #endregion
+
 
         #region system entry
         createSystemEntryButton.onClick.AddListener(() => AddSystem(addSystemName.text, addSystemDept.options[addSystemDept.value].text));
@@ -285,14 +292,14 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
              });
     }
 
-    void AddServiceEntry()
+    void AddServiceEntry(Transform parent)
     {
-        Instantiate(serviceEntryPrefab, serviceEntryParent);
+        Instantiate(serviceEntryPrefab, parent);
     }
 
-    void DeleteSelectedServiceEntries()
+    void DeleteSelectedServiceEntries(Transform parent)
     {
-        ServiceEntry[] currentEntries = serviceEntryParent.GetComponentsInChildren<ServiceEntry>();
+        ServiceEntry[] currentEntries = parent.GetComponentsInChildren<ServiceEntry>();
         foreach (ServiceEntry entry in currentEntries)
         {
             if (entry.IsSelected) { Destroy(entry.gameObject); }
@@ -688,6 +695,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     IEnumerator PopulateServiceEntriesForDisplayMachinery(List<List<DataEntry>> data)
     {
+        //clear previous entries
+        displayServiceEntryParent.ClearChildren();
         //create new service from json
         Service serv = new Service(data[0][1].StringValue);
 
@@ -707,7 +716,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             yield return new WaitForEndOfFrame();
         }
         displayMachineryPanel.SetActive(true);
-
+        LayoutRebuilder.ForceRebuildLayoutImmediate(displayMachineryPanel.GetComponent<RectTransform>());
         MessageBox.Instance.HideMessageBox();
     }
 
