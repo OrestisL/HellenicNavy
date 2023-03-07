@@ -7775,19 +7775,7 @@ MonoBehaviour:
   m_ItemImage: {fileID: 0}
   m_Value: 0
   m_Options:
-    m_Options:
-    - m_Text: 
-      m_Image: {fileID: 0}
-    - m_Text: "\u039C\u0397\u03A7"
-      m_Image: {fileID: 0}
-    - m_Text: "\u0392\u039C"
-      m_Image: {fileID: 0}
-    - m_Text: "\u0395\u0392"
-      m_Image: {fileID: 0}
-    - m_Text: "\u0397\u039B"
-      m_Image: {fileID: 0}
-    - m_Text: "\u0397\u039D\u0391\u03A3"
-      m_Image: {fileID: 0}
+    m_Options: []
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -8056,19 +8044,7 @@ MonoBehaviour:
   m_ItemImage: {fileID: 0}
   m_Value: 0
   m_Options:
-    m_Options:
-    - m_Text: 
-      m_Image: {fileID: 0}
-    - m_Text: "\u039C\u0397\u03A7"
-      m_Image: {fileID: 0}
-    - m_Text: "\u0392\u039C"
-      m_Image: {fileID: 0}
-    - m_Text: "\u0395\u0392"
-      m_Image: {fileID: 0}
-    - m_Text: "\u0397\u039B"
-      m_Image: {fileID: 0}
-    - m_Text: "\u0397\u039D\u0391\u03A3"
-      m_Image: {fileID: 0}
+    m_Options: []
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -17757,7 +17733,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1629924767}
   m_HandleRect: {fileID: 1629924766}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

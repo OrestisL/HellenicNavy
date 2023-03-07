@@ -461,41 +461,17 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
            });
     }
 
-    void ShowSystems(TMP_Dropdown systems, TMP_Dropdown depts)
+    void ShowSystems(TMP_Dropdown systems, TMP_Dropdown depts, int defaultValue = 0)
     {
-        //DatabaseManager.Instance.ReadData("SystemsList", SelectFromDatabaseMode.everything,
-        //   (data) =>
-        //   {
-        //       systemsDict = new Dictionary<string, string>();
-        //       for (int i = 0; i < data.Count; i++)
-        //       {
-        //           systemsDict.Add(data[i][0].StringValue, data[i][1].StringValue);
-        //       }
-        //       List<string> sys = systemsDict.Select(x => x.Key).ToList();
-
-        //       if (systems != null)
-        //       {
-        //           systems.ClearOptions();
-        //           systems.AddOptions(sys);
-        //           displaySystemDropdown.ClearOptions();
-        //           displaySystemDropdown.AddOptions(sys);
-        //           systems.onValueChanged.AddListener((i) => depts.GetComponentInChildren<TextMeshProUGUI>().text = systemsDict[sys[i]]);
-        //           systems.onValueChanged?.Invoke(0);
-        //           displaySystemDropdown.onValueChanged.AddListener((i) => displayDeptDropdown.GetComponentInChildren<TextMeshProUGUI>().text = systemsDict[sys[i]]);
-        //       }
-        //   });
-
         List<string> sys = systemsDict.Select(x => x.Key).ToList();
 
         if (systems != null)
         {
             systems.ClearOptions();
             systems.AddOptions(sys);
-            displaySystemDropdown.ClearOptions();
-            displaySystemDropdown.AddOptions(sys);
+            systems.value = defaultValue;
             systems.onValueChanged.AddListener((i) => depts.GetComponentInChildren<TextMeshProUGUI>().text = systemsDict[sys[i]]);
-            systems.onValueChanged?.Invoke(0);
-            displaySystemDropdown.onValueChanged.AddListener((i) => displayDeptDropdown.GetComponentInChildren<TextMeshProUGUI>().text = systemsDict[sys[i]]);
+            systems.onValueChanged.Invoke(defaultValue);
         }
     }
 
@@ -711,10 +687,12 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         //create new service from json
         Service serv = new Service(data[0][1].StringValue);
 
+        ShowSystems(displaySystemDropdown, displayDeptDropdown, serv.systemName);
+
         displayNameInput.text = serv.name;
         displayIdInput.text = serv.id;
-        displaySystemDropdown.value = serv.systemName;
-        displaySystemDropdown.onValueChanged?.Invoke(serv.systemName);
+        //displaySystemDropdown.value = serv.systemName;
+        //displaySystemDropdown.onValueChanged?.Invoke(serv.systemName);
         displayHoursInput.text = serv.CurrentHours.ToString();
 
         for (int i = 0; i < serv.descriptions.Count; i++)
