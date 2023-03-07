@@ -149,7 +149,7 @@ namespace UnitySQLite.Utilities
             string names = string.Empty;
             for (int i = 0; i < columns.Count; i++)
             {
-                names += string.Format("'{0}',", columns[i].ColumnName);
+                names += string.Format("{0},", columns[i].ColumnName);
             }
             names = names.Remove(names.Length - 1);
 

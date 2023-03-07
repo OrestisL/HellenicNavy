@@ -10,10 +10,10 @@
 - choosing department button should open a dialogue to change the department > 
 			choosing YES should load all systems (button array) > 
 			each button should load all machinery in that system (button array) (done)
-- read/write json for service entry (add close button to interface) (interface should close and reset on logout)
-			(write works but all , are turned to . just need to make sure you change back after reading) (works except system and dept)
+- read/write json for service entry (add close button to interface) (interface should close and reset on logout) (done)
+			(write works but all , are turned to . just need to make sure you change back after reading) (works)
 - each dept should have its own systems -> database should be changed (done)
 - when adding machinery, the avaialble systems should load after picking dept (done - picking system automatically adds the dept)
 - refactor database manager to command pattern (read write) (consider message box hide)
-- dictionary with depts and systems should be populated on start + when new system/dept is added
-- fix weird ui behavior (force update layout immediate does not work)
+- dictionary with depts and systems should be populated on start + when new system/dept is added (done)
+- fix weird ui behavior (force update layout immediate does not work) (this is weird and still doesnt work properly, workaround is to have all panels enabled before starting and disable them in awake)

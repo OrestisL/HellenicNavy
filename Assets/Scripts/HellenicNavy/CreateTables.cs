@@ -7,6 +7,7 @@ public class CreateTables : MonoBehaviour
 {
     public TableRow users;
     public TableRow machineryList;
+    public TableRow updateMachinery;
     public TableRow departmentsList;
     public TableRow systemsList;
 

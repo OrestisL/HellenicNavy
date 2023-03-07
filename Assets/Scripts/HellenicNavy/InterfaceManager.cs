@@ -192,6 +192,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         addServiceEntryButton.onClick.AddListener(AddServiceEntry);
         deleteSelectionButton.onClick.AddListener(DeleteSelectedServiceEntries);
         createMachineryButton.onClick.AddListener(AddMachinery);
+
+        updateMachineryButton.onClick.AddListener(UpdateMachineryInfo);
         #endregion
 
         #region system entry
@@ -612,7 +614,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             {
                 StartCoroutine(SetupMachineryButtons(data, currentSystem));
             },
-            SortResultsBy.none, null, "", 0, 0, string.Format("Where System = '{0}'", currentSystem));
+            SortResultsBy.none, null, "", 0, 0, string.Format("Where System = '{0}' AND isActive = 1", currentSystem));
     }
 
     IEnumerator SetupMachineryButtons(List<List<DataEntry>> data, string currentSystem)
@@ -707,6 +709,46 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         displayMachineryPanel.SetActive(true);
 
         MessageBox.Instance.HideMessageBox();
+    }
+
+    void UpdateMachineryInfo() 
+    {
+        serviceEntries = new List<ServiceEntry>();
+
+        for (int i = 0; i < displayServiceEntryParent.childCount; i++)
+        {
+            serviceEntries.Add(displayServiceEntryParent.GetChild(i).GetComponent<ServiceEntry>());
+        }
+
+        _currentService = new Service(
+            displayNameInput.text, displayIdInput.text, displayHoursInput.text.Length > 0 ? int.Parse(displayHoursInput.text) : 0,
+            displaySystemDropdown.value,
+            serviceEntries);
+        Debug.Log(_currentService.ToJson());
+        //write to database
+        DatabaseManager.Instance.WriteOnce(() =>
+        {
+            TableRow row = new TableRow(new TableColumn[] { new TableColumn("Name", "TEXT", false, true), new TableColumn("ServiceDescr", "TEXT") });
+            row.AddValues(new DataEntry[] { new DataEntry(displayNameInput.text), new DataEntry(string.Format("{0}", _currentService.ToJson())) });
+
+            TableRow rowList = tables.updateMachinery;
+            DataEntry[] entries = new DataEntry[]
+            {
+                new DataEntry(displaySerialInput.text),
+                new DataEntry(displayIdInput.text),
+                new DataEntry(displayDeptDropdown.captionText.text),
+                new DataEntry(displaySystemDropdown.options[displaySystemDropdown.value].text),
+                new DataEntry(int.Parse(displayHoursInput.text)),
+                new DataEntry(5),
+                new DataEntry(1)
+            };
+            rowList.AddValues(entries);
+
+            //update specific machinery table
+            DatabaseManager.Instance.UpdateValuesOnTable(displayNameInput.text, row.GetColumnNames(), row.GetValues());
+            //update machinery list
+            DatabaseManager.Instance.UpdateValuesOnTable("MachineryList", rowList.GetColumnNames(), rowList.GetValues(), $"Name = '{displayNameInput.text}'");
+        });
     }
 
     void QuitApplication()

@@ -591,7 +591,7 @@ namespace UnitySQLite
                 ReadOnlySpan<char> valueSlice = spanValues.Slice(indexStartValues, nextCommaIndexValues - indexStartValues);
 
                 //add to query
-                query += string.Format("{0}='{1}',", nameSlice.ToString(), valueSlice.ToString());
+                query += string.Format("'{0}' = {1},", nameSlice.ToString(), valueSlice.ToString());
 
                 //move indeces by 1 to avoid being stuck in an infinite loop
                 //values should have length more than 0
@@ -603,8 +603,9 @@ namespace UnitySQLite
             query = query.Remove(query.Length - 1, 1);
 
             if (SearchCondition != "")
-                query += string.Format("WHERE {0}", SearchCondition);
+                query += string.Format(" WHERE {0}", SearchCondition);
 
+            Debug.Log(query);
             sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
 
             sm_dbCommand.ExecuteNonQuery();
