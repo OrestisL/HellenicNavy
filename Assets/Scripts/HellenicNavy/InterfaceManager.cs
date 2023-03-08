@@ -816,7 +816,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         for (int i = 0; i < serv.descriptions.Count; i++)
         {
             ServiceEntry currentEntry = Instantiate(serviceEntryPrefab, displayServiceEntryParent).GetComponent<ServiceEntry>();
-            currentEntry.DisplayFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceDays[i], serv.serviceTypesHours[i], serv.serviceTypesDays[i]);
+            //currentEntry.DisplayFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceDays[i], serv.serviceTypesHours[i], serv.serviceTypesDays[i]);
+            StartCoroutine(currentEntry.CreateInterfaceFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceDays[i], serv.serviceTypesHours[i], serv.serviceTypesDays[i]));
             yield return new WaitForEndOfFrame();
         }
         displayMachineryPanel.SetActive(true);

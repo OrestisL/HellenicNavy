@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 using SPS;
 using System;
 using System.Linq;
@@ -190,6 +191,11 @@ public class ServiceEntry : MonoBehaviour
 
     public void DisplayFromData(string descr, List<int> hours, List<int> days, List<ServiceAssignmentType> serviceTypesHours, List<ServiceAssignmentType> serviceTypesDays) 
     {
+        StartCoroutine(CreateInterfaceFromData(descr, hours, days, serviceTypesHours, serviceTypesDays));
+    }
+
+    public IEnumerator CreateInterfaceFromData(string descr, List<int> hours, List<int> days, List<ServiceAssignmentType> serviceTypesHours, List<ServiceAssignmentType> serviceTypesDays) 
+    {
         bool accessible = AccountManagement.Instance.CurrentAccount.AccessLevel == UnitySQLite.Utilities.AccessLevel.admin;
         descriptionField.text = descr;
         descriptionField.interactable = accessible;
@@ -201,6 +207,7 @@ public class ServiceEntry : MonoBehaviour
             d.value = (int)serviceTypesHours[i];
             d.interactable = accessible;
             hoursField.interactable = accessible;
+            yield return new WaitForEndOfFrame();
         }
         hoursField.text.TrimEnd();
 
@@ -211,11 +218,13 @@ public class ServiceEntry : MonoBehaviour
             d.value = (int)serviceTypesDays[j];
             d.interactable = accessible;
             daysField.interactable = accessible;
+            yield return new WaitForEndOfFrame();
         }
         daysField.text.TrimEnd();
 
         selectionToggle.interactable = accessible;
     }
+
     void ClearChildren(Transform parent)
     {
         Transform[] children = parent.GetComponentsInChildren<Transform>();
