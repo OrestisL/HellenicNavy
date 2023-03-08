@@ -46,6 +46,7 @@ namespace SPS
     {
         public string name, id;
         private int _currentHours;
+        public DateTime lastServiceDate;
         public int CurrentHours
         {
             get { return _currentHours; }
@@ -71,6 +72,7 @@ namespace SPS
             id = s.id;
             systemName = s.systemName;
             CurrentHours = s.CurrentHours;
+            lastServiceDate = s.lastServiceDate;
             descriptions = s.descriptions;
             serviceHours = s.serviceHours;
             serviceDays = s.serviceDays;
@@ -79,11 +81,13 @@ namespace SPS
             serviceAssignments = s.serviceAssignments;
         }
 
-        public Service(string name, string id, int hours, int system, List<ServiceEntry> entries)
+        public Service(string name, string id, int hours, string lastDate, int system, List<ServiceEntry> entries)
         {
             this.name = name;
             this.id = id;
             CurrentHours = hours;
+            //date SHOULD HAVE BEEN saved like this
+            lastServiceDate = DateTime.ParseExact(lastDate, "yyyy-MM-dd", null);
             this.systemName = system;
 
             serviceHours = new List<List<int>>();

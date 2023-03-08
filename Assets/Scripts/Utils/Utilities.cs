@@ -556,5 +556,4 @@ namespace UnitySQLite.Utilities
             onHide += _onHide;
         }
     }
-
 }

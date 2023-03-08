@@ -145,7 +145,7 @@ namespace UnitySQLite
         /// <summary>
         /// Deletes table tableName from database.
         /// </summary>
-        public void DeleteTableFromDatabase(string TableName)
+        public void DeleteTableFromDatabase(string TableName, Action onDeleteCallback = null)
         {
             //dbConnection = CreateConnectionToDB(path);
             //create query
@@ -155,9 +155,9 @@ namespace UnitySQLite
             sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
             //sm_dbTransaction = sm_dbConnection.BeginTransaction();
             //execute command
-            sm_dbCommand.ExecuteReader().Dispose();
+            sm_dbCommand.ExecuteNonQuery();
             sm_dbCommand.Dispose();
-
+            onDeleteCallback?.Invoke();
             Logger.Instance.AddMessage(query);
         }
 
@@ -293,7 +293,7 @@ namespace UnitySQLite
             Logger.Instance.AddMessage(query);
         }
 
-        private bool CheckIfTableExists(string tableName)
+        public bool CheckIfTableExists(string tableName)
         {
             //check if table exists first
             string query = string.Format("SELECT name FROM sqlite_master WHERE type='table' AND name='{0}';", tableName);
@@ -622,6 +622,8 @@ namespace UnitySQLite
 
             string query = string.Format("DELETE FROM '{0}' WHERE {1}", TableName, Condition);
             sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
+            sm_dbCommand.ExecuteNonQuery();
+            sm_dbCommand.Dispose();
             Logger.Instance.AddMessage(query);
         }
 

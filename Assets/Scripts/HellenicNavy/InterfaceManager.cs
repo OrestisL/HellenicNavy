@@ -41,6 +41,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public TMP_InputField nameInput;
     public TMP_InputField serialInput;
     public TMP_InputField idInput;
+    public TMP_InputField dateInput;
     public TMP_Dropdown deptDropdown;
     public TMP_Dropdown systemDropdown;
     public TMP_InputField hoursInput;
@@ -53,10 +54,12 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public Button displayDeleteSelectionButton;
     public Button displayPanelCloseButton;
     public Button displayEnableEditingButton;
+    public Button displayDeleteMachineryButton;
     public RectTransform displayServiceEntryParent;
     public TMP_InputField displayNameInput;
     public TMP_InputField displaySerialInput;
     public TMP_InputField displayIdInput;
+    public TMP_InputField displayDateInput;
     public TMP_Dropdown displayDeptDropdown;
     public TMP_Dropdown displaySystemDropdown;
     public TMP_InputField displayHoursInput;
@@ -99,6 +102,10 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public GameObject serviceTypePrefab;
     public GameObject selectDeptPrefab;
     public GameObject buttonRow;
+
+    [Header("Text validators")]
+    public TextValidator textValidator;
+    public TextValidatorDateTime textValidatorDateTime;
 
     [SerializeField]
     List<ServiceEntry> serviceEntries;
@@ -190,6 +197,15 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         }
         displayEnableEditingButton.onClick.RemoveAllListeners();
         displayEnableEditingButton.onClick.AddListener(() => DisplayMachineryChangeButtonsStatus(accessLevel == AccessLevel.admin));
+        //apply validator for dates
+        if (textValidatorDateTime == null)
+            textValidatorDateTime = ScriptableObject.CreateInstance<TextValidatorDateTime>();
+        if (textValidator == null)
+            textValidator = ScriptableObject.CreateInstance<TextValidator>();
+
+        dateInput.inputValidator = textValidatorDateTime;
+        displayDateInput.inputValidator = textValidatorDateTime;
+        //assert that date is properly written (YYYY-MM-DD dashes, 4 numbers 2 numbers 2 numbers)
     }
 
     void SetupButtons()
@@ -231,8 +247,9 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         updateMachineryButton.onClick.AddListener(UpdateMachineryInfo);
 
         displayPanelCloseButton.onClick.AddListener(() => CloseDisplayPanel());
-        #endregion
 
+        displayDeleteMachineryButton.onClick.AddListener(DeleteMachinery);
+        #endregion
 
         #region system entry
         createSystemEntryButton.onClick.AddListener(() => AddSystem(addSystemName.text, addSystemDept.options[addSystemDept.value].text));
@@ -270,6 +287,15 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             loginPanel.SetActive(false);
             //show message
         });
+        #endregion
+
+        #region date checker
+        dateInput.onDeselect.AddListener((dt) => TextValidatorDateTime.CheckDateInput(dt));
+        dateInput.onSubmit.AddListener((dt) => TextValidatorDateTime.CheckDateInput(dt));
+        dateInput.onEndEdit.AddListener((dt) => TextValidatorDateTime.CheckDateInput(dt));
+        displayDateInput.onDeselect.AddListener((dt) => TextValidatorDateTime.CheckDateInput(dt));
+        displayDateInput.onSubmit.AddListener((dt) => TextValidatorDateTime.CheckDateInput(dt));
+        displayDateInput.onEndEdit.AddListener((dt) => TextValidatorDateTime.CheckDateInput(dt));
         #endregion
     }
 
@@ -351,10 +377,31 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     void AddMachinery()
     {
+
+        if (nameInput.text == "")
+        {
+            MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+            {
+                showLabel = true,
+                label = "Αποθήκευση πληροφοριών μηχανήματος",
+                useLeftButton = false,
+                useRightButton = false,
+                showLoadingIndicator = false,
+                mainText = "Το πεδίο \"Όνομα Μηχανήματος\" δεν μπορεί να είναι κενό.",
+            });
+            return;
+        }
+
+        //ensure date is correct
+        if (!TextValidatorDateTime.CheckDateInput(dateInput.text))
+        {
+            return;
+        }
+
         MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
         {
             showLabel = false,
-            mainText = string.Format("Αποθήκευση δεδομένων για το μηχάνημα \"{0}\"...", nameInput.text),
+            mainText = string.Format("Αποθήκευση πληροφοριών μηχανήματος \"{0}\"...", nameInput.text),
             showLoadingIndicator = true,
             useLeftButton = false,
             useRightButton = false,
@@ -369,7 +416,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
         _currentService = new Service(
             nameInput.text, idInput.text, hoursInput.text.Length > 0 ? int.Parse(hoursInput.text) : 0,
-            systemDropdown.value,
+            dateInput.text, systemDropdown.value,
             serviceEntries);
         Debug.Log(_currentService.ToJson());
         //write to database
@@ -388,7 +435,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 new DataEntry(deptDropdown.captionText.text),
                 new DataEntry(systemDropdown.options[systemDropdown.value].text),
                 new DataEntry(int.Parse(hoursInput.text)),
-                new DataEntry(5),
+                new DataEntry(dateInput.text),
                 new DataEntry(1)
             };
             rowList.AddValues(entries);
@@ -681,6 +728,11 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     void CloseAddManchineryPanel()
     {
+        if (DatabaseManager.Instance.CheckIfTableExists(nameInput.text)) 
+        {
+            addMachineryPanel.SetActive(false);
+            return;
+        }
         //show message box
         MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
         {
@@ -702,6 +754,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         displayAddServiceEntryButton.interactable = status;
         displayDeleteSelectionButton.interactable = status;
         updateMachineryButton.interactable = status;
+        displayDeleteMachineryButton.interactable = status;
     }
 
     void CloseDisplayPanel()
@@ -813,6 +866,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         displayNameInput.text = serv.name;
         displayIdInput.text = serv.id;
         displayHoursInput.text = serv.CurrentHours.ToString();
+        displayDateInput.text = serv.lastServiceDate.ToString("yyyy-MM-dd");
 
         for (int i = 0; i < serv.descriptions.Count; i++)
         {
@@ -846,7 +900,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
         _currentService = new Service(
             displayNameInput.text, displayIdInput.text, displayHoursInput.text.Length > 0 ? int.Parse(displayHoursInput.text) : 0,
-            displaySystemDropdown.value,
+            displayDateInput.text, displaySystemDropdown.value,
             serviceEntries);
         Debug.Log(_currentService.ToJson());
         //write to database
@@ -863,7 +917,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 new DataEntry(displayDeptDropdown.captionText.text),
                 new DataEntry(displaySystemDropdown.options[displaySystemDropdown.value].text),
                 new DataEntry(int.Parse(displayHoursInput.text)),
-                new DataEntry(5),
+                new DataEntry(displayDateInput.text),
                 new DataEntry(1)
             };
             rowList.AddValues(entries);
@@ -886,6 +940,48 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 }, 1f);
             });
         });
+    }
+
+    void DeleteMachinery() 
+    {
+        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings() 
+        {
+            showLabel = true,
+            label = "Διαγραφή Μηχανήματος",
+            mainText = string.Format("Είστε σίγουροι ότι θέλετε να διαγράψετε το μηχάνημα \"{0}\";", displayNameInput.text),
+            useRightButton = true,
+            rightButtonLabel = "ΝΑΙ",
+            onRightButtonClick = () => 
+            {
+                displayMachineryPanel.SetActive(false);
+                DatabaseManager.Instance.DeleteRowsOnTable("MachineryList", string.Format("Name = '{0}'", displayNameInput.text));
+                DatabaseManager.Instance.DeleteTableFromDatabase(displayNameInput.text, 
+                    () => 
+                    {
+                        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings() 
+                        {
+                            showLabel = true,
+                            label = "Διαγραφή Μηχανήματος",
+                            mainText = string.Format("Επιτυχής διαγραφή μηχανήματος {0}.", displayNameInput.text),
+                            useRightButton = false,
+                            useLeftButton = false,
+                            showLoadingIndicator = false,
+                        });
+                        selectMachineryPanel.SetActive(false);
+                        selectSystemPanel.SetActive(false);
+                        SetupDeptSelectionInterface();
+                        //MessageBox.Instance.HideMessageBox();
+                    });
+
+            },
+            useLeftButton = true,
+            leftButtonLabel = "OXI",
+            onLeftButtonClick = () => 
+            {
+                MessageBox.Instance.HideMessageBox();
+            },
+            showLoadingIndicator = false,
+        }, -1);
     }
 
     void QuitApplication()
