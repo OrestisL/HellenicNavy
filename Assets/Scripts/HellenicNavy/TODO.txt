@@ -47,3 +47,4 @@ __REMAINING__
 - figure out a generic way to show which services are pending, depending on the hours and the days
 - add a way to mark a service as completed and one to postpone service
 - reports (pdf)
+- on start, after login(? maybe before) should search for all services that need to be done and notify

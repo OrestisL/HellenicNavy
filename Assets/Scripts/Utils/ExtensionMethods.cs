@@ -61,12 +61,13 @@ public static class ExtensionMethods
     {
         for (int i = 0; i < trans.childCount; i++)
         {
-            if (trans.GetChild(i).name.Equals("Label"))
+            if (trans.GetChild(i).name.Equals("Label") | trans.GetChild(i).name.Equals("Buttons"))
                 continue;
 
             UnityEngine.Object.Destroy(trans.GetChild(i).gameObject);
         }
 
+        Resources.UnloadUnusedAssets();
     }
 
     public static void DelayedEnableButton(this Button button, float delay)

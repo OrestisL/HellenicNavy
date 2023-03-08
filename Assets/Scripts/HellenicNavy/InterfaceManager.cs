@@ -138,7 +138,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 }, 0.8f);
 
                 //show info depending on account
-                SetupInterface(AccountManagement.Instance.CurrentAccount.AccessLevel);
+                SetupInterface(acc.AccessLevel);
             }
         };
 
@@ -295,6 +295,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     void ApplicationSetup() //maybe consider changing this 
     {
         Application.targetFrameRate = 30;
+        QualitySettings.vSyncCount = 0;
         Button[] buttons = Resources.FindObjectsOfTypeAll<Button>();
         for (int i = 0; i < buttons.Length; i++)
         {

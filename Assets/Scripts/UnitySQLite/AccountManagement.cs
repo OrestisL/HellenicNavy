@@ -109,9 +109,9 @@ namespace UnitySQLite
             {
                 yield return null;
             }
-#if UNITY_EDITOR
+
             CurrentAccount = Account.CurrentAccount;
-#endif
+
             onSuccessfulLogin?.Invoke(Account.CurrentAccount);
             onAfterLogin?.Invoke(validLogin, Account.CurrentAccount);
             onSuccessfulLogin = null;
