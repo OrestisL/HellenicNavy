@@ -3,6 +3,8 @@ using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using UnityEngine.UI;
+using System.Collections;
 
 public static class ExtensionMethods
 {
@@ -62,5 +64,18 @@ public static class ExtensionMethods
             UnityEngine.Object.Destroy(trans.GetChild(i).gameObject);
         }
 
+    }
+
+    public static void DelayedEnableButton(this Button button, float delay) 
+    {
+        button.onClick.AddListener(() => button.StartCoroutine(ToggleButton(button, delay)));
+    }
+
+    private static IEnumerator ToggleButton(Button button, float delay) 
+    {
+        button.interactable = false;
+        yield return new WaitForSeconds(delay);
+        button.interactable = true;
+        button.onClick.RemoveListener(() => button.StartCoroutine(ToggleButton(button, delay)));
     }
 }

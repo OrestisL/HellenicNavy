@@ -111,7 +111,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public override void Awake()
     {
         base.Awake();
-        Application.targetFrameRate = 30;
+        ApplicationSetup();
 
         ResetUI();
         AccountManagement.onAfterLogin += (valid, acc) =>
@@ -265,6 +265,16 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     }
 
+    void ApplicationSetup() //maybe consider changing this 
+    {
+        Application.targetFrameRate = 30;
+        Button[] buttons = Resources.FindObjectsOfTypeAll<Button>();
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            buttons[i].DelayedEnableButton(0.5f);
+        }
+    }
+
     void ResetUI()
     {
         menuPanel.SetActive(false);
@@ -312,14 +322,14 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     void AddMachinery()
     {
-        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings 
+        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
         {
-            showLabel  = false,
+            showLabel = false,
             mainText = string.Format("Αποθήκευση δεδομένων για το μηχάνημα \"{0}\"", nameInput.text),
             showLoadingIndicator = true,
             useLeftButton = false,
-            useRightButton= false,
-        },-1);
+            useRightButton = false,
+        }, -1);
 
         serviceEntries = new List<ServiceEntry>();
 
@@ -577,7 +587,12 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         labelParent.GetChild(0).GetComponent<TextMeshProUGUI>().text = string.Format("<b>{0}</b>\nΕπιλογή Συστήματος", currentDept);
         Button closeButton = selectSystemPanel.transform.GetChild(0).GetChild(1).GetComponent<Button>();
         closeButton.onClick.RemoveAllListeners();
-        closeButton.onClick.AddListener(() => { selectSystemPanel.SetActive(false); selectSystemPanel.transform.GetChild(1).ClearChildren(); SetupDeptSelectionInterface(); });
+        closeButton.onClick.AddListener(() =>
+        { 
+            selectSystemPanel.SetActive(false); 
+            selectSystemPanel.transform.GetChild(1).ClearChildren(); 
+            SetupDeptSelectionInterface(); 
+        });
 
         if (data.Count == 0 | data == null)
         {
@@ -637,10 +652,10 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             SortResultsBy.none, null, "", 0, 0, string.Format("Where System = '{0}' AND isActive = 1", currentSystem));
     }
 
-    void CloseAddManchineryPanel() 
+    void CloseAddManchineryPanel()
     {
         //show message box
-        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings() 
+        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
         {
             showLabel = true,
             label = "Αποθήκευση δεδομένων μηχανήματος",
@@ -652,7 +667,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             leftButtonLabel = "OXI",
             onLeftButtonClick = () => { MessageBox.Instance.HideMessageBox(); addMachineryPanel.SetActive(false); },
             onRightButtonClick = () => { AddMachinery(); },
-        },-1);
+        }, -1);
     }
 
     void CloseDisplayPanel()
@@ -670,7 +685,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             leftButtonLabel = "OXI",
             onLeftButtonClick = () => { MessageBox.Instance.HideMessageBox(); },
             onRightButtonClick = () => { UpdateMachineryInfo(); },
-        },-1);
+        }, -1);
     }
 
     IEnumerator SetupMachineryButtons(List<List<DataEntry>> data, string currentSystem)
@@ -816,15 +831,15 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             //update machinery list
             DatabaseManager.Instance.UpdateValuesOnTable("MachineryList", rowList.GetColumnNames(), rowList.GetValues(), $"Name = '{displayNameInput.text}'");
 
-            UnityMainThreadDispatcher.Instance.Enqueue(() => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings() 
+            UnityMainThreadDispatcher.Instance.Enqueue(() => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
             {
                 mainText = string.Format("Επιτυχής ανανέωση δεδομένων για μηχάνημα \"{0}\".", displayNameInput.text),
-                useRightButton=false,
-                useLeftButton=false,
-                showLabel=false,
-                showLoadingIndicator=false,
+                useRightButton = false,
+                useLeftButton = false,
+                showLabel = false,
+                showLoadingIndicator = false,
                 onHide = () => displayMachineryPanel.SetActive(false),
-            }, 1f));;
+            }, 1f)); ;
         });
     }
 

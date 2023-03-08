@@ -4,6 +4,10 @@ using UnityEngine.EventSystems;
 
 public class CustomButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler
 {
+    public bool interactable = true;
+    public Color normalColor = Color.white;
+    public Color pressedColor = Color.gray;
+    public Color disabledColor = new Color(0.8f, 0.8f, 0.8f, 0.5f);
     public UnityEvent onClickDown = new UnityEvent();
     public UnityEvent onClickUp = new UnityEvent();
     public UnityEvent onEnter = new UnityEvent();
@@ -13,7 +17,7 @@ public class CustomButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (m_lastPressTime + delay > Time.unscaledTime)
+        if (m_lastPressTime + delay > Time.unscaledTime & interactable)
         {
             onClickDown?.Invoke();
         }
@@ -31,7 +35,7 @@ public class CustomButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (m_lastPressTime + delay > Time.unscaledTime)
+        if (m_lastPressTime + delay > Time.unscaledTime & interactable)
         {
             onClickUp?.Invoke();
         }
