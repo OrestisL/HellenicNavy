@@ -36,6 +36,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public Button createMachineryButton;
     public Button addServiceEntryButton;
     public Button deleteSelectionButton;
+    public Button closeAddMachineryPanel;
     public RectTransform serviceEntryParent;
     public TMP_InputField nameInput;
     public TMP_InputField serialInput;
@@ -50,6 +51,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public Button updateMachineryButton;
     public Button displayAddServiceEntryButton;
     public Button displayDeleteSelectionButton;
+    public Button displayPanelCloseButton;
     public RectTransform displayServiceEntryParent;
     public TMP_InputField displayNameInput;
     public TMP_InputField displaySerialInput;
@@ -192,14 +194,16 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         addServiceEntryButton.onClick.AddListener(() => AddServiceEntry(serviceEntryParent));
         deleteSelectionButton.onClick.AddListener(() => DeleteSelectedServiceEntries(serviceEntryParent));
         createMachineryButton.onClick.AddListener(AddMachinery);
-
+        closeAddMachineryPanel.onClick.AddListener(CloseAddManchineryPanel);
         #endregion
 
         #region display machinery
-        
+
         displayDeleteSelectionButton.onClick.AddListener(() => DeleteSelectedServiceEntries(displayServiceEntryParent));
         displayAddServiceEntryButton.onClick.AddListener(() => AddServiceEntry(displayServiceEntryParent));
         updateMachineryButton.onClick.AddListener(UpdateMachineryInfo);
+
+        displayPanelCloseButton.onClick.AddListener(() => CloseDisplayPanel());
         #endregion
 
 
@@ -308,6 +312,15 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     void AddMachinery()
     {
+        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings 
+        {
+            showLabel  = false,
+            mainText = string.Format("Αποθήκευση δεδομένων για το μηχάνημα \"{0}\"", nameInput.text),
+            showLoadingIndicator = true,
+            useLeftButton = false,
+            useRightButton= false,
+        },-1);
+
         serviceEntries = new List<ServiceEntry>();
 
         for (int i = 0; i < serviceEntryParent.childCount; i++)
@@ -476,7 +489,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             depts.ClearOptions();
             depts.AddOptions(deptsFromDict);
             systems.value = defaultValue;
-            systems.onValueChanged.AddListener((i) => 
+            systems.onValueChanged.AddListener((i) =>
             {
                 depts.value = i;
             });
@@ -599,7 +612,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             buttonCount++;
         }
         selectSystemPanel.SetActive(true);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(selectSystemPanel.GetComponent<RectTransform>());   
+        LayoutRebuilder.ForceRebuildLayoutImmediate(selectSystemPanel.GetComponent<RectTransform>());
         MessageBox.Instance.HideMessageBox();
 
         Debug.Log($"read all systems for {currentDept}");
@@ -622,6 +635,42 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 StartCoroutine(SetupMachineryButtons(data, currentSystem));
             },
             SortResultsBy.none, null, "", 0, 0, string.Format("Where System = '{0}' AND isActive = 1", currentSystem));
+    }
+
+    void CloseAddManchineryPanel() 
+    {
+        //show message box
+        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings() 
+        {
+            showLabel = true,
+            label = "Αποθήκευση δεδομένων μηχανήματος",
+            useRightButton = true,
+            useLeftButton = true,
+            showLoadingIndicator = false,
+            mainText = "Θέλετε να αποθηκεύσετε τα δεδομένα;",
+            rightButtonLabel = "NAI",
+            leftButtonLabel = "OXI",
+            onLeftButtonClick = () => { MessageBox.Instance.HideMessageBox(); addMachineryPanel.SetActive(false); },
+            onRightButtonClick = () => { AddMachinery(); },
+        },-1);
+    }
+
+    void CloseDisplayPanel()
+    {
+        //show message box in order to save the data
+        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+        {
+            showLabel = true,
+            label = "Ανανέωση δεδομένων μηχανήματος",
+            useRightButton = true,
+            useLeftButton = true,
+            showLoadingIndicator = false,
+            mainText = "Είστε σίγουροι ότι θέλετε να κλείσετε το παράθυρο;",
+            rightButtonLabel = "NAI",
+            leftButtonLabel = "OXI",
+            onLeftButtonClick = () => { MessageBox.Instance.HideMessageBox(); },
+            onRightButtonClick = () => { UpdateMachineryInfo(); },
+        },-1);
     }
 
     IEnumerator SetupMachineryButtons(List<List<DataEntry>> data, string currentSystem)
@@ -716,12 +765,21 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             yield return new WaitForEndOfFrame();
         }
         displayMachineryPanel.SetActive(true);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(displayMachineryPanel.GetComponent<RectTransform>());
+        //LayoutRebuilder.ForceRebuildLayoutImmediate(displayMachineryPanel.GetComponent<RectTransform>());
         MessageBox.Instance.HideMessageBox();
     }
 
-    void UpdateMachineryInfo() 
+    void UpdateMachineryInfo()
     {
+        //show message box 
+        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+        {
+            useLeftButton = false,
+            useRightButton = false,
+            showLabel = false,
+            showLoadingIndicator = true,
+            mainText = "Παρακαλώ περιμένετε, ανανέωση δεδομένων...",
+        });
         serviceEntries = new List<ServiceEntry>();
 
         for (int i = 0; i < displayServiceEntryParent.childCount; i++)
@@ -757,6 +815,16 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             DatabaseManager.Instance.UpdateValuesOnTable(displayNameInput.text, row.GetColumnNames(), row.GetValues());
             //update machinery list
             DatabaseManager.Instance.UpdateValuesOnTable("MachineryList", rowList.GetColumnNames(), rowList.GetValues(), $"Name = '{displayNameInput.text}'");
+
+            UnityMainThreadDispatcher.Instance.Enqueue(() => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings() 
+            {
+                mainText = string.Format("Επιτυχής ανανέωση δεδομένων για μηχάνημα \"{0}\".", displayNameInput.text),
+                useRightButton=false,
+                useLeftButton=false,
+                showLabel=false,
+                showLoadingIndicator=false,
+                onHide = () => displayMachineryPanel.SetActive(false),
+            }, 1f));;
         });
     }
 
