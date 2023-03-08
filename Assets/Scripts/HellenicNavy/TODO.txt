@@ -1,23 +1,49 @@
+__COMPLETED__
 - create accounts (1x user, 1x supervisor, 1x admin) (done)
+
 - add change password functionality (done)
+
 - add password to database (and change password) (needs new dll)
+
 - loading message (done - message box)
-- message box should disable buttons and inputs etc
-- export/import database (change extension? does it matter?)
-- limit hours/days input to comma separated ints only (done)
+
+- limit hours/days input to comma separated ints only (done)(it uses newlines but w/e same difference)
+
 - add a way to add the assignment types (done)
+
 - change how input fields are shown in the add service entry (maybe not)(done)
+
 - choosing department button should open a dialogue to change the department > 
 			choosing YES should load all systems (button array) > 
 			each button should load all machinery in that system (button array) (done)
+
 - read/write json for service entry (add close button to interface) (interface should close and reset on logout) (done)
 			(write works but all , are turned to . just need to make sure you change back after reading) (works)
+
 - each dept should have its own systems -> database should be changed (done)
+
 - when adding machinery, the avaialble systems should load after picking dept (done - picking system automatically adds the dept)
-- refactor database manager to command pattern (read write) (consider message box hide)
+
 - dictionary with depts and systems should be populated on start + when new system/dept is added (done)
-- fix weird ui behavior (force update layout immediate does not work) (this is weird and still doesnt work properly, workaround is to have all panels enabled before starting and disable them in awake)
+
+- fix weird ui behavior (force update layout immediate does not work) 
+	(this is weird and still doesnt work properly, workaround is to have all panels enabled before starting and disable them in awake)
+	(some panels need to be enabled, some disabled but it's mostly fixed)
+
 - add button for updating info on machinery (done)
+
+- disable ui elements depending on user (done 2/3)
+
+- add edit and fix other buttons on display machinery interface (done)
+
+- redo TODO text (done)
+#################################################################################################################################################
+
+__REMAINING__
+- message box should disable buttons and inputs etc
+- export/import database (change extension? does it matter?)
+- refactor database manager to command pattern (read write) (consider message box hide)(might omit entirely)
 - update machinery list on system interface after updating info
-- disable ui elements depending on user
-- add edit and fix other buttons on display machinery interface
+- figure out a generic way to show which services are pending, depending on the hours and the days
+- add a way to mark a service as completed and one to postpone service
+- reports (pdf)

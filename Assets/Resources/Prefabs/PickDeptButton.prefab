@@ -31,6 +31,7 @@ GameObject:
   - component: {fileID: -1071569489730557213}
   - component: {fileID: 3665677954728446985}
   - component: {fileID: -4865166922485279375}
+  - component: {fileID: 8221855566746453768}
   m_Layer: 5
   m_Name: PickDeptButton
   m_TagString: Untagged
@@ -358,6 +359,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &-4865166922485279375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4324835584502831162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f8399a59f9db86488d7526e592ee4bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8221855566746453768
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
