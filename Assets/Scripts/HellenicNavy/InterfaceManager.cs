@@ -135,7 +135,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                     useLeftButton = false,
                     showLabel = false,
                     mainText = string.Format("Επιτυχής σύνδεση {0}.", acc.AccountName),
-                });
+                }, 0.8f);
 
                 //show info depending on account
                 SetupInterface(AccountManagement.Instance.CurrentAccount.AccessLevel);
@@ -547,14 +547,14 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 useLeftButton = false,
                 mainText = "Παρακαλώ περιμένετε, ανάγνωση δεδομένων...",
                 showLoadingIndicator = true,
-            });
+            }, -1);
             DatabaseManager.Instance.ReadData("DepartmentsList", SelectFromDatabaseMode.everything,
                 (data) =>
                 {
                     selectDeptPanel.transform.ClearChildren();
                     MessageBox.Instance.HideMessageBox();
                     for (int i = 0; i < data.Count; i++)
-                    {                     
+                    {
                         Button b = Instantiate(selectDeptPrefab, selectDeptPanel.transform).GetComponent<Button>();
                         string currentDept = data[i][0].StringValue;
                         b.name = currentDept;
@@ -598,14 +598,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         {
             selectDeptPanel.SetActive(false);
             selectSystemPanel.transform.ClearChildren();
-            //Transform[] children = selectDeptPanel?.GetComponentsInChildren<Transform>();
-            //for (int i = 0; i < children.Length; i++)
-            //{
-            //    if (children[i].name.Equals("Label") | children[i] == selectDeptPanel.transform)
-            //        continue;
-
-            //    Destroy(children[i].gameObject);
-            //}
         }
 
     }
@@ -634,8 +626,11 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 useRightButton = false,
                 useLeftButton = false,
                 mainText = string.Format("Δεν υπάρχουν συστήματα στην επιστασία \"{0}\".", currentDept),
-                onHide = () => { SetupDeptSelectionInterface(); },
-            }, 1.5f);
+                onHide = () =>
+                {
+                    SetupDeptSelectionInterface();
+                },
+            }, 1f);
 
             yield break;
         }
@@ -701,7 +696,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         }, -1);
     }
 
-    void DisplayMachineryChangeButtonsStatus(bool status) 
+    void DisplayMachineryChangeButtonsStatus(bool status)
     {
         displayAddServiceEntryButton.interactable = status;
         displayDeleteSelectionButton.interactable = status;
@@ -710,7 +705,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     void CloseDisplayPanel()
     {
-        if (AccountManagement.Instance.CurrentAccount.AccessLevel == AccessLevel.user) 
+        if (AccountManagement.Instance.CurrentAccount.AccessLevel == AccessLevel.user)
         {
             displayMachineryPanel.SetActive(false);
             return;
@@ -825,7 +820,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             yield return new WaitForEndOfFrame();
         }
         displayMachineryPanel.SetActive(true);
-        //LayoutRebuilder.ForceRebuildLayoutImmediate(displayMachineryPanel.GetComponent<RectTransform>());
+        LayoutRebuilder.ForceRebuildLayoutImmediate(displayEnableEditingButton.transform.parent.parent.GetComponent<RectTransform>());
         MessageBox.Instance.HideMessageBox();
     }
 
@@ -876,15 +871,18 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             //update machinery list
             DatabaseManager.Instance.UpdateValuesOnTable("MachineryList", rowList.GetColumnNames(), rowList.GetValues(), $"Name = '{displayNameInput.text}'");
 
-            UnityMainThreadDispatcher.Instance.Enqueue(() => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+            UnityMainThreadDispatcher.Instance.Enqueue(() =>
             {
-                mainText = string.Format("Επιτυχής ανανέωση δεδομένων για μηχάνημα \"{0}\".", displayNameInput.text),
-                useRightButton = false,
-                useLeftButton = false,
-                showLabel = false,
-                showLoadingIndicator = false,
-                onHide = () => displayMachineryPanel.SetActive(false),
-            }, 1f)); ;
+                MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+                {
+                    mainText = string.Format("Επιτυχής ανανέωση δεδομένων για μηχάνημα \"{0}\".", displayNameInput.text),
+                    useRightButton = false,
+                    useLeftButton = false,
+                    showLabel = false,
+                    showLoadingIndicator = false,
+                    onHide = () => displayMachineryPanel.SetActive(false),
+                }, 1f);
+            });
         });
     }
 

@@ -10,7 +10,7 @@ public class MessageBox : GenericSingleton<MessageBox>
     public Button rightButton, leftButton;
     public TextMeshProUGUI mainText, label, rightButtonLabel, leftButtonLabel;
     private bool isRunning;
-    private Action onShow, onHide;
+    private Action onHide;
     public Transform loadingIndicatorParent;
 
     public override void Awake()
@@ -32,9 +32,7 @@ public class MessageBox : GenericSingleton<MessageBox>
 
     public void ShowMessageBox(MessageBoxSettings settings, float delay = 2f)
     {
-        onShow += settings.onShow;
-        onShow?.Invoke();
-        onShow = null;
+        settings.onShow?.Invoke();
 
         rightButton.gameObject.SetActive(settings.useRightButton);
         if (settings.useRightButton)
@@ -73,6 +71,7 @@ public class MessageBox : GenericSingleton<MessageBox>
 
         if (delay > 0)
             StartCoroutine(HideWithDelay(delay));
+
     }
 
     public void HideMessageBox()
@@ -83,7 +82,7 @@ public class MessageBox : GenericSingleton<MessageBox>
         onHide = null;
         gameObject.SetActive(false);
         //ChangeUIItemsStatus(true);
-        if (isRunning) { StopCoroutine("HideWithDelay"); }
+        if (isRunning) { StopCoroutine(nameof(HideWithDelay)); }
         StopCoroutine(RotateLoadingIndicator());
         loadingIndicatorParent.transform.localRotation = Quaternion.identity;
     }
@@ -95,6 +94,7 @@ public class MessageBox : GenericSingleton<MessageBox>
             delay += delay;
         }
         isRunning = true;
+
         yield return new WaitForSeconds(delay);
         HideMessageBox();
         isRunning = false;
