@@ -52,6 +52,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public Button displayAddServiceEntryButton;
     public Button displayDeleteSelectionButton;
     public Button displayPanelCloseButton;
+    public Button displayEnableEditingButton;
     public RectTransform displayServiceEntryParent;
     public TMP_InputField displayNameInput;
     public TMP_InputField displaySerialInput;
@@ -123,6 +124,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 loginPanel.SetActive(false);
                 userPanel.SetActive(true);
 
+                SetupInterface(acc.AccessLevel);
                 //clear input fields
                 AccountManagement.Instance.passwordField.text = "";
                 AccountManagement.Instance.usernameField.text = "";
@@ -163,6 +165,31 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     void SetupInterface(AccessLevel accessLevel)
     {
         //TODO hide UI elements according to access level
+        switch (accessLevel)
+        {
+            case AccessLevel.None:
+                //this doesnt really pop up anywhere
+                break;
+            case AccessLevel.user:
+                //user should not be able to add system, dept and machinery
+                addSystemButton.gameObject.SetActive(false);
+                createDeptButton.gameObject.SetActive(false);
+                addMachineryButton.gameObject.SetActive(false);
+                displayEnableEditingButton.transform.parent.gameObject.SetActive(false);
+                break;
+            case AccessLevel.supervisor:
+
+                break;
+            case AccessLevel.admin:
+                //admin should have access to all
+                addSystemButton.gameObject.SetActive(true);
+                createDeptButton.gameObject.SetActive(true);
+                addMachineryButton.gameObject.SetActive(true);
+                displayEnableEditingButton.transform.parent.gameObject.SetActive(true);
+                break;
+        }
+        displayEnableEditingButton.onClick.RemoveAllListeners();
+        displayEnableEditingButton.onClick.AddListener(() => DisplayMachineryChangeButtonsStatus(accessLevel == AccessLevel.admin));
     }
 
     void SetupButtons()
@@ -272,6 +299,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         for (int i = 0; i < buttons.Length; i++)
         {
             buttons[i].DelayedEnableButton(0.5f);
+            buttons[i].gameObject.AddComponent<ReEnableButton>();
         }
     }
 
@@ -325,7 +353,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
         {
             showLabel = false,
-            mainText = string.Format("Αποθήκευση δεδομένων για το μηχάνημα \"{0}\"", nameInput.text),
+            mainText = string.Format("Αποθήκευση δεδομένων για το μηχάνημα \"{0}\"...", nameInput.text),
             showLoadingIndicator = true,
             useLeftButton = false,
             useRightButton = false,
@@ -371,14 +399,14 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                     showLabel = false,
                     useRightButton = false,
                     useLeftButton = false,
-                    mainText = "Τα δεδομένα υπάρχουν ήδη"
+                    mainText = "Τα δεδομένα υπάρχουν ήδη."
                 }),
                 () => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
                 {
                     showLabel = false,
                     useRightButton = false,
                     useLeftButton = false,
-                    mainText = "Επιτυχής εγγραφή δεδομένων"
+                    mainText = "Επιτυχής εγγραφή δεδομένων."
                 }));
         });
     }
@@ -523,9 +551,10 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             DatabaseManager.Instance.ReadData("DepartmentsList", SelectFromDatabaseMode.everything,
                 (data) =>
                 {
+                    selectDeptPanel.transform.ClearChildren();
                     MessageBox.Instance.HideMessageBox();
                     for (int i = 0; i < data.Count; i++)
-                    {
+                    {                     
                         Button b = Instantiate(selectDeptPrefab, selectDeptPanel.transform).GetComponent<Button>();
                         string currentDept = data[i][0].StringValue;
                         b.name = currentDept;
@@ -568,14 +597,15 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         else
         {
             selectDeptPanel.SetActive(false);
-            Transform[] children = selectDeptPanel?.GetComponentsInChildren<Transform>();
-            for (int i = 0; i < children.Length; i++)
-            {
-                if (children[i].name.Equals("Label") | children[i] == selectDeptPanel.transform)
-                    continue;
+            selectSystemPanel.transform.ClearChildren();
+            //Transform[] children = selectDeptPanel?.GetComponentsInChildren<Transform>();
+            //for (int i = 0; i < children.Length; i++)
+            //{
+            //    if (children[i].name.Equals("Label") | children[i] == selectDeptPanel.transform)
+            //        continue;
 
-                Destroy(children[i].gameObject);
-            }
+            //    Destroy(children[i].gameObject);
+            //}
         }
 
     }
@@ -583,15 +613,16 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     IEnumerator SetupSystemsButtons(List<List<DataEntry>> data, string currentDept)
     {
         //setup interaface
+        selectSystemPanel.transform.GetChild(1).ClearChildren();
         Transform labelParent = selectSystemPanel.transform.GetChild(0);
         labelParent.GetChild(0).GetComponent<TextMeshProUGUI>().text = string.Format("<b>{0}</b>\nΕπιλογή Συστήματος", currentDept);
         Button closeButton = selectSystemPanel.transform.GetChild(0).GetChild(1).GetComponent<Button>();
         closeButton.onClick.RemoveAllListeners();
         closeButton.onClick.AddListener(() =>
-        { 
-            selectSystemPanel.SetActive(false); 
-            selectSystemPanel.transform.GetChild(1).ClearChildren(); 
-            SetupDeptSelectionInterface(); 
+        {
+            selectSystemPanel.SetActive(false);
+            selectSystemPanel.transform.GetChild(1).ClearChildren();
+            SetupDeptSelectionInterface();
         });
 
         if (data.Count == 0 | data == null)
@@ -670,8 +701,21 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         }, -1);
     }
 
+    void DisplayMachineryChangeButtonsStatus(bool status) 
+    {
+        displayAddServiceEntryButton.interactable = status;
+        displayDeleteSelectionButton.interactable = status;
+        updateMachineryButton.interactable = status;
+    }
+
     void CloseDisplayPanel()
     {
+        if (AccountManagement.Instance.CurrentAccount.AccessLevel == AccessLevel.user) 
+        {
+            displayMachineryPanel.SetActive(false);
+            return;
+        }
+
         //show message box in order to save the data
         MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
         {
@@ -680,16 +724,17 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             useRightButton = true,
             useLeftButton = true,
             showLoadingIndicator = false,
-            mainText = "Είστε σίγουροι ότι θέλετε να κλείσετε το παράθυρο;",
+            mainText = "Θέλετε να αποθηκεύσετε τις αλλαγές;",
             rightButtonLabel = "NAI",
             leftButtonLabel = "OXI",
-            onLeftButtonClick = () => { MessageBox.Instance.HideMessageBox(); },
+            onLeftButtonClick = () => { MessageBox.Instance.HideMessageBox(); displayMachineryPanel.SetActive(false); },
             onRightButtonClick = () => { UpdateMachineryInfo(); },
         }, -1);
     }
 
     IEnumerator SetupMachineryButtons(List<List<DataEntry>> data, string currentSystem)
     {
+        selectMachineryPanel.transform.GetChild(1).ClearChildren();
         selectSystemPanel.SetActive(false);
         Transform labelParent = selectMachineryPanel.transform.GetChild(0);
         labelParent.GetChild(0).GetComponent<TextMeshProUGUI>().text = string.Format("<b>{0}</b>\nΕπιλογή Μηχανήματος", currentSystem);

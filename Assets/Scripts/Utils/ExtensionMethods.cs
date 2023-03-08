@@ -30,7 +30,7 @@ public static class ExtensionMethods
         }
     }
 
-    public static T Deserialize<T>(this byte[] byteArray) where T : class
+    public static T DeserializeFromByteArray<T>(this byte[] byteArray) where T : class
     {
         if (byteArray == null)
         {
@@ -61,17 +61,20 @@ public static class ExtensionMethods
     {
         for (int i = 0; i < trans.childCount; i++)
         {
+            if (trans.GetChild(i).name.Equals("Label"))
+                continue;
+
             UnityEngine.Object.Destroy(trans.GetChild(i).gameObject);
         }
 
     }
 
-    public static void DelayedEnableButton(this Button button, float delay) 
+    public static void DelayedEnableButton(this Button button, float delay)
     {
         button.onClick.AddListener(() => button.StartCoroutine(ToggleButton(button, delay)));
     }
 
-    private static IEnumerator ToggleButton(Button button, float delay) 
+    private static IEnumerator ToggleButton(Button button, float delay)
     {
         button.interactable = false;
         yield return new WaitForSeconds(delay);

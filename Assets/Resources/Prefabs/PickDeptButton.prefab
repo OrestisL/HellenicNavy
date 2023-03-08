@@ -12,7 +12,9 @@ GameObject:
   - component: {fileID: 7830566303779390583}
   - component: {fileID: 2694232309150045795}
   - component: {fileID: 272816981885737003}
-  - component: {fileID: 7869657526891820350}
+  - component: {fileID: 7666739309554491614}
+  - component: {fileID: 1184818978945889212}
+  - component: {fileID: 8814208359065112058}
   m_Layer: 5
   m_Name: PickDeptButton
   m_TagString: Untagged
@@ -123,7 +125,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &7869657526891820350
+--- !u!114 &7666739309554491614
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -132,11 +134,33 @@ MonoBehaviour:
   m_GameObject: {fileID: 4324835584502831162}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1959a8f39d929ee4c82e9354ba46ab03, type: 3}
+  m_Script: {fileID: 11500000, guid: 4f8399a59f9db86488d7526e592ee4bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clearChildren: 0
-  clearSelf: 1
+--- !u!114 &1184818978945889212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4324835584502831162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f8399a59f9db86488d7526e592ee4bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8814208359065112058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4324835584502831162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f8399a59f9db86488d7526e592ee4bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5086325741901472559
 GameObject:
   m_ObjectHideFlags: 0

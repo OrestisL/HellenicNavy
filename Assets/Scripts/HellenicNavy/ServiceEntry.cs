@@ -5,6 +5,7 @@ using SPS;
 using System;
 using System.Linq;
 using UnityEngine.UI;
+using UnitySQLite;
 
 public class ServiceEntry : MonoBehaviour
 {
@@ -189,12 +190,17 @@ public class ServiceEntry : MonoBehaviour
 
     public void DisplayFromData(string descr, List<int> hours, List<int> days, List<ServiceAssignmentType> serviceTypesHours, List<ServiceAssignmentType> serviceTypesDays) 
     {
+        bool accessible = AccountManagement.Instance.CurrentAccount.AccessLevel == UnitySQLite.Utilities.AccessLevel.admin;
         descriptionField.text = descr;
+        descriptionField.interactable = accessible;
+
         for (int i = 0; i < hours.Count; i++)
         {
             hoursField.text += string.Format("{0}\n", hours[i]);
             TMP_Dropdown d = Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentHours).GetComponent<TMP_Dropdown>();
             d.value = (int)serviceTypesHours[i];
+            d.interactable = accessible;
+            hoursField.interactable = accessible;
         }
         hoursField.text.TrimEnd();
 
@@ -203,8 +209,12 @@ public class ServiceEntry : MonoBehaviour
             daysField.text += string.Format("{0}\n", days[j]);
             TMP_Dropdown d = Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentDays).GetComponent<TMP_Dropdown>();
             d.value = (int)serviceTypesDays[j];
+            d.interactable = accessible;
+            daysField.interactable = accessible;
         }
         daysField.text.TrimEnd();
+
+        selectionToggle.interactable = accessible;
     }
     void ClearChildren(Transform parent)
     {

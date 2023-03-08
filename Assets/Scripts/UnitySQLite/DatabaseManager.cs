@@ -8,6 +8,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Collections;
 using UnitySQLite.Utilities;
+using UnityEditor;
 #endregion
 namespace UnitySQLite
 {
@@ -940,6 +941,13 @@ namespace UnitySQLite
             CloseConnection();
             Destroy(gameObject);
         }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            StartThreads();
+        }
+#endif
     }
 
 
