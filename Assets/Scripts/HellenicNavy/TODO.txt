@@ -43,13 +43,15 @@ __COMPLETED__
 - added a bunch of checks for when adding/deleting things (done)
 
 - update machinery list on system interface after updating info (done, just goes back to depts)
+
+- on start, after login(? maybe before) should search for all services that need to be done and notify (done with button, cause automatic would cause issues)
 #################################################################################################################################################
 
 __REMAINING__
 - message box should disable buttons and inputs etc
 - export/import database (change extension? does it matter?)
 - refactor database manager to command pattern (read write) (consider message box hide)(might omit entirely)
-- figure out a generic way to show which services are pending, depending on the hours and the days (first iteration not working at 100%)
+- figure out a generic way to show which services are pending, depending on the hours and the days (second iteration working for days, need a few more changes for hours)
 - add a way to mark a service as completed and one to postpone service, this should also change the last service hours/date
+  should also highlight the service entries that need to be done -> add a way to mark service as done/postponed
 - reports (pdf)
-- on start, after login(? maybe before) should search for all services that need to be done and notify

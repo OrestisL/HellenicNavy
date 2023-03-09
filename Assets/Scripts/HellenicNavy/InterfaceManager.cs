@@ -56,6 +56,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public Button displayPanelCloseButton;
     public Button displayEnableEditingButton;
     public Button displayDeleteMachineryButton;
+    public Button displayCompleteServiceButton;
+    public Button displayPostponeServiceButton;
     public RectTransform displayServiceEntryParent;
     public TMP_InputField displayNameInput;
     public TMP_InputField displayDescriptionInput;
@@ -186,7 +188,11 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 addSystemButton.gameObject.SetActive(false);
                 createDeptButton.gameObject.SetActive(false);
                 addMachineryButton.gameObject.SetActive(false);
-                displayEnableEditingButton.transform.parent.gameObject.SetActive(false);
+                displayEnableEditingButton.gameObject.SetActive(false);
+                displayAddServiceEntryButton.gameObject.SetActive(false);
+                displayDeleteSelectionButton.gameObject.SetActive(false);
+                updateMachineryButton.gameObject.SetActive(false);
+                displayDeleteMachineryButton.gameObject.SetActive(false);
                 break;
             case AccessLevel.supervisor:
 
@@ -196,7 +202,11 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 addSystemButton.gameObject.SetActive(true);
                 createDeptButton.gameObject.SetActive(true);
                 addMachineryButton.gameObject.SetActive(true);
-                displayEnableEditingButton.transform.parent.gameObject.SetActive(true);
+                displayEnableEditingButton.gameObject.SetActive(true);
+                displayAddServiceEntryButton.gameObject.SetActive(true);
+                displayDeleteSelectionButton.gameObject.SetActive(true);
+                updateMachineryButton.gameObject.SetActive(true);
+                displayDeleteMachineryButton.gameObject.SetActive(true);
                 break;
         }
         displayEnableEditingButton.onClick.RemoveAllListeners();
@@ -256,6 +266,9 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         displayPanelCloseButton.onClick.AddListener(() => CloseDisplayPanel());
 
         displayDeleteMachineryButton.onClick.AddListener(DeleteMachinery);
+
+        displayCompleteServiceButton.onClick.AddListener(CompleteServiceEntries);
+        displayPostponeServiceButton.onClick.AddListener(PostponeServiceEntries);
         #endregion
 
         #region system entry
@@ -764,6 +777,20 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         displayDeleteSelectionButton.interactable = status;
         updateMachineryButton.interactable = status;
         displayDeleteMachineryButton.interactable = status;
+        displayCompleteServiceButton.interactable = status;
+        displayPostponeServiceButton.interactable = status;
+    }
+
+    void CompleteServiceEntries() 
+    {
+        ServiceEntry[] currentEntries = displayServiceEntryParent.GetComponentsInChildren<ServiceEntry>();
+        _currentService.SetServiceStatusCompleted(currentEntries);
+    }
+
+    void PostponeServiceEntries() 
+    {
+        ServiceEntry[] currentEntries = displayServiceEntryParent.GetComponentsInChildren<ServiceEntry>();
+        _currentService.SetServiceStatusPostponed(currentEntries);
     }
 
     void CloseDisplayPanel()
@@ -866,7 +893,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         displayServiceEntryParent.ClearChildren();
         //create new service from json
         Service serv = new Service(data[0][1].StringValue);
-
+        _currentService = serv;
         ShowSystems(displaySystemDropdown, displayDeptDropdown, serv.systemName);
         //change label
         displayMachineryLabel.text = string.Format("<u>Επιστασία {0}, Σύστημα {1}, Πληροφορίες Μηχανήματος {2}</u>",

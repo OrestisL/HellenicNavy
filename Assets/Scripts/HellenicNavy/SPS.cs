@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -37,6 +38,13 @@ namespace SPS
         other,
         Overhaul,
     }
+    [Serializable]
+    public enum ServiceStatus
+    {
+        pending,
+        completed,
+        postponed
+    }
 
     /// <summary>
     /// Service class holds all required information for each service.
@@ -48,6 +56,8 @@ namespace SPS
         private int _currentHours;
         public DateTime lastServiceDate;
         public int lastServiceHours;
+        //public ServiceStatus status;
+        public string postponedServiceDescr;
         public int CurrentHours
         {
             get { return _currentHours; }
@@ -55,7 +65,7 @@ namespace SPS
         }
         public int CurrentDays
         {
-            get 
+            get
             {
                 return Mathf.Abs((lastServiceDate - DateTime.Now).Days);
             }
@@ -89,7 +99,7 @@ namespace SPS
             serviceAssignments = s.serviceAssignments;
         }
 
-        public Service(string name,string descr, string id, int hours, string lastDate, int system, List<ServiceEntry> entries)
+        public Service(string name, string descr, string id, int hours, string lastDate, int system, List<ServiceEntry> entries)
         {
             this.name = name;
             this.id = id;
@@ -125,6 +135,37 @@ namespace SPS
             descriptions[index] = description;
         }
 
+        public void SetServiceStatusPostponed(ServiceEntry[] entries)
+        {
+            List<ServiceEntry> postponed = entries.Where(x => x.IsSelected).ToList();
+            if (postponed.Count > 0)
+            {
+                postponedServiceDescr = string.Format("Την {0} αναβλήθησαν οι εξής επισκευές:", DateTime.Now.ToString("dd-MM-yy"));
+                for (int i = 0; i < postponed.Count; i++)
+                {
+                    postponed[i].status = ServiceStatus.postponed;
+                    postponedServiceDescr = string.Format("{0}\n{1}", postponedServiceDescr, postponed[i].Descr);
+                    postponed[i].bgImg.color = postponed[i].postponedColor;
+                }
+            }
+
+        }
+
+        public void SetServiceStatusCompleted(ServiceEntry[] entries)
+        {
+            List<ServiceEntry> completed = entries.Where(x => x.IsSelected).ToList();
+            if (completed.Count > 0)
+            {
+                lastServiceDate = DateTime.Now;
+                lastServiceHours = CurrentHours;
+                for (int i = 0; i < completed.Count; i++)
+                {
+                    completed[i].status = ServiceStatus.completed;
+                    completed[i].bgImg.color = completed[i].normalColor;
+                }
+            }
+        }
+
         public void ChangeAssignmentDescription(int index, string description)
         {
             serviceAssignments[index].description = description;
@@ -134,6 +175,5 @@ namespace SPS
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
-
     }
 }

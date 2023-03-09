@@ -15,11 +15,12 @@ public class ServiceEntry : MonoBehaviour
     public TMP_InputField daysField;
     public Toggle selectionToggle;
     public Image bgImg;
-    public Color normalColor, selectedColor;
+    public Color normalColor, selectedColor, postponedColor, highlightedColor;
     public RectTransform serviceTypesParentHours;
     public RectTransform serviceTypesParentDays;
     public List<ServiceAssignmentType> serviceAssignmentTypesHours;
     public List<ServiceAssignmentType> serviceAssignmentTypesDays;
+    public ServiceStatus status;
 
     public int Hours
     {
@@ -163,39 +164,9 @@ public class ServiceEntry : MonoBehaviour
 
         daysField.text.TrimEnd();
 
-        selectionToggle.interactable = accessible;
+        //selectionToggle.interactable = accessible;
     }
-    //public IEnumerator CreateInterfaceFromData(string descr, List<int> hours, List<int> days, List<ServiceAssignmentType> serviceTypesHours, List<ServiceAssignmentType> serviceTypesDays) 
-    //{
-    //    bool accessible = AccountManagement.Instance.CurrentAccount.AccessLevel == UnitySQLite.Utilities.AccessLevel.admin;
-    //    descriptionField.text = descr;
-    //    descriptionField.interactable = accessible;
-
-    //    for (int i = 0; i < hours.Count; i++)
-    //    {
-    //        hoursField.text += string.Format("{0}\n", hours[i]);
-    //        TMP_Dropdown d = Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentHours).GetComponent<TMP_Dropdown>();
-    //        d.value = (int)serviceTypesHours[i];
-    //        d.interactable = accessible;
-    //        hoursField.interactable = accessible;
-    //        yield return new WaitForEndOfFrame();
-    //    }
-    //    hoursField.text.TrimEnd();
-
-    //    for (int j = 0; j < days.Count; j++)
-    //    {
-    //        daysField.text += string.Format("{0}\n", days[j]);
-    //        TMP_Dropdown d = Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentDays).GetComponent<TMP_Dropdown>();
-    //        d.value = (int)serviceTypesDays[j];
-    //        d.interactable = accessible;
-    //        daysField.interactable = accessible;
-    //        yield return new WaitForEndOfFrame();
-    //    }
-    //    daysField.text.TrimEnd();
-
-    //    selectionToggle.interactable = accessible;
-    //}
-
+   
     void ClearChildren(Transform parent)
     {
         Transform[] children = parent.GetComponentsInChildren<Transform>();

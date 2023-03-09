@@ -101,10 +101,10 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                 (data) =>
                 {
                     Service serv = new Service(data[0][0].StringValue);
-                    int closestHours = serv.serviceHours.Where(d => d <= serv.CurrentHours).Count() > 0 ? serv.serviceHours.Where(d => d <= serv.CurrentHours).Max() : 0;
+                    int closestHours = serv.serviceHours.Where(d => d <= (serv.CurrentHours - serv.lastServiceHours)).Count() > 0 ? serv.serviceHours.Where(d => d <= serv.CurrentHours).Max() : 0;
 
-                    int actualCheckHours = serv.CurrentHours > closestHours ? serv.CurrentHours - closestHours : serv.CurrentHours;
-                    int iterations = closestHours > 0 ? (int)(serv.CurrentHours / closestHours) - 1 : 0;
+                    int actualCheckHours = serv.CurrentHours;// > closestHours ? serv.CurrentHours - closestHours : serv.CurrentHours;
+                    int iterations = closestHours > 0 ? (int)(serv.CurrentHours / closestHours) : 0;
                     //for (int iter = 0; iter < iterations; iter++)
                     //{
                     //    closestHours = serv.serviceHours.Where(d => d <= actualCheckHours).Max();
@@ -119,6 +119,13 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                     }
 
                     Debug.Log(allDescr.TrimEnd());
+                    //next service hours should also be displayed somewhere, which should also show the services are will be due
+                    //also need a way to save last service hours and postpone. marking a service as complete should update lastServiceHours
+                    //this does not seem to work properly, at least that's what i think
+                    //2 possible solutions are:
+                    //                          lookup table with hours -> will be super slow per machinery
+                    //                          if a service has a sevicetype > than its previous services, include all previous services
+
                 },
                 SortResultsBy.none, null, "ServiceDescr");
 
