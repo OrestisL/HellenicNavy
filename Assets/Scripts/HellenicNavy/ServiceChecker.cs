@@ -46,7 +46,8 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
             }
             //after populating the list, should read all tables and check the days of the service entries
             //Invoke(nameof(CheckDates), 2f);         
-            StartCoroutine(CheckDates());
+            //StartCoroutine(CheckDates());
+            StartCoroutine(CheckHours());
         }, SortResultsBy.none, null, "Name, LastServiceTime");
     }
 
@@ -58,12 +59,10 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
         {
             DatabaseManager.Instance.ReadData(names[i], SelectFromDatabaseMode.specificColumns,
                 (data) =>
-                {                 
-                    for (int i = 0; i < data.Count; i++) //data[i] = list with length of 1, data[i][0] = ServiceDescr json
-                    {
+                {
                         //create new service for each description
-                        Service serv = new Service(data[i][0].StringValue);
-                        //for the give day distance, find the closest service days
+                        Service serv = new Service(data[0][0].StringValue);
+                        //for the given day distance, find the closest service days
                         int closestDays = serv.serviceDays.Where(d => d <= dateDistances[i]).Count() > 0 ? serv.serviceDays.Where(d => d <= dateDistances[i]).Max() : 0;
 
                         int actualCheckDays = serv.CurrentDays > closestDays ? serv.CurrentDays - closestDays : serv.CurrentDays;
@@ -84,7 +83,6 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                         }
 
                         Debug.Log(allDescr.TrimEnd());
-                    }
                 },
                 SortResultsBy.none, null, "ServiceDescr");
             //TODO populate some interface with buttons for each machinery that has pending services 
@@ -101,33 +99,26 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
         {
             DatabaseManager.Instance.ReadData(names[i], SelectFromDatabaseMode.specificColumns,
                 (data) =>
-                {                 
-                    for (int i = 0; i < data.Count; i++) //data[i] = list with length of 1, data[i][0] = ServiceDescr json
+                {
+                    Service serv = new Service(data[0][0].StringValue);
+                    int closestHours = serv.serviceHours.Where(d => d <= serv.CurrentHours).Count() > 0 ? serv.serviceHours.Where(d => d <= serv.CurrentHours).Max() : 0;
+
+                    int actualCheckHours = serv.CurrentHours > closestHours ? serv.CurrentHours - closestHours : serv.CurrentHours;
+                    int iterations = closestHours > 0 ? (int)(serv.CurrentHours / closestHours) - 1 : 0;
+                    //for (int iter = 0; iter < iterations; iter++)
+                    //{
+                    //    closestHours = serv.serviceHours.Where(d => d <= actualCheckHours).Max();
+                    //    actualCheckHours -= closestHours;
+                    //}
+
+                    string allDescr = string.Empty;
+                    for (int j = 0; j < serv.serviceHours.Count; j++)
                     {
-                        //create new service for each description
-                        Service serv = new Service(data[i][0].StringValue);
-                        //for the give day distance, find the closest service hours
-                        int closestHours = serv.serviceHours.Where(d => d <= serv.CurrentHours).Count() > 0 ? serv.serviceHours.Where(d => d <= serv.CurrentHours).Max() : 0;
-
-                        int actualCheckHours = serv.CurrentHours > closestHours ? serv.CurrentHours - closestHours : serv.CurrentHours;
-                        //this loop should be performed (int)currentDays/maxClosest  (if not div/0)
-                        int iterations = closestHours > 0 ? (int)(serv.CurrentDays / closestHours) : 0;
-                        for (int iter = 0; iter < iterations; iter++)
-                        {
-                            closestHours = serv.serviceHours.Where(d => d <= actualCheckHours).Max();
-                            actualCheckHours -= closestHours;
-                        }
-
-                        //find which services need to be done
-                        string allDescr = string.Empty;
-                        for (int j = 0; j < serv.serviceDays.Count; j++)
-                        {
-                            if (actualCheckHours / serv.serviceHours[j] >= 1)//(actualCheckHours % serv.serviceDays[j] == 0)
-                                allDescr += string.Format("{0}\n", serv.descriptions[j]);
-                        }
-
-                        Debug.Log(allDescr.TrimEnd());
+                        if (actualCheckHours / serv.serviceHours[j] >= 1)//(actualCheckHours % serv.serviceHours[j] == 0)
+                            allDescr += string.Format("{0}\n", serv.descriptions[j]);
                     }
+
+                    Debug.Log(allDescr.TrimEnd());
                 },
                 SortResultsBy.none, null, "ServiceDescr");
 
