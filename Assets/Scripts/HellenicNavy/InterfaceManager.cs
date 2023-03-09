@@ -72,6 +72,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public Button createDeptButton;
     public Button addSystemButton;
     public Button changePWButton;
+    public Button checkForServiceButton;
 
     [Header("Add System Interface")]
     public GameObject addSystemPanel;
@@ -169,7 +170,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     private void Start()
     {
-        SetupButtons();
+        SetupButtons();    
     }
 
     void SetupInterface(AccessLevel accessLevel)
@@ -293,6 +294,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             loginPanel.SetActive(false);
             //show message
         });
+        checkForServiceButton.onClick.AddListener(ServiceChecker.Instance.Check);
         #endregion
 
         #region date checker

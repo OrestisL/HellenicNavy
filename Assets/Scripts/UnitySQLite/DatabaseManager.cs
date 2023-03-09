@@ -278,6 +278,7 @@ namespace UnitySQLite
             if (TableName.Equals("") || !CheckIfTableExists(TableName))
             {
                 //we need to call the ReadValuesFromDatabase function to complete some things
+                Debug.LogWarning("empty table name or table does not exist");
                 ReadValuesFromDatabase(null, out readValues);
                 return;
             }

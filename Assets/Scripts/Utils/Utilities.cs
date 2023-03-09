@@ -31,17 +31,6 @@ namespace UnitySQLite.Utilities
         DESC,
     }
 
-    public enum Department
-    {
-        None = 0,
-        MHX,    //μηχανοστασιο
-        BM,     //βοηθητικα μηχανηματα
-        EB,     //επιστασια βλαβων 
-        HL,     //ηλεκτρολογικα
-        HNAS,   //ηλεκτρονικος αυτοματων συστηματων
-        All,
-    }
-
     public enum AccessLevel
     {
         None = 0,
@@ -184,7 +173,7 @@ namespace UnitySQLite.Utilities
             string values = string.Empty;
             for (int i = 0; i < rowEntries.Count; i++)
             {
-                values += string.Format("{0},", rowEntries[i].GetValue().Replace(",", ".")) ;
+                values += string.Format("{0},", rowEntries[i].GetValue().Replace(",", "."));
             }
             values = values.Remove(values.Length - 1);
             return values;
@@ -458,12 +447,12 @@ namespace UnitySQLite.Utilities
                     Account current = accounts[i];
 
                     List<DataEntry> content = new List<DataEntry>
-                {
+                    {
                     new DataEntry(current._accountName),
                     new DataEntry(current._accountPasswordHash),
                     new DataEntry(current._salt),
                     new DataEntry((int)current._accessLevel),
-                };
+                    };
 
                     List<TableColumn> cols = AccountManagement.Instance.content.columns;
                     TableRow row = new TableRow(cols, content);
