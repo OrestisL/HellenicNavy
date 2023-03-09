@@ -21,36 +21,6 @@ public class ServiceEntry : MonoBehaviour
     public List<ServiceAssignmentType> serviceAssignmentTypesHours;
     public List<ServiceAssignmentType> serviceAssignmentTypesDays;
 
-    //public List<int> Hours
-    //{
-    //    get
-    //    {
-    //        hoursField.text = hoursField.text.Trim();
-    //        List<int> result = new List<int>();
-    //        if (hoursField.text.Length == 0)
-    //        {
-    //            return result;
-    //        }
-    //        ReadOnlySpan<char> text = hoursField.text.AsSpan();
-    //        int nextNLIndex = 0;
-    //        bool isLastLoop = false;
-    //        while (!isLastLoop)
-    //        {
-    //            int indexStart = nextNLIndex;
-    //            nextNLIndex = hoursField.text.IndexOf('\n', indexStart);
-
-    //            isLastLoop = nextNLIndex == -1;
-    //            if (isLastLoop)
-    //            {
-    //                nextNLIndex = hoursField.text.Length;
-    //            }
-    //            ReadOnlySpan<char> nameSlice = text.Slice(indexStart, nextNLIndex - indexStart);
-    //            result.Add(int.Parse(nameSlice.ToString()));
-    //            nextNLIndex++;
-    //        }
-    //        return result;
-    //    }
-    //}
     public int Hours
     {
         get
@@ -59,36 +29,7 @@ public class ServiceEntry : MonoBehaviour
             return int.Parse(hoursField.text);
         }
     }
-    //public List<int> Days
-    //{
-    //    get
-    //    {
-    //        daysField.text = daysField.text.Trim();
-    //        List<int> result = new List<int>();
-    //        if (daysField.text.Length == 0)
-    //        {
-    //            return result;
-    //        }
-    //        ReadOnlySpan<char> text = daysField.text.AsSpan();
-    //        int nextNLIndex = 0;
-    //        bool isLastLoop = false;
-    //        while (!isLastLoop)
-    //        {
-    //            int indexStart = nextNLIndex;
-    //            nextNLIndex = daysField.text.IndexOf('\n', indexStart);
 
-    //            isLastLoop = nextNLIndex == -1;
-    //            if (isLastLoop)
-    //            {
-    //                nextNLIndex = daysField.text.Length;
-    //            }
-    //            ReadOnlySpan<char> nameSlice = text.Slice(indexStart, nextNLIndex - indexStart);
-    //            result.Add(int.Parse(nameSlice.ToString()));
-    //            nextNLIndex++;
-    //        }
-    //        return result;
-    //    }
-    //}
     public int Days
     {
         get
@@ -101,20 +42,6 @@ public class ServiceEntry : MonoBehaviour
 
     public string Descr { get { return descriptionField.text; } }
 
-    //public List<ServiceAssignmentType> TypesHours
-    //{
-    //    get
-    //    {
-    //        serviceAssignmentTypesHours = new List<ServiceAssignmentType>();
-    //        //get all assignment types
-    //        for (int i = 0; i < serviceTypesParentHours.childCount; i++)
-    //        {
-    //            serviceAssignmentTypesHours.Add((ServiceAssignmentType)serviceTypesParentHours.GetChild(i).GetComponent<TMP_Dropdown>().value);
-    //        }
-
-    //        return serviceAssignmentTypesHours;
-    //    }
-    //}
     public ServiceAssignmentType TypesHours
     {
         get
@@ -122,20 +49,6 @@ public class ServiceEntry : MonoBehaviour
             return (ServiceAssignmentType)serviceTypesParentHours.GetChild(0).GetComponent<TMP_Dropdown>().value;
         }
     }
-
-    //public List<ServiceAssignmentType> TypesDays
-    //{
-    //    get
-    //    {
-    //        serviceAssignmentTypesDays = new List<ServiceAssignmentType>();
-    //        for (int i = 0; i < serviceTypesParentDays.childCount; i++)
-    //        {
-    //            serviceAssignmentTypesDays.Add((ServiceAssignmentType)serviceTypesParentDays.GetChild(i).GetComponent<TMP_Dropdown>().value);
-    //        }
-
-    //        return serviceAssignmentTypesDays;
-    //    }
-    //}
 
     public ServiceAssignmentType TypesDays
     {

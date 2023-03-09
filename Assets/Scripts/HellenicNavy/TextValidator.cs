@@ -60,9 +60,9 @@ public class TextValidatorDateTime : TMP_InputValidator
     {
         //parse string and check 
         //split at '-' should have length 3
-        //[0] should have length 4
+        //[0] should have length 2 and int.Parse should be between 1 and 31, depending on month
         //[1] should have length 2 and int.Parse should be between 1 and 12
-        //[2] should have length 2 and int.Parse should be between 1 and 31, depending on month
+        //[2] should have length 2 
         string[] split = dateInput.Split('-');
         if (split.Length != 3)
         {

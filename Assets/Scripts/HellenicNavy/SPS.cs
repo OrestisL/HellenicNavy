@@ -54,13 +54,9 @@ namespace SPS
         }
         public int systemName;
         public List<string> descriptions;
-        //public List<List<int>> serviceHours;
         public List<int> serviceHours;
-        //public List<List<int>> serviceDays;
         public List<int> serviceDays;
-        //public List<List<ServiceAssignmentType>> serviceTypesHours;
         public List<ServiceAssignmentType> serviceTypesHours;
-        //public List<List<ServiceAssignmentType>> serviceTypesDays;
         public List<ServiceAssignmentType> serviceTypesDays;
         public List<ServiceAssignment> serviceAssignments; //WIP
 
@@ -69,8 +65,6 @@ namespace SPS
         public Service(string json)
         {
             json = json.Replace(".", ",");
-            //json = json.Remove(0, 1);
-            //json = json.Remove(json.Length - 2, 1);
             Service s = JsonConvert.DeserializeObject<Service>(json);
             name = s.name;
             id = s.id;
@@ -96,14 +90,10 @@ namespace SPS
             lastServiceDate = DateTime.ParseExact(lastDate, "dd-MM-yy", null);
             this.systemName = system;
 
-            //serviceHours = new List<List<int>>();
             serviceHours = new List<int>();
-            //serviceDays = new List<List<int>>();
             serviceDays = new List<int>();
             descriptions = new List<string>();
-            //serviceTypesHours = new List<List<ServiceAssignmentType>>();
             serviceTypesHours = new List<ServiceAssignmentType>();
-            //serviceTypesDays = new List<List<ServiceAssignmentType>>();
             serviceTypesDays = new List<ServiceAssignmentType>();
 
             for (int i = 0; i < entries.Count; i++)
@@ -125,11 +115,6 @@ namespace SPS
         {
             descriptions[index] = description;
         }
-
-        //public void ChangeServiceType(int index, ServiceAssignmentType type)
-        //{
-        //    serviceTypes[index] = type;
-        //}
 
         public void ChangeAssignmentDescription(int index, string description)
         {

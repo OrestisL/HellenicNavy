@@ -213,30 +213,6 @@ namespace UnitySQLite
 
         }
 
-        /// <summary>
-        /// Used to insert values to a table.
-        /// Use FormatValues before calling this function.
-        /// </summary>
-        private void InsertSingleColumnValueToTable(string TableName, string columnName, string values)
-        {
-            //dbConnection = CreateConnectionToDB(pathToDatabase);
-            //dbConnection.Open();
-            string query = string.Empty;
-
-            sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
-            //sm_dbTransaction = sm_dbConnection.BeginTransaction();
-            string[] commaSeparatedValues = values.Split(',');
-            for (int i = 0; i < commaSeparatedValues.Length; i++)
-            {
-                query = string.Format("INSERT INTO {0}({1}) VALUES ({2});", TableName, columnName, commaSeparatedValues[i]);
-                sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
-                sm_dbCommand.ExecuteReader().Dispose();
-                sm_dbCommand.Dispose();
-            }
-
-            Logger.Instance.AddMessage(query);
-        }
-
         private void WriteToDatabase(string tableName, TableRow tableRow, Action onSucessfulWrite = null)
         {
             if (!CheckIfTableExists(tableName))
