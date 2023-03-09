@@ -47,10 +47,18 @@ namespace SPS
         public string name, id, descr;
         private int _currentHours;
         public DateTime lastServiceDate;
+        public int lastServiceHours;
         public int CurrentHours
         {
             get { return _currentHours; }
             set { _currentHours = value; }
+        }
+        public int CurrentDays
+        {
+            get 
+            {
+                return Mathf.Abs((lastServiceDate - DateTime.Now).Days);
+            }
         }
         public int systemName;
         public List<string> descriptions;
@@ -72,6 +80,7 @@ namespace SPS
             systemName = s.systemName;
             CurrentHours = s.CurrentHours;
             lastServiceDate = s.lastServiceDate;
+            lastServiceHours = s.lastServiceHours;
             descriptions = s.descriptions;
             serviceHours = s.serviceHours;
             serviceDays = s.serviceDays;
