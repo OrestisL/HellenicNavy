@@ -446,9 +446,9 @@ namespace UnitySQLite.Utilities
         {
             List<Account> accounts = new List<Account>()
             {
-                 new Account("user", "user", 1, false),
-                 new Account("supervisor", "supervisor", 2, false),
-                 new Account("admin", "admin", 3, false)
+                 new Account("user", "user", (int)AccessLevel.user, false),
+                 new Account("supervisor", "supervisor", (int)AccessLevel.supervisor, false),
+                 new Account("admin", "admin", (int)AccessLevel.admin, false)
             };
 
             DatabaseManager.Instance.WriteOnce(() =>

@@ -44,7 +44,7 @@ namespace SPS
     [Serializable]
     public class Service
     {
-        public string name, id;
+        public string name, id, descr;
         private int _currentHours;
         public DateTime lastServiceDate;
         public int CurrentHours
@@ -70,6 +70,7 @@ namespace SPS
             Service s = JsonConvert.DeserializeObject<Service>(json);
             name = s.name;
             id = s.id;
+            descr = s.descr;
             systemName = s.systemName;
             CurrentHours = s.CurrentHours;
             lastServiceDate = s.lastServiceDate;
@@ -81,13 +82,14 @@ namespace SPS
             serviceAssignments = s.serviceAssignments;
         }
 
-        public Service(string name, string id, int hours, string lastDate, int system, List<ServiceEntry> entries)
+        public Service(string name,string descr, string id, int hours, string lastDate, int system, List<ServiceEntry> entries)
         {
             this.name = name;
             this.id = id;
+            this.descr = descr;
             CurrentHours = hours;
             //date SHOULD HAVE BEEN saved like this
-            lastServiceDate = DateTime.ParseExact(lastDate, "yyyy-MM-dd", null);
+            lastServiceDate = DateTime.ParseExact(lastDate, "dd-MM-yy", null);
             this.systemName = system;
 
             serviceHours = new List<List<int>>();

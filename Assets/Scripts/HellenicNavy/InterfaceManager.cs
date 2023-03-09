@@ -39,6 +39,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public Button closeAddMachineryPanel;
     public RectTransform serviceEntryParent;
     public TMP_InputField nameInput;
+    public TMP_InputField descriptionInput;
     public TMP_InputField serialInput;
     public TMP_InputField idInput;
     public TMP_InputField dateInput;
@@ -57,6 +58,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public Button displayDeleteMachineryButton;
     public RectTransform displayServiceEntryParent;
     public TMP_InputField displayNameInput;
+    public TMP_InputField displayDescriptionInput;
     public TMP_InputField displaySerialInput;
     public TMP_InputField displayIdInput;
     public TMP_InputField displayDateInput;
@@ -106,6 +108,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     [Header("Text validators")]
     public TextValidator textValidator;
     public TextValidatorDateTime textValidatorDateTime;
+    public TextValidatorNameInput textValidatorNameInput;
 
     [SerializeField]
     List<ServiceEntry> serviceEntries;
@@ -202,10 +205,13 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             textValidatorDateTime = ScriptableObject.CreateInstance<TextValidatorDateTime>();
         if (textValidator == null)
             textValidator = ScriptableObject.CreateInstance<TextValidator>();
+        if(textValidatorNameInput== null)
+            textValidatorNameInput = ScriptableObject.CreateInstance<TextValidatorNameInput>();
 
         dateInput.inputValidator = textValidatorDateTime;
         displayDateInput.inputValidator = textValidatorDateTime;
-        //assert that date is properly written (YYYY-MM-DD dashes, 4 numbers 2 numbers 2 numbers)
+        nameInput.inputValidator = textValidatorNameInput;
+        displayNameInput.inputValidator = textValidatorNameInput;
     }
 
     void SetupButtons()
@@ -415,7 +421,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         }
 
         _currentService = new Service(
-            nameInput.text, idInput.text, hoursInput.text.Length > 0 ? int.Parse(hoursInput.text) : 0,
+            nameInput.text, descriptionInput.text, idInput.text, hoursInput.text.Length > 0 ? int.Parse(hoursInput.text) : 0,
             dateInput.text, systemDropdown.value,
             serviceEntries);
         Debug.Log(_currentService.ToJson());
@@ -430,6 +436,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             DataEntry[] entries = new DataEntry[]
             {
                 new DataEntry(nameInput.text),
+                new DataEntry(descriptionInput.text),
                 new DataEntry(serialInput.text),
                 new DataEntry(idInput.text),
                 new DataEntry(deptDropdown.captionText.text),
@@ -844,7 +851,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             useLeftButton = false,
             useRightButton = false,
         });
-        DatabaseManager.Instance.ReadData(machineryName, SelectFromDatabaseMode.everything,
+        DatabaseManager.Instance.ReadData(machineryName.Replace('.',','), SelectFromDatabaseMode.everything,
             (data) =>
             {
                 StartCoroutine(PopulateServiceEntriesForDisplayMachinery(data));
@@ -864,9 +871,10 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             displayDeptDropdown.options[serv.systemName].text, displaySystemDropdown.options[serv.systemName].text, serv.name);
 
         displayNameInput.text = serv.name;
+        displayDescriptionInput.text = serv.descr;
         displayIdInput.text = serv.id;
         displayHoursInput.text = serv.CurrentHours.ToString();
-        displayDateInput.text = serv.lastServiceDate.ToString("yyyy-MM-dd");
+        displayDateInput.text = serv.lastServiceDate.ToString("dd-MM-yy");
 
         for (int i = 0; i < serv.descriptions.Count; i++)
         {
@@ -899,7 +907,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         }
 
         _currentService = new Service(
-            displayNameInput.text, displayIdInput.text, displayHoursInput.text.Length > 0 ? int.Parse(displayHoursInput.text) : 0,
+            displayNameInput.text, displayDescriptionInput.text, displayIdInput.text, displayHoursInput.text.Length > 0 ? int.Parse(displayHoursInput.text) : 0,
             displayDateInput.text, displaySystemDropdown.value,
             serviceEntries);
         Debug.Log(_currentService.ToJson());
@@ -912,6 +920,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             TableRow rowList = tables.updateMachinery;
             DataEntry[] entries = new DataEntry[]
             {
+                new DataEntry(displayDescriptionInput.text),
                 new DataEntry(displaySerialInput.text),
                 new DataEntry(displayIdInput.text),
                 new DataEntry(displayDeptDropdown.captionText.text),

@@ -16,6 +16,23 @@ public class TextValidator : TMP_InputValidator
         return (char)0;
     }
 }
+public class TextValidatorNameInput : TMP_InputValidator
+{
+    public override char Validate(ref string text, ref int pos, char ch)
+    {
+        if (ch == '.' | ch == ',')
+        {
+            return (char)0;
+        }
+        else
+        {
+            text += ch;
+            pos++;
+            return ch;
+        }
+    }
+}
+
 public class TextValidatorDateTime : TMP_InputValidator
 {
     private static List<int> longMonths = new List<int>() { 1, 3, 5, 7, 8, 10, 12 };
@@ -27,7 +44,7 @@ public class TextValidatorDateTime : TMP_InputValidator
     public override char Validate(ref string text, ref int pos, char ch)
     {
         //ensure only 10 chars (year is 4, month is 2, date is 2 and 2 dashes)
-        if (pos == 10) { return (char)0; }
+        if (pos == 8) { return (char)0; }
         if ((ch >= '0' && ch <= '9') | ch == '-')
         {
             text += ch;
@@ -54,7 +71,7 @@ public class TextValidatorDateTime : TMP_InputValidator
             {
                 showLabel = true,
                 label = "Ημερομηνία",
-                mainText = "Λάθος μορφοποίηση ημερομηνίας. Πρέπει να είναι ΧΧΧΧ-ΜΜ-μμ (χρόνος 4 ψηφία, μήνας 2 ψηφία, ημέρα 2 ψηφία).",
+                mainText = "Λάθος μορφοποίηση ημερομηνίας. Πρέπει να είναι μμ-ΜΜ-ΧΧ (ημέρα 2 ψηφία, μήνας 2 ψηφία, χρόνος 2 ψηφία).",
                 useLeftButton = false,
                 useRightButton = true,
                 rightButtonLabel = "OK",
@@ -64,18 +81,18 @@ public class TextValidatorDateTime : TMP_InputValidator
             return false;
         }
 
-        int year = int.Parse(split[0]);
+        int day = int.Parse(split[0]);
         int month = int.Parse(split[1]);
-        int day = int.Parse(split[2]);
+        int year = int.Parse(split[2]);
 
-        if (split[0].Length != 4)
+        if (split[0].Length != 2)
         {
             //wrong year format, should be 4
             MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
             {
                 showLabel = true,
                 label = "Ημερομηνία",
-                mainText = string.Format("Λάθος μορφοποίηση χρόνου ({0}). Πρέπει να έχει 4 ψηφία.", split[0]),
+                mainText = string.Format("Λάθος μορφοποίηση ημέρας ({0}). Πρέπει να έχει 2 ψηφία.", split[0]),
                 useLeftButton = false,
                 useRightButton = true,
                 rightButtonLabel = "OK",
@@ -100,14 +117,14 @@ public class TextValidatorDateTime : TMP_InputValidator
             }, 15f);
             return false;
         }
-        else if (split[2].Length != 2) 
+        else if (split[2].Length != 2)
         {
             //wrong day format, should be 2
             MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
             {
                 showLabel = true,
                 label = "Ημερομηνία",
-                mainText = string.Format("Λάθος μορφοποίηση ημέρας ({0}). Πρέπει να έχει 2 ψηφία.", split[2]),
+                mainText = string.Format("Λάθος μορφοποίηση χρόνου ({0}). Πρέπει να έχει 2 ψηφία.", split[2]),
                 useLeftButton = false,
                 useRightButton = true,
                 rightButtonLabel = "OK",
@@ -143,7 +160,7 @@ public class TextValidatorDateTime : TMP_InputValidator
                 {
                     showLabel = true,
                     label = "Ημερομηνία",
-                    mainText = string.Format("Λάθος μορφοποίηση ημέρας ({0}). Πρέπει να είναι μεταξύ 1 και 31, αναλόγως με τον μήνα.", split[2]),
+                    mainText = string.Format("Λάθος μορφοποίηση ημέρας ({0}). Πρέπει να είναι μεταξύ 1 και 31, αναλόγως με τον μήνα.", split[0]),
                     useLeftButton = false,
                     useRightButton = true,
                     rightButtonLabel = "OK",
@@ -163,7 +180,7 @@ public class TextValidatorDateTime : TMP_InputValidator
                     {
                         showLabel = true,
                         label = "Ημερομηνία",
-                        mainText = string.Format("Λάθος μορφοποίηση ημέρας ({0}). Ο μήνας Φεβρουάριος έχει 28 ημέρες.", split[2]),
+                        mainText = string.Format("Λάθος μορφοποίηση ημέρας ({0}). Ο μήνας Φεβρουάριος έχει 28 ημέρες.", split[0]),
                         useLeftButton = false,
                         useRightButton = true,
                         rightButtonLabel = "OK",
@@ -183,7 +200,7 @@ public class TextValidatorDateTime : TMP_InputValidator
                     {
                         showLabel = true,
                         label = "Ημερομηνία",
-                        mainText = string.Format("Λάθος μορφοποίηση ημέρας ({0}). Ο μήνας {1} έχει 30 ημέρες.", split[2], shortMonthNames[shortMonths.IndexOf(month)]),
+                        mainText = string.Format("Λάθος μορφοποίηση ημέρας ({0}). Ο μήνας {1} έχει 30 ημέρες.", split[0], shortMonthNames[shortMonths.IndexOf(month)]),
                         useLeftButton = false,
                         useRightButton = true,
                         rightButtonLabel = "OK",
@@ -202,7 +219,7 @@ public class TextValidatorDateTime : TMP_InputValidator
                     {
                         showLabel = true,
                         label = "Ημερομηνία",
-                        mainText = string.Format("Λάθος μορφοποίηση ημέρας ({0}). Ο μήνας {1} έχει 31 ημέρες.", split[2], longMonthNames[longMonths.IndexOf(month)]),
+                        mainText = string.Format("Λάθος μορφοποίηση ημέρας ({0}). Ο μήνας {1} έχει 31 ημέρες.", split[0], longMonthNames[longMonths.IndexOf(month)]),
                         useLeftButton = false,
                         useRightButton = true,
                         rightButtonLabel = "OK",

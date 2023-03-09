@@ -37,6 +37,10 @@ __COMPLETED__
 - add edit and fix other buttons on display machinery interface (done)
 
 - redo TODO text (done)
+
+- added date time and checkers (thanks c#) (done)
+
+- added a bunch of checks for when adding/deleting things (done)
 #################################################################################################################################################
 
 __REMAINING__
