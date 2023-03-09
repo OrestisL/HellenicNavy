@@ -21,95 +21,127 @@ public class ServiceEntry : MonoBehaviour
     public List<ServiceAssignmentType> serviceAssignmentTypesHours;
     public List<ServiceAssignmentType> serviceAssignmentTypesDays;
 
-    public List<int> Hours
+    //public List<int> Hours
+    //{
+    //    get
+    //    {
+    //        hoursField.text = hoursField.text.Trim();
+    //        List<int> result = new List<int>();
+    //        if (hoursField.text.Length == 0)
+    //        {
+    //            return result;
+    //        }
+    //        ReadOnlySpan<char> text = hoursField.text.AsSpan();
+    //        int nextNLIndex = 0;
+    //        bool isLastLoop = false;
+    //        while (!isLastLoop)
+    //        {
+    //            int indexStart = nextNLIndex;
+    //            nextNLIndex = hoursField.text.IndexOf('\n', indexStart);
+
+    //            isLastLoop = nextNLIndex == -1;
+    //            if (isLastLoop)
+    //            {
+    //                nextNLIndex = hoursField.text.Length;
+    //            }
+    //            ReadOnlySpan<char> nameSlice = text.Slice(indexStart, nextNLIndex - indexStart);
+    //            result.Add(int.Parse(nameSlice.ToString()));
+    //            nextNLIndex++;
+    //        }
+    //        return result;
+    //    }
+    //}
+    public int Hours
     {
         get
         {
             hoursField.text = hoursField.text.Trim();
-            List<int> result = new List<int>();
-            if (hoursField.text.Length == 0)
-            {
-                return result;
-            }
-            ReadOnlySpan<char> text = hoursField.text.AsSpan();
-            int nextNLIndex = 0;
-            bool isLastLoop = false;
-            while (!isLastLoop)
-            {
-                int indexStart = nextNLIndex;
-                nextNLIndex = hoursField.text.IndexOf('\n', indexStart);
-
-                isLastLoop = nextNLIndex == -1;
-                if (isLastLoop)
-                {
-                    nextNLIndex = hoursField.text.Length;
-                }
-                ReadOnlySpan<char> nameSlice = text.Slice(indexStart, nextNLIndex - indexStart);
-                result.Add(int.Parse(nameSlice.ToString()));
-                nextNLIndex++;
-            }
-            return result;
+            return int.Parse(hoursField.text);
         }
     }
-    public List<int> Days
+    //public List<int> Days
+    //{
+    //    get
+    //    {
+    //        daysField.text = daysField.text.Trim();
+    //        List<int> result = new List<int>();
+    //        if (daysField.text.Length == 0)
+    //        {
+    //            return result;
+    //        }
+    //        ReadOnlySpan<char> text = daysField.text.AsSpan();
+    //        int nextNLIndex = 0;
+    //        bool isLastLoop = false;
+    //        while (!isLastLoop)
+    //        {
+    //            int indexStart = nextNLIndex;
+    //            nextNLIndex = daysField.text.IndexOf('\n', indexStart);
+
+    //            isLastLoop = nextNLIndex == -1;
+    //            if (isLastLoop)
+    //            {
+    //                nextNLIndex = daysField.text.Length;
+    //            }
+    //            ReadOnlySpan<char> nameSlice = text.Slice(indexStart, nextNLIndex - indexStart);
+    //            result.Add(int.Parse(nameSlice.ToString()));
+    //            nextNLIndex++;
+    //        }
+    //        return result;
+    //    }
+    //}
+    public int Days
     {
         get
         {
             daysField.text = daysField.text.Trim();
-            List<int> result = new List<int>();
-            if (daysField.text.Length == 0)
-            {
-                return result;
-            }
-            ReadOnlySpan<char> text = daysField.text.AsSpan();
-            int nextNLIndex = 0;
-            bool isLastLoop = false;
-            while (!isLastLoop)
-            {
-                int indexStart = nextNLIndex;
-                nextNLIndex = daysField.text.IndexOf('\n', indexStart);
-
-                isLastLoop = nextNLIndex == -1;
-                if (isLastLoop)
-                {
-                    nextNLIndex = daysField.text.Length;
-                }
-                ReadOnlySpan<char> nameSlice = text.Slice(indexStart, nextNLIndex - indexStart);
-                result.Add(int.Parse(nameSlice.ToString()));
-                nextNLIndex++;
-            }
-            return result;
+            return int.Parse(daysField.text);
         }
     }
+
 
     public string Descr { get { return descriptionField.text; } }
 
-    public List<ServiceAssignmentType> TypesHours
+    //public List<ServiceAssignmentType> TypesHours
+    //{
+    //    get
+    //    {
+    //        serviceAssignmentTypesHours = new List<ServiceAssignmentType>();
+    //        //get all assignment types
+    //        for (int i = 0; i < serviceTypesParentHours.childCount; i++)
+    //        {
+    //            serviceAssignmentTypesHours.Add((ServiceAssignmentType)serviceTypesParentHours.GetChild(i).GetComponent<TMP_Dropdown>().value);
+    //        }
+
+    //        return serviceAssignmentTypesHours;
+    //    }
+    //}
+    public ServiceAssignmentType TypesHours
     {
         get
         {
-            serviceAssignmentTypesHours = new List<ServiceAssignmentType>();
-            //get all assignment types
-            for (int i = 0; i < serviceTypesParentHours.childCount; i++)
-            {
-                serviceAssignmentTypesHours.Add((ServiceAssignmentType)serviceTypesParentHours.GetChild(i).GetComponent<TMP_Dropdown>().value);
-            }
-
-            return serviceAssignmentTypesHours;
+            return (ServiceAssignmentType)serviceTypesParentHours.GetChild(0).GetComponent<TMP_Dropdown>().value;
         }
     }
 
-    public List<ServiceAssignmentType> TypesDays
+    //public List<ServiceAssignmentType> TypesDays
+    //{
+    //    get
+    //    {
+    //        serviceAssignmentTypesDays = new List<ServiceAssignmentType>();
+    //        for (int i = 0; i < serviceTypesParentDays.childCount; i++)
+    //        {
+    //            serviceAssignmentTypesDays.Add((ServiceAssignmentType)serviceTypesParentDays.GetChild(i).GetComponent<TMP_Dropdown>().value);
+    //        }
+
+    //        return serviceAssignmentTypesDays;
+    //    }
+    //}
+
+    public ServiceAssignmentType TypesDays
     {
         get
         {
-            serviceAssignmentTypesDays = new List<ServiceAssignmentType>();
-            for (int i = 0; i < serviceTypesParentDays.childCount; i++)
-            {
-                serviceAssignmentTypesDays.Add((ServiceAssignmentType)serviceTypesParentDays.GetChild(i).GetComponent<TMP_Dropdown>().value);
-            }
-
-            return serviceAssignmentTypesDays;
+            return (ServiceAssignmentType)serviceTypesParentDays.GetChild(0).GetComponent<TMP_Dropdown>().value;
         }
     }
 
@@ -189,41 +221,67 @@ public class ServiceEntry : MonoBehaviour
         selectionToggle.onValueChanged.AddListener((b) => bgImg.color = b ? selectedColor : normalColor);
     }
 
-    public void DisplayFromData(string descr, List<int> hours, List<int> days, List<ServiceAssignmentType> serviceTypesHours, List<ServiceAssignmentType> serviceTypesDays) 
+    public void DisplayFromData(string descr, int hours, int days, ServiceAssignmentType serviceTypesHours, ServiceAssignmentType serviceTypesDays)
     {
         StartCoroutine(CreateInterfaceFromData(descr, hours, days, serviceTypesHours, serviceTypesDays));
     }
 
-    public IEnumerator CreateInterfaceFromData(string descr, List<int> hours, List<int> days, List<ServiceAssignmentType> serviceTypesHours, List<ServiceAssignmentType> serviceTypesDays) 
+    public IEnumerator CreateInterfaceFromData(string descr, int hours, int days, ServiceAssignmentType serviceTypesHours, ServiceAssignmentType serviceTypesDays)
     {
         bool accessible = AccountManagement.Instance.CurrentAccount.AccessLevel == UnitySQLite.Utilities.AccessLevel.admin;
         descriptionField.text = descr;
         descriptionField.interactable = accessible;
 
-        for (int i = 0; i < hours.Count; i++)
-        {
-            hoursField.text += string.Format("{0}\n", hours[i]);
-            TMP_Dropdown d = Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentHours).GetComponent<TMP_Dropdown>();
-            d.value = (int)serviceTypesHours[i];
-            d.interactable = accessible;
-            hoursField.interactable = accessible;
-            yield return new WaitForEndOfFrame();
-        }
+        hoursField.text += string.Format("{0}", hours);
+        TMP_Dropdown dh = Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentHours).GetComponent<TMP_Dropdown>();
+        dh.value = (int)serviceTypesHours;
+        dh.interactable = accessible;
+        hoursField.interactable = accessible;
+        yield return new WaitForEndOfFrame();
+
         hoursField.text.TrimEnd();
 
-        for (int j = 0; j < days.Count; j++)
-        {
-            daysField.text += string.Format("{0}\n", days[j]);
-            TMP_Dropdown d = Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentDays).GetComponent<TMP_Dropdown>();
-            d.value = (int)serviceTypesDays[j];
-            d.interactable = accessible;
-            daysField.interactable = accessible;
-            yield return new WaitForEndOfFrame();
-        }
+        daysField.text += string.Format("{0}", days);
+        TMP_Dropdown dd = Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentDays).GetComponent<TMP_Dropdown>();
+        dd.value = (int)serviceTypesDays;
+        dd.interactable = accessible;
+        daysField.interactable = accessible;
+        yield return new WaitForEndOfFrame();
+
         daysField.text.TrimEnd();
 
         selectionToggle.interactable = accessible;
     }
+    //public IEnumerator CreateInterfaceFromData(string descr, List<int> hours, List<int> days, List<ServiceAssignmentType> serviceTypesHours, List<ServiceAssignmentType> serviceTypesDays) 
+    //{
+    //    bool accessible = AccountManagement.Instance.CurrentAccount.AccessLevel == UnitySQLite.Utilities.AccessLevel.admin;
+    //    descriptionField.text = descr;
+    //    descriptionField.interactable = accessible;
+
+    //    for (int i = 0; i < hours.Count; i++)
+    //    {
+    //        hoursField.text += string.Format("{0}\n", hours[i]);
+    //        TMP_Dropdown d = Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentHours).GetComponent<TMP_Dropdown>();
+    //        d.value = (int)serviceTypesHours[i];
+    //        d.interactable = accessible;
+    //        hoursField.interactable = accessible;
+    //        yield return new WaitForEndOfFrame();
+    //    }
+    //    hoursField.text.TrimEnd();
+
+    //    for (int j = 0; j < days.Count; j++)
+    //    {
+    //        daysField.text += string.Format("{0}\n", days[j]);
+    //        TMP_Dropdown d = Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentDays).GetComponent<TMP_Dropdown>();
+    //        d.value = (int)serviceTypesDays[j];
+    //        d.interactable = accessible;
+    //        daysField.interactable = accessible;
+    //        yield return new WaitForEndOfFrame();
+    //    }
+    //    daysField.text.TrimEnd();
+
+    //    selectionToggle.interactable = accessible;
+    //}
 
     void ClearChildren(Transform parent)
     {

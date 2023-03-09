@@ -258,30 +258,11 @@ namespace UnitySQLite
             }
 
             //create query
-            string query = string.Empty;
-            string values = tableRow.GetValues();
-            ReadOnlySpan<char> newlinesSeparatedSpan = values;
-            int nextNLIndex = 0;
-            bool isLastLoop = false;
-            while (!isLastLoop)
-            {
-                int startIdx = nextNLIndex;
-                nextNLIndex = values.IndexOf('\n', startIdx);
-
-                isLastLoop = (nextNLIndex == -1);
-                if (isLastLoop)
-                {
-                    nextNLIndex = values.Length;
-                }
-
-                ReadOnlySpan<char> slice = newlinesSeparatedSpan.Slice(startIdx, nextNLIndex - startIdx);
-                query = string.Format("INSERT OR IGNORE INTO '{0}'({1}) VALUES ({2});", tableName, tableRow.GetColumnNames(), slice.ToString());
-                sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
-                sm_dbCommand.ExecuteNonQuery();
-                sm_dbCommand.Dispose();
-                //sometimes this throws and error (x values for y columns, but it's incosistent)
-                nextNLIndex++;
-            }
+            
+            string query = string.Format("INSERT OR IGNORE INTO '{0}'({1}) VALUES ({2});", tableName, tableRow.GetColumnNames(), tableRow.GetValues());
+            sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
+            sm_dbCommand.ExecuteNonQuery();
+            sm_dbCommand.Dispose();           
 
             if (m_limitRows)
                 CheckNumberOfRows(sm_dbConnection, tableName);
