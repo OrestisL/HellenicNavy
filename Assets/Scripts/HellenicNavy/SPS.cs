@@ -56,6 +56,7 @@ namespace SPS
         private int _currentHours;
         public DateTime lastServiceDate;
         public int lastServiceHours;
+        public int nextServiceHours;
         //public ServiceStatus status;
         public string postponedServiceDescr;
         public int CurrentHours
@@ -92,6 +93,7 @@ namespace SPS
             CurrentHours = s.CurrentHours;
             lastServiceDate = s.lastServiceDate;
             lastServiceHours = s.lastServiceHours;
+            nextServiceHours= s.nextServiceHours;
             descriptions = s.descriptions;
             serviceHours = s.serviceHours;
             serviceDays = s.serviceDays;
@@ -109,6 +111,7 @@ namespace SPS
             CurrentHours = hours;
             //date SHOULD HAVE BEEN saved like this
             lastServiceDate = DateTime.ParseExact(lastDate, "dd-MM-yy", null);
+
             this.systemName = system;
 
             serviceHours = new List<int>();
@@ -116,7 +119,7 @@ namespace SPS
             descriptions = new List<string>();
             serviceTypesHours = new List<ServiceAssignmentType>();
             serviceTypesDays = new List<ServiceAssignmentType>();
-            serviceStatuses= new List<ServiceStatus>();
+            serviceStatuses = new List<ServiceStatus>();
 
             for (int i = 0; i < entries.Count; i++)
             {
@@ -127,6 +130,8 @@ namespace SPS
                 serviceTypesDays.Add(entries[i].TypesDays);
                 serviceStatuses.Add(entries[i].status);
             }
+            lastServiceHours = CurrentHours / serviceHours.Min() * serviceHours.Min();
+            nextServiceHours = (CurrentHours / serviceHours.Min() + 1) * serviceHours.Min();
         }
 
         public void AddHours(int hours)
