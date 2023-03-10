@@ -35,8 +35,13 @@ public class ServiceEntry : MonoBehaviour
     {
         get
         {
-            daysField.text = daysField.text.Trim();
-            return int.Parse(daysField.text);
+            if (daysField.text.Length > 0)
+            {
+                daysField.text = daysField.text.Trim();
+
+                return int.Parse(daysField.text);
+            }
+            return 0;
         }
     }
 

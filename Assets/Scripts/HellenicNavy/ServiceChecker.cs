@@ -52,6 +52,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
         DatabaseManager.Instance.ReadData("MachineryList", SelectFromDatabaseMode.specificColumns, (data) =>
         {
             //after reading all data, should check the "days distance" between today and last service time
+            names = new List<string>();
             dateDistances = new List<int>();
             for (int i = 0; i < data.Count; i++)
             {
@@ -116,29 +117,10 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
             DatabaseManager.Instance.ReadData(names[i], SelectFromDatabaseMode.specificColumns,
                 (data) =>
                 {
-                    //Service serv = new Service(data[0][0].StringValue);
-                    //int closestHours = serv.serviceHours.Where(d => d <= serv.CurrentHours).Count() > 0 ? serv.serviceHours.Where(d => d <= serv.CurrentHours).Max() : 0;
-
-                    //int actualCheckHours = serv.CurrentHours > closestHours ? serv.CurrentHours - closestHours : serv.CurrentHours;
-                    //int iterations = 0;
-
-
-                    //for (int iter = 0; iter < iterations; iter++)
-                    //{
-                    //    closestHours = serv.serviceHours.Where(d => d <= actualCheckHours).Max();
-                    //    actualCheckHours -= closestHours;
-                    //}
-
-                    //string allDescr = string.Empty;
-                    //for (int j = 0; j < serv.serviceHours.Count; j++)
-                    //{
-                    //    if (actualCheckHours / serv.serviceHours[j] >= 1)//(actualCheckHours % serv.serviceHours[j] == 0)
-                    //        allDescr += string.Format("{0}\n", serv.descriptions[j]);
-                    //}
-
-                    //Debug.Log(allDescr.TrimEnd());
-                    ////this does not work properly
-
+#if UNITY_EDITOR
+                    System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+#endif
+                    watch.Start();
                     Service serv = new Service(data[0][0].StringValue);
                     List<int> serviceTimes = serv.serviceHours;
 
@@ -167,12 +149,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                             {
                                 string descr = "";
                                 servicesToBeDone = serviceHours[j - 1].Services;
-                                //loop only through indeces that services to be done includes
-                                //for (int l = 0; l < serviceHours[j - 1].Services.Count; l++)
-                                //{
-                                //    descr += string.Format("{0}\n", serv.descriptions[servicesToBeDone[l]]);
-                                //}
-                                //Debug.Log(string.Format("services to be done: {0}", descr.Trim()));
+
                                 int l = servicesToBeDone.Max();
                                 while (l >= 0)
                                 {
@@ -182,8 +159,14 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                                     }
                                     l--;
                                 }
-                                Debug.Log(string.Format("services to be done for machinery {0}: {1}", serv.name, descr.Trim()));
+                                Debug.Log(string.Format("services to be done for machinery {0}:\n{1}", serv.name, descr.Trim()));
+#if UNITY_EDITOR
+                                watch.Stop();
+                                Debug.Log(string.Format("Took {0}ms to create lookup table and determine services for {1}", watch.ElapsedMilliseconds, serv.name));
+#endif
+                                MessageBox.Instance.HideMessageBox();
                                 break;
+
                             }
                         }
                     }
@@ -194,6 +177,6 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
             yield return new WaitForSeconds(1);
         }
         //TODO populate some interface with buttons for each machinery that has pending services 
-        MessageBox.Instance.HideMessageBox();
+       
     }
 }
