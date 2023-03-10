@@ -107,7 +107,7 @@ namespace SPS
             serviceAssignments = s.serviceAssignments;
         }
 
-        public Service(string name, string descr, string id, int hours, string lastDate, int system, List<ServiceEntry> entries)
+        public Service(string name, string descr, string id, int hours, string lastDate, int system, List<ServiceEntry> entries, bool update=false)
         {
             this.name = name;
             this.id = id;
@@ -134,10 +134,13 @@ namespace SPS
                 serviceTypesDays.Add(entries[i].TypesDays);
                 serviceStatuses.Add(entries[i].status);
             }
-            lastServiceHours = CurrentHours / serviceHours.Min() * serviceHours.Min();
-            nextServiceHours = (CurrentHours / serviceHours.Min() + 1) * serviceHours.Min();
-            lastServiceDays = (CurrentDays / serviceDays.Min()) * serviceDays.Min();
-            nextServiceDays = (CurrentDays/ serviceDays.Min() + 1) * serviceDays.Min();
+            if (update)
+            {
+                lastServiceHours = CurrentHours / serviceHours.Min() * serviceHours.Min();
+                nextServiceHours = (CurrentHours / serviceHours.Min() + 1) * serviceHours.Min();
+                lastServiceDays = (CurrentDays / serviceDays.Min()) * serviceDays.Min();
+                nextServiceDays = (CurrentDays / serviceDays.Min() + 1) * serviceDays.Min();
+            }
         }
 
         public void AddHours(int hours)

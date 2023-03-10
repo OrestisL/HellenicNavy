@@ -198,7 +198,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
 
                     #region postponed
                     //check if any service entries are marked as postponed
-                    int postponedServiceEntries = serv.serviceStatuses.Select(x => x == ServiceStatus.postponed).Count();
+                    int postponedServiceEntries = serv.serviceStatuses.Where(x => x == ServiceStatus.postponed).Count();
                     if (postponedServiceEntries > 0)
                     {
                         //add button here, if not already exists
@@ -222,7 +222,21 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
             yield return new WaitForSeconds(1);
         }
         //TODO populate some interface with buttons for each machinery that has pending services 
-        MessageBox.Instance.HideMessageBox();
-        InterfaceManager.Instance.selectMachineryWithPendingServicePanel.SetActive(true);
+        if (machineryButtonsToDisplay.Count > 0)
+        {
+            MessageBox.Instance.HideMessageBox();
+            InterfaceManager.Instance.selectMachineryWithPendingServicePanel.SetActive(true);
+        }
+        else
+        {
+            MessageBox.Instance.ShowMessageBox(new MessageBoxSettings 
+            {
+                showLabel = false,
+                mainText = "Δεν υπάρχουν μηχανήματα.",
+                showLoadingIndicator = false,
+                useLeftButton = false,
+                useRightButton = false,
+            });
+        }
     }
 }

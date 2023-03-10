@@ -963,7 +963,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         _currentService = new Service(
             displayNameInput.text, displayDescriptionInput.text, displayIdInput.text, displayHoursInput.text.Length > 0 ? int.Parse(displayHoursInput.text) : 0,
             displayDateInput.text, displaySystemDropdown.value,
-            serviceEntries);
+            serviceEntries, true);
         Debug.Log(_currentService.ToJson());
         //write to database
         DatabaseManager.Instance.WriteOnce(() =>
