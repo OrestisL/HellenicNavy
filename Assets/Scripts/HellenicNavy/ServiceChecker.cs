@@ -6,6 +6,7 @@ using UnitySQLite;
 using UnitySQLite.Utilities;
 using SPS;
 using System.Linq;
+using UnityEngine.UI;
 
 public class ServiceChecker : GenericSingleton<ServiceChecker>
 {
@@ -82,6 +83,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
 
                     watch.Start();
 #endif
+                    List<Button> machineryButtonsToDisplay = new List<Button>();
                     #region hours
                     Service serv = new Service(data[0][0].StringValue);
                     List<int> serviceTimes = serv.serviceHours;
@@ -126,6 +128,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                                 watch.Stop();
                                 Debug.Log(string.Format("Took {0}ms to create lookup table and determine services for {1}", watch.ElapsedMilliseconds, serv.name));
 #endif
+                                //add button here
                                 break;
                             }
                         }
@@ -166,15 +169,19 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                                     }
                                     ll--;
                                 }
+                                //add button here, if not already exissts
                                 Debug.Log(string.Format("services (days) to be done for machinery {0}:\n{1}", serv.name, descr.Trim()));
                                 break;
                             }
                         }
                     }
-
-
                     #endregion
                     #region postponed
+                    //check if any service entries are marked as postponed
+                    if (serv.serviceStatuses.Select(x => x == ServiceStatus.postponed).Count() > 0) 
+                    {
+                        //add button here, if not already exists
+                    }
                     #endregion
                     MessageBox.Instance.HideMessageBox();
                 },
@@ -183,8 +190,5 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
             yield return new WaitForSeconds(1);
         }
         //TODO populate some interface with buttons for each machinery that has pending services 
-        //TODO add checks for postponed
-        //TODO add checks for dates
-
     }
 }
