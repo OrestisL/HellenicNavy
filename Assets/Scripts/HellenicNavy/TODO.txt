@@ -47,6 +47,8 @@ __COMPLETED__
 - on start, after login(? maybe before) should search for all services that need to be done and notify (done with button, cause automatic would cause issues)
 
 - figure out a generic way to show which services are pending, depending on the hours and the days (5th (lmao) iteration works (uses dynamic lookup table))
+
+-added settings class (atm only holds fps and max hours for lookup table)
 #################################################################################################################################################
 
 __REMAINING__

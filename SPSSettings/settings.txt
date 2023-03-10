@@ -1,0 +1,5 @@
+{
+  "rate": 30,
+  "maxLookupTableHours": 50000,
+  "maxLookupTableDays": 10000
+}

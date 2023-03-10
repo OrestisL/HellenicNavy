@@ -10,12 +10,14 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
     {
         public int rate = 30;
         public int maxLookupTableHours = 50000;
+        public int maxLookupTableDays = 10000;
 
-        public Settings() { rate = 30; maxLookupTableHours = 50000; }
-        public Settings(int rate, int maxLookupTableHours)
+        public Settings() { rate = 30; maxLookupTableHours = 50000; maxLookupTableDays = 10000; }
+        public Settings(int rate, int maxLookupTableHours, int maxLooupTableDays)
         {
             this.rate = rate;
             this.maxLookupTableHours = maxLookupTableHours;
+            this.maxLookupTableDays = maxLooupTableDays;
         }
         public string ToJson() 
         {
@@ -33,7 +35,7 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
     void LoadFromJson(string name)
     {
         //ensure path exists (path is next to the exe)
-        string directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "ApplicationSettings");
+        string directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "SPSSettings");
         if (!Directory.Exists(directoryPath))
         {
             Debug.Log("Settings directory does not exist, creating...");

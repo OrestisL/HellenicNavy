@@ -18,15 +18,15 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
 
     private struct ServiceTableEntry
     {
-        int hours;
+        int timeInterval;
         List<int> services;
-        public ServiceTableEntry(int hours, List<int> services)
+        public ServiceTableEntry(int repeat, List<int> services)
         {
-            this.hours = hours;
+            this.timeInterval = repeat;
             this.services = services;
         }
 
-        public int Hours { get { return hours; } }
+        public int TimeInterval { get { return timeInterval; } }
         public List<int> Services { get { return services; } }
     }
 
@@ -68,46 +68,6 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
         }, SortResultsBy.none, null, "Name, LastServiceTime");
     }
 
-    private /*void*/ IEnumerator CheckDates()
-    {
-        //wait for a bit
-        yield return new WaitForSeconds(1);
-        for (int i = 0; i < names.Count; i++)
-        {
-            DatabaseManager.Instance.ReadData(names[i], SelectFromDatabaseMode.specificColumns,
-                (data) =>
-                {
-                    //create new service for each description
-                    Service serv = new Service(data[0][0].StringValue);
-                    //for the given day distance, find the closest service days
-                    int closestDays = serv.serviceDays.Where(d => d <= dateDistances[i]).Count() > 0 ? serv.serviceDays.Where(d => d <= dateDistances[i]).Max() : 0;
-
-                    int actualCheckDays = serv.CurrentDays > closestDays ? serv.CurrentDays - closestDays : serv.CurrentDays;
-                    //this loop should be performed (int)currentDays/maxClosest + 1 times (i think)
-                    int iterations = closestDays > 0 ? (int)(serv.CurrentDays / closestDays) : 0;
-                    for (int iter = 0; iter < iterations; iter++)
-                    {
-                        closestDays = serv.serviceDays.Where(d => d <= actualCheckDays).Max();
-                        actualCheckDays -= closestDays;
-                    }
-
-                    //find which services need to be done
-                    string allDescr = string.Empty;
-                    for (int j = 0; j < serv.serviceDays.Count; j++)
-                    {
-                        if (actualCheckDays / serv.serviceDays[j] >= 1) //(actualCheckDays % serv.serviceDays[j] == 0)
-                            allDescr += string.Format("{0}\n", serv.descriptions[j]);
-                    }
-
-                    Debug.Log(allDescr.TrimEnd());
-                },
-                SortResultsBy.none, null, "ServiceDescr");
-            //TODO populate some interface with buttons for each machinery that has pending services 
-            yield return new WaitForSeconds(1);
-        }
-
-        MessageBox.Instance.HideMessageBox();
-    }
     private /*void*/ IEnumerator CheckHours()
     {
         //wait for a bit
@@ -122,12 +82,13 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
 
                     watch.Start();
 #endif
+                    #region hours
                     Service serv = new Service(data[0][0].StringValue);
                     List<int> serviceTimes = serv.serviceHours;
 
-                    int iter = SettingsHolder.Instance.settings.maxLookupTableHours / serviceTimes.Min();
+                    int iterHours = SettingsHolder.Instance.settings.maxLookupTableHours / serviceTimes.Min();
                     List<ServiceTableEntry> serviceHours = new List<ServiceTableEntry>();
-                    for (int j = 0; j <= iter; j++)
+                    for (int j = 0; j <= iterHours; j++)
                     {
                         int currentHours = j * serviceTimes.Min();
                         List<int> servicesToBeDone = new List<int>();
@@ -135,7 +96,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                         for (int k = 0; k < serviceTimes.Count; k++)
                         {
                             if (j == 0)
-                                continue;
+                                break;
                             if (currentHours % serviceTimes[k] == 0)
                             {
                                 servicesToBeDone.Add(k);
@@ -146,7 +107,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                         serviceHours.Add(new ServiceTableEntry(currentHours, servicesToBeDone));
                         if (j > 1)
                         {
-                            if (serv.CurrentHours >= serviceHours[j - 1].Hours & serv.CurrentHours <= serviceHours[j].Hours)
+                            if (serv.CurrentHours >= serviceHours[j - 1].TimeInterval & serv.CurrentHours <= serviceHours[j].TimeInterval)
                             {
                                 string descr = "";
                                 servicesToBeDone = serviceHours[j - 1].Services;
@@ -160,18 +121,62 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                                     }
                                     l--;
                                 }
-                                Debug.Log(string.Format("services to be done for machinery {0}:\n{1}", serv.name, descr.Trim()));
+                                Debug.Log(string.Format("services (hours) to be done for machinery {0}:\n{1}", serv.name, descr.Trim()));
 #if UNITY_EDITOR
                                 watch.Stop();
                                 Debug.Log(string.Format("Took {0}ms to create lookup table and determine services for {1}", watch.ElapsedMilliseconds, serv.name));
 #endif
-                                MessageBox.Instance.HideMessageBox();
                                 break;
+                            }
+                        }
+                    }
+                    #endregion
+                    #region days
+                    List<int> serviceDays = serv.serviceDays;
+                    int iterDays = SettingsHolder.Instance.settings.maxLookupTableDays / serviceDays.Min();
+                    List<ServiceTableEntry> servDays = new List<ServiceTableEntry>();
+                    for (int jj = 0; jj < iterDays; jj++)
+                    {
+                        int currentDays = jj * serviceDays.Min();
+                        List<int> servicesToBeDone = new List<int>();
 
+                        for (int kk = 0; kk < serviceDays.Count; kk++)
+                        {
+                            if (jj == 0)
+                                break;
+                            if (currentDays % serviceDays[kk] == 0)
+                            {
+                                servicesToBeDone.Add(kk);
+                            }
+                        }
+                        servDays.Add(new ServiceTableEntry(currentDays, servicesToBeDone));
+                        if (jj > 1)
+                        {
+                            if (serv.CurrentDays >= servDays[jj - 1].TimeInterval & serv.CurrentDays <= servDays[jj].TimeInterval)
+                            {
+                                string descr = "";
+                                servicesToBeDone = servDays[jj - 1].Services;
+
+                                int ll = servicesToBeDone.Max();
+                                while (ll >= 0)
+                                {
+                                    if (servicesToBeDone.Contains(ll))
+                                    {
+                                        descr += string.Format("{0}\n", serv.descriptions[ll]);
+                                    }
+                                    ll--;
+                                }
+                                Debug.Log(string.Format("services (days) to be done for machinery {0}:\n{1}", serv.name, descr.Trim()));
+                                break;
                             }
                         }
                     }
 
+
+                    #endregion
+                    #region postponed
+                    #endregion
+                    MessageBox.Instance.HideMessageBox();
                 },
                 SortResultsBy.none, null, "ServiceDescr");
 
@@ -179,6 +184,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
         }
         //TODO populate some interface with buttons for each machinery that has pending services 
         //TODO add checks for postponed
+        //TODO add checks for dates
 
     }
 }
