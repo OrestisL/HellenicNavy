@@ -135,12 +135,12 @@ public class ServiceEntry : MonoBehaviour
         selectionToggle.onValueChanged.AddListener((b) => bgImg.color = b ? selectedColor : normalColor);
     }
 
-    public void DisplayFromData(string descr, int hours, int days, ServiceAssignmentType serviceTypesHours, ServiceAssignmentType serviceTypesDays)
+    public void DisplayFromData(string descr, int hours, int days, ServiceAssignmentType serviceTypesHours, ServiceAssignmentType serviceTypesDays, ServiceStatus status)
     {
-        StartCoroutine(CreateInterfaceFromData(descr, hours, days, serviceTypesHours, serviceTypesDays));
+        StartCoroutine(CreateInterfaceFromData(descr, hours, days, serviceTypesHours, serviceTypesDays, status));
     }
 
-    public IEnumerator CreateInterfaceFromData(string descr, int hours, int days, ServiceAssignmentType serviceTypesHours, ServiceAssignmentType serviceTypesDays)
+    public IEnumerator CreateInterfaceFromData(string descr, int hours, int days, ServiceAssignmentType serviceTypesHours, ServiceAssignmentType serviceTypesDays, ServiceStatus status)
     {
         bool accessible = AccountManagement.Instance.CurrentAccount.AccessLevel == UnitySQLite.Utilities.AccessLevel.admin;
         descriptionField.text = descr;
@@ -161,6 +161,20 @@ public class ServiceEntry : MonoBehaviour
         dd.interactable = accessible;
         daysField.interactable = accessible;
         yield return new WaitForEndOfFrame();
+
+        this.status = status;
+        switch (status)
+        {
+            case ServiceStatus.pending:
+            case ServiceStatus.completed:
+                bgImg.color = normalColor;
+                break;
+            case ServiceStatus.postponed: //highlight previously postponed service entries
+                bgImg.color = Color.yellow;
+                break;
+            default:
+                break;
+        }
 
         daysField.text.TrimEnd();
 

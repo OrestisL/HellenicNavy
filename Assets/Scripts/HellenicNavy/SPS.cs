@@ -76,6 +76,7 @@ namespace SPS
         public List<int> serviceDays;
         public List<ServiceAssignmentType> serviceTypesHours;
         public List<ServiceAssignmentType> serviceTypesDays;
+        public List<ServiceStatus> serviceStatuses;
         public List<ServiceAssignment> serviceAssignments; //WIP
 
         public Service() { }
@@ -96,6 +97,7 @@ namespace SPS
             serviceDays = s.serviceDays;
             serviceTypesHours = s.serviceTypesHours;
             serviceTypesDays = s.serviceTypesDays;
+            serviceStatuses = s.serviceStatuses;
             serviceAssignments = s.serviceAssignments;
         }
 
@@ -114,6 +116,7 @@ namespace SPS
             descriptions = new List<string>();
             serviceTypesHours = new List<ServiceAssignmentType>();
             serviceTypesDays = new List<ServiceAssignmentType>();
+            serviceStatuses= new List<ServiceStatus>();
 
             for (int i = 0; i < entries.Count; i++)
             {
@@ -122,6 +125,7 @@ namespace SPS
                 descriptions.Add(entries[i].Descr);
                 serviceTypesHours.Add(entries[i].TypesHours);
                 serviceTypesDays.Add(entries[i].TypesDays);
+                serviceStatuses.Add(entries[i].status);
             }
         }
 

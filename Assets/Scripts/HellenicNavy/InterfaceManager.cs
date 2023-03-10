@@ -172,7 +172,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     private void Start()
     {
-        SetupButtons();    
+        SetupButtons();
     }
 
     void SetupInterface(AccessLevel accessLevel)
@@ -216,7 +216,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             textValidatorDateTime = ScriptableObject.CreateInstance<TextValidatorDateTime>();
         if (textValidator == null)
             textValidator = ScriptableObject.CreateInstance<TextValidator>();
-        if(textValidatorNameInput== null)
+        if (textValidatorNameInput == null)
             textValidatorNameInput = ScriptableObject.CreateInstance<TextValidatorNameInput>();
 
         dateInput.inputValidator = textValidatorDateTime;
@@ -750,7 +750,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     void CloseAddManchineryPanel()
     {
-        if (DatabaseManager.Instance.CheckIfTableExists(nameInput.text)) 
+        if (DatabaseManager.Instance.CheckIfTableExists(nameInput.text))
         {
             addMachineryPanel.SetActive(false);
             return;
@@ -781,13 +781,13 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         displayPostponeServiceButton.interactable = status;
     }
 
-    void CompleteServiceEntries() 
+    void CompleteServiceEntries()
     {
         ServiceEntry[] currentEntries = displayServiceEntryParent.GetComponentsInChildren<ServiceEntry>();
         _currentService.SetServiceStatusCompleted(currentEntries);
     }
 
-    void PostponeServiceEntries() 
+    void PostponeServiceEntries()
     {
         ServiceEntry[] currentEntries = displayServiceEntryParent.GetComponentsInChildren<ServiceEntry>();
         _currentService.SetServiceStatusPostponed(currentEntries);
@@ -880,7 +880,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             useLeftButton = false,
             useRightButton = false,
         });
-        DatabaseManager.Instance.ReadData(machineryName.Replace('.',','), SelectFromDatabaseMode.everything,
+        DatabaseManager.Instance.ReadData(machineryName.Replace('.', ','), SelectFromDatabaseMode.everything,
             (data) =>
             {
                 StartCoroutine(PopulateServiceEntriesForDisplayMachinery(data));
@@ -909,7 +909,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         {
             ServiceEntry currentEntry = Instantiate(serviceEntryPrefab, displayServiceEntryParent).GetComponent<ServiceEntry>();
             //currentEntry.DisplayFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceDays[i], serv.serviceTypesHours[i], serv.serviceTypesDays[i]);
-            StartCoroutine(currentEntry.CreateInterfaceFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceDays[i], serv.serviceTypesHours[i], serv.serviceTypesDays[i]));
+            StartCoroutine(currentEntry.CreateInterfaceFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceDays[i], serv.serviceTypesHours[i], serv.serviceTypesDays[i], serv.serviceStatuses[i]));
             yield return new WaitForEndOfFrame();
         }
         displayMachineryPanel.SetActive(true);
@@ -980,23 +980,23 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         });
     }
 
-    void DeleteMachinery() 
+    void DeleteMachinery()
     {
-        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings() 
+        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
         {
             showLabel = true,
             label = "Διαγραφή Μηχανήματος",
             mainText = string.Format("Είστε σίγουροι ότι θέλετε να διαγράψετε το μηχάνημα \"{0}\";", displayNameInput.text),
             useRightButton = true,
             rightButtonLabel = "ΝΑΙ",
-            onRightButtonClick = () => 
+            onRightButtonClick = () =>
             {
                 displayMachineryPanel.SetActive(false);
                 DatabaseManager.Instance.DeleteRowsOnTable("MachineryList", string.Format("Name = '{0}'", displayNameInput.text));
-                DatabaseManager.Instance.DeleteTableFromDatabase(displayNameInput.text, 
-                    () => 
+                DatabaseManager.Instance.DeleteTableFromDatabase(displayNameInput.text,
+                    () =>
                     {
-                        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings() 
+                        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
                         {
                             showLabel = true,
                             label = "Διαγραφή Μηχανήματος",
@@ -1014,7 +1014,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             },
             useLeftButton = true,
             leftButtonLabel = "OXI",
-            onLeftButtonClick = () => 
+            onLeftButtonClick = () =>
             {
                 MessageBox.Instance.HideMessageBox();
             },
