@@ -71,6 +71,8 @@ namespace SPS
                 return Mathf.Abs((lastServiceDate - DateTime.Now).Days);
             }
         }
+        public int lastServiceDays;
+        public int nextServiceDays;
         public int systemName;
         public List<string> descriptions;
         public List<int> serviceHours;
@@ -94,6 +96,8 @@ namespace SPS
             lastServiceDate = s.lastServiceDate;
             lastServiceHours = s.lastServiceHours;
             nextServiceHours= s.nextServiceHours;
+            lastServiceDays= s.lastServiceDays;
+            nextServiceDays= s.nextServiceDays; 
             descriptions = s.descriptions;
             serviceHours = s.serviceHours;
             serviceDays = s.serviceDays;
@@ -132,6 +136,8 @@ namespace SPS
             }
             lastServiceHours = CurrentHours / serviceHours.Min() * serviceHours.Min();
             nextServiceHours = (CurrentHours / serviceHours.Min() + 1) * serviceHours.Min();
+            lastServiceDays = (CurrentDays / serviceDays.Min()) * serviceDays.Min();
+            nextServiceDays = (CurrentDays/ serviceDays.Min() + 1) * serviceDays.Min();
         }
 
         public void AddHours(int hours)

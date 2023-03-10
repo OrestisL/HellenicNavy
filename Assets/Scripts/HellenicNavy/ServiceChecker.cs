@@ -164,6 +164,11 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                         {
                             if (serv.CurrentDays >= servDays[jj - 1].TimeInterval & serv.CurrentDays <= servDays[jj].TimeInterval)
                             {
+                                if (serv.lastServiceDays == servDays[jj-1].TimeInterval) 
+                                {
+                                    //service has already been done for the given days
+                                    break;
+                                }
                                 string descr = "";
                                 servicesToBeDone = servDays[jj - 1].Services;
 
