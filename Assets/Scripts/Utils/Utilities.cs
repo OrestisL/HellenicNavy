@@ -402,7 +402,7 @@ namespace UnitySQLite.Utilities
 
             DatabaseManager.Instance.WriteOnce(() =>
                                                 DatabaseManager.Instance.
-                                                UpdateValuesOnTable("Users", "Password,Salt", values, $"name = '{_accountName}'")
+                                                UpdateValuesOnTable("Users", "Password,Salt", values, $"name = '{_accountName}'", true)
                                                );
         }
         /// <summary>

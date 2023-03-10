@@ -234,11 +234,11 @@ namespace UnitySQLite
             }
 
             //create query
-            
+
             string query = string.Format("INSERT OR IGNORE INTO '{0}'({1}) VALUES ({2});", tableName, tableRow.GetColumnNames(), tableRow.GetValues());
             sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
             sm_dbCommand.ExecuteNonQuery();
-            sm_dbCommand.Dispose();           
+            sm_dbCommand.Dispose();
 
             if (m_limitRows)
                 CheckNumberOfRows(sm_dbConnection, tableName);
@@ -511,7 +511,7 @@ namespace UnitySQLite
         /// <summary>
         /// Updates values in the databse. Make sure ValueNames and NewValues are separated by commas.
         /// </summary>
-        public void UpdateValuesOnTable(string TableName, string ValueNames, string NewValues, string SearchCondition = "")
+        public void UpdateValuesOnTable(string TableName, string ValueNames, string NewValues, string SearchCondition = "", bool isPassword = false)
         {
             if (!CheckIfTableExists(TableName))
             {
@@ -550,7 +550,10 @@ namespace UnitySQLite
                 ReadOnlySpan<char> valueSlice = spanValues.Slice(indexStartValues, nextCommaIndexValues - indexStartValues);
 
                 //add to query
-                query += string.Format("'{0}' = {1},", nameSlice.ToString(), valueSlice.ToString());
+                if (!isPassword)
+                    query += string.Format("'{0}' = {1},", nameSlice.ToString(), valueSlice.ToString());
+                else
+                    query += string.Format("'{0}' = '{1}',", nameSlice.ToString(), valueSlice.ToString());
 
                 //move indeces by 1 to avoid being stuck in an infinite loop
                 //values should have length more than 0

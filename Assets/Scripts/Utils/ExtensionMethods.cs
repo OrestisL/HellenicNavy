@@ -77,6 +77,7 @@ public static class ExtensionMethods
 
     private static IEnumerator ToggleButton(Button button, float delay)
     {
+        if (!button.gameObject.activeSelf) { yield break; }
         button.interactable = false;
         yield return new WaitForSeconds(delay);
         button.interactable = true;
