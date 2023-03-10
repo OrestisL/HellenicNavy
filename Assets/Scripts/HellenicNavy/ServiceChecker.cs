@@ -144,12 +144,15 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
 
                     int iter = MAX_AMOUNT_HOURS / serviceTimes.Min();
                     List<ServiceTableEntry> serviceHours = new List<ServiceTableEntry>();
-                    for (int j = 1; j <= iter; j++)
+                    for (int j = 0; j <= iter; j++)
                     {
                         int currentHours = j * serviceTimes.Min();
                         List<int> servicesToBeDone = new List<int>();
+
                         for (int k = 0; k < serviceTimes.Count; k++)
                         {
+                            if (j == 0)
+                                continue;
                             if (currentHours % serviceTimes[k] == 0)
                             {
                                 servicesToBeDone.Add(k);
@@ -160,14 +163,26 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                         serviceHours.Add(new ServiceTableEntry(currentHours, servicesToBeDone));
                         if (j > 1)
                         {
-                            if (serv.CurrentHours > serviceHours[j - 2].Hours & serv.CurrentHours < serviceHours[j-1].Hours)
+                            if (serv.CurrentHours >= serviceHours[j - 1].Hours & serv.CurrentHours <= serviceHours[j].Hours)
                             {
                                 string descr = "";
-                                for (int l = 0; l < serviceHours[j - 2].Services.Count; l++)
+                                servicesToBeDone = serviceHours[j - 1].Services;
+                                //loop only through indeces that services to be done includes
+                                //for (int l = 0; l < serviceHours[j - 1].Services.Count; l++)
+                                //{
+                                //    descr += string.Format("{0}\n", serv.descriptions[servicesToBeDone[l]]);
+                                //}
+                                //Debug.Log(string.Format("services to be done: {0}", descr.Trim()));
+                                int l = servicesToBeDone.Max();
+                                while (l >= 0)
                                 {
-                                    descr += string.Format("{0}\n", serv.descriptions[l]);
+                                    if (servicesToBeDone.Contains(l))
+                                    {
+                                        descr += string.Format("{0}\n", serv.descriptions[l]);
+                                    }
+                                    l--;
                                 }
-                                Debug.Log(string.Format("services to be done: {0}", descr.Trim()));
+                                Debug.Log(string.Format("services to be done for machinery {0}: {1}", serv.name, descr.Trim()));
                                 break;
                             }
                         }
