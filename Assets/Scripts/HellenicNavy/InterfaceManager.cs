@@ -341,7 +341,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     void ApplicationSetup() //maybe consider changing this 
     {
-        Application.targetFrameRate = 30;
+        Application.targetFrameRate = SettingsHolder.Instance.settings.rate;
         QualitySettings.vSyncCount = 0;
         Button[] buttons = Resources.FindObjectsOfTypeAll<Button>();
         for (int i = 0; i < buttons.Length; i++)
@@ -795,11 +795,12 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     void CloseDisplayPanel()
     {
-        if (AccountManagement.Instance.CurrentAccount.AccessLevel == AccessLevel.user)
-        {
-            displayMachineryPanel.SetActive(false);
-            return;
-        }
+        //everyone should be able to update info on close
+        //if (AccountManagement.Instance.CurrentAccount.AccessLevel == AccessLevel.user)
+        //{
+        //    displayMachineryPanel.SetActive(false);
+        //    return;
+        //}
 
         //show message box in order to save the data
         MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()

@@ -9,7 +9,6 @@ using System.Linq;
 
 public class ServiceChecker : GenericSingleton<ServiceChecker>
 {
-    public static int MAX_AMOUNT_HOURS = 30000;
     [SerializeField]
     private DateTime today;
     [SerializeField]
@@ -35,6 +34,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
     {
         base.Awake();
         today = DateTime.Now;
+
     }
 
     public void Check()
@@ -119,12 +119,13 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                 {
 #if UNITY_EDITOR
                     System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
-#endif
+
                     watch.Start();
+#endif
                     Service serv = new Service(data[0][0].StringValue);
                     List<int> serviceTimes = serv.serviceHours;
 
-                    int iter = MAX_AMOUNT_HOURS / serviceTimes.Min();
+                    int iter = SettingsHolder.Instance.settings.maxLookupTableHours / serviceTimes.Min();
                     List<ServiceTableEntry> serviceHours = new List<ServiceTableEntry>();
                     for (int j = 0; j <= iter; j++)
                     {
@@ -177,6 +178,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
             yield return new WaitForSeconds(1);
         }
         //TODO populate some interface with buttons for each machinery that has pending services 
-       
+        //TODO add checks for postponed
+
     }
 }
