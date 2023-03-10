@@ -102,6 +102,10 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public GameObject selectMachineryPanel;
     private GameObject _currentRowMachinery;
 
+    [Header("Select machinery with pending service")]
+    public GameObject selectMachineryWithPendingServicePanel;
+    private GameObject _currentRowPendingMachinery;
+
     [Header("Prefabs")]
     public GameObject serviceEntryPrefab;
     public GameObject serviceTypePrefab;
@@ -362,6 +366,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         addDeptPanel.SetActive(false);
         selectSystemPanel.SetActive(false);
         selectMachineryPanel.SetActive(false);
+        selectMachineryWithPendingServicePanel.SetActive(false);
     }
 
     void CreateSystemDepartmentDictionary()
@@ -869,6 +874,25 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         selectMachineryPanel.SetActive(true);
         LayoutRebuilder.ForceRebuildLayoutImmediate(selectMachineryPanel.GetComponent<RectTransform>());
         MessageBox.Instance.HideMessageBox();
+    }
+
+    public Button ShowMachineryWithPendingServiceButtons(string machineryName) 
+    {
+        if (_currentRowPendingMachinery == null)
+        {
+            _currentRowPendingMachinery = Instantiate(buttonRow, selectMachineryWithPendingServicePanel.transform.GetChild(1));
+        }
+        else if (_currentRowPendingMachinery.transform.childCount > buttonsPerRow)
+        {
+            _currentRowPendingMachinery = Instantiate(buttonRow, selectMachineryWithPendingServicePanel.transform.GetChild(1));
+        }
+        Button current = Instantiate(selectDeptButton, _currentRowPendingMachinery.transform);
+        current.name = machineryName;
+        current.GetComponentInChildren<TextMeshProUGUI>().text = machineryName;
+        //each button should setup the machinery buttons for the system
+        current.onClick.AddListener(() => ShowMachineryEntry(machineryName));
+
+        return current;
     }
 
     void ShowMachineryEntry(string machineryName)

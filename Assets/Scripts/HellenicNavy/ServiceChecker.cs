@@ -16,6 +16,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
     private List<int> dateDistances;
     [SerializeField]
     private List<string> names;
+    List<Button> machineryButtonsToDisplay = new List<Button>();
 
     private struct ServiceTableEntry
     {
@@ -73,6 +74,9 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
     {
         //wait for a bit
         yield return new WaitForSeconds(1);
+        InterfaceManager.Instance.selectMachineryWithPendingServicePanel.SetActive(false);
+        InterfaceManager.Instance.selectMachineryWithPendingServicePanel.transform.GetChild(1).ClearChildren();
+        machineryButtonsToDisplay = new List<Button>();
         for (int i = 0; i < names.Count; i++)
         {
             DatabaseManager.Instance.ReadData(names[i], SelectFromDatabaseMode.specificColumns,
@@ -83,7 +87,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
 
                     watch.Start();
 #endif
-                    List<Button> machineryButtonsToDisplay = new List<Button>();
+
                     #region hours
                     Service serv = new Service(data[0][0].StringValue);
                     List<int> serviceTimes = serv.serviceHours;
@@ -111,6 +115,11 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                         {
                             if (serv.CurrentHours >= serviceHours[j - 1].TimeInterval & serv.CurrentHours <= serviceHours[j].TimeInterval)
                             {
+                                if (serv.lastServiceHours == serviceHours[j - 1].TimeInterval)
+                                {
+                                    //service for this time interval has already been done
+                                    break;
+                                }
                                 string descr = "";
                                 servicesToBeDone = serviceHours[j - 1].Services;
 
@@ -124,11 +133,9 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                                     l--;
                                 }
                                 Debug.Log(string.Format("services (hours) to be done for machinery {0}:\n{1}", serv.name, descr.Trim()));
-#if UNITY_EDITOR
-                                watch.Stop();
-                                Debug.Log(string.Format("Took {0}ms to create lookup table and determine services for {1}", watch.ElapsedMilliseconds, serv.name));
-#endif
+
                                 //add button here
+                                machineryButtonsToDisplay.Add(InterfaceManager.Instance.ShowMachineryWithPendingServiceButtons(serv.name));
                                 break;
                             }
                         }
@@ -169,26 +176,48 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                                     }
                                     ll--;
                                 }
-                                //add button here, if not already exissts
+
+                                int ss = machineryButtonsToDisplay.Select(x => x.name == serv.name).Count();
+                                if ( ss == 0)
+                                {
+                                    Button toAdd = InterfaceManager.Instance.ShowMachineryWithPendingServiceButtons(serv.name);
+                                    machineryButtonsToDisplay.Add(toAdd);
+                                }
+                                //add button here, if not already exists
                                 Debug.Log(string.Format("services (days) to be done for machinery {0}:\n{1}", serv.name, descr.Trim()));
                                 break;
                             }
                         }
                     }
                     #endregion
+
                     #region postponed
                     //check if any service entries are marked as postponed
-                    if (serv.serviceStatuses.Select(x => x == ServiceStatus.postponed).Count() > 0) 
+                    int postponedServiceEntries = serv.serviceStatuses.Select(x => x == ServiceStatus.postponed).Count();
+                    if (postponedServiceEntries > 0)
                     {
                         //add button here, if not already exists
-                    }
+                        int pp = machineryButtonsToDisplay.Select(x => x.name == serv.name).Count();                     
+                        if (pp == 0)
+                        {
+                            Button postponed = InterfaceManager.Instance.ShowMachineryWithPendingServiceButtons(serv.name);
+                            machineryButtonsToDisplay.Add(postponed);
+                        }
+                        Debug.Log(string.Format("{0} has {1} postponed service entries", serv.name, postponedServiceEntries));
+                    }//check if this actually works properly
                     #endregion
-                    MessageBox.Instance.HideMessageBox();
+#if UNITY_EDITOR
+                    watch.Stop();
+                    Debug.Log(string.Format("Took {0}ms to create lookup tables, check if there exist postponed services and determine services for {1}", watch.ElapsedMilliseconds, serv.name));
+#endif
+                    
                 },
                 SortResultsBy.none, null, "ServiceDescr");
 
             yield return new WaitForSeconds(1);
         }
         //TODO populate some interface with buttons for each machinery that has pending services 
+        MessageBox.Instance.HideMessageBox();
+        InterfaceManager.Instance.selectMachineryWithPendingServicePanel.SetActive(true);
     }
 }
