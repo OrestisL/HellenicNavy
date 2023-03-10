@@ -511,7 +511,7 @@ namespace UnitySQLite
         /// <summary>
         /// Updates values in the databse. Make sure ValueNames and NewValues are separated by commas.
         /// </summary>
-        public void UpdateValuesOnTable(string TableName, string ValueNames, string NewValues, string SearchCondition = "", bool isPassword = false)
+        public void UpdateValuesOnTable(string TableName, string ValueNames, string NewValues, string SearchCondition = "", Action onUpdateComplete = null, bool isPassword = false)
         {
             if (!CheckIfTableExists(TableName))
             {
@@ -570,7 +570,7 @@ namespace UnitySQLite
             sm_dbCommand = new SqliteCommand(query, sm_dbConnection, sm_dbTransaction);
 
             sm_dbCommand.ExecuteNonQuery();
-
+            onUpdateComplete?.Invoke();
             Logger.Instance.AddMessage(query);
         }
         /// <summary>

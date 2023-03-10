@@ -400,10 +400,19 @@ namespace UnitySQLite.Utilities
 
             string values = string.Format("{0},{1}", hash, _salt);
 
-            DatabaseManager.Instance.WriteOnce(() =>
-                                                DatabaseManager.Instance.
-                                                UpdateValuesOnTable("Users", "Password,Salt", values, $"name = '{_accountName}'", true)
-                                               );
+            DatabaseManager.Instance.WriteOnce(() => DatabaseManager.Instance.UpdateValuesOnTable("Users", "Password,Salt", values, $"name = '{_accountName}'",
+                () => 
+                UnityMainThreadDispatcher.Instance.Enqueue(
+                    () => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings() 
+                    { 
+                        showLabel = true,
+                        label = "Αλλαγή κωδικού πρόσβασης",
+                        mainText = "Επιτυχής αλλαγή κωδικού πρόσβασης",
+                        showLoadingIndicator = false,
+                        useLeftButton = false,
+                        useRightButton = false,
+                    }, 1.5f))
+                ,true));
         }
         /// <summary>
         /// Create account on database if not exists. 
