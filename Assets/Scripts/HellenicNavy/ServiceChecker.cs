@@ -9,12 +9,28 @@ using System.Linq;
 
 public class ServiceChecker : GenericSingleton<ServiceChecker>
 {
+    public static int MAX_AMOUNT_HOURS = 30000;
     [SerializeField]
     private DateTime today;
     [SerializeField]
     private List<int> dateDistances;
     [SerializeField]
     private List<string> names;
+
+    private struct ServiceTableEntry
+    {
+        int hours;
+        List<int> services;
+        public ServiceTableEntry(int hours, List<int> services)
+        {
+            this.hours = hours;
+            this.services = services;
+        }
+
+        public int Hours { get { return hours; } }
+        public List<int> Services { get { return services; } }
+    }
+
     public override void Awake()
     {
         base.Awake();
@@ -60,29 +76,29 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
             DatabaseManager.Instance.ReadData(names[i], SelectFromDatabaseMode.specificColumns,
                 (data) =>
                 {
-                        //create new service for each description
-                        Service serv = new Service(data[0][0].StringValue);
-                        //for the given day distance, find the closest service days
-                        int closestDays = serv.serviceDays.Where(d => d <= dateDistances[i]).Count() > 0 ? serv.serviceDays.Where(d => d <= dateDistances[i]).Max() : 0;
+                    //create new service for each description
+                    Service serv = new Service(data[0][0].StringValue);
+                    //for the given day distance, find the closest service days
+                    int closestDays = serv.serviceDays.Where(d => d <= dateDistances[i]).Count() > 0 ? serv.serviceDays.Where(d => d <= dateDistances[i]).Max() : 0;
 
-                        int actualCheckDays = serv.CurrentDays > closestDays ? serv.CurrentDays - closestDays : serv.CurrentDays;
-                        //this loop should be performed (int)currentDays/maxClosest + 1 times (i think)
-                        int iterations = closestDays > 0 ? (int)(serv.CurrentDays / closestDays) : 0;
-                        for (int iter = 0; iter < iterations; iter++)
-                        {
-                            closestDays = serv.serviceDays.Where(d => d <= actualCheckDays).Max();
-                            actualCheckDays -= closestDays;
-                        }
+                    int actualCheckDays = serv.CurrentDays > closestDays ? serv.CurrentDays - closestDays : serv.CurrentDays;
+                    //this loop should be performed (int)currentDays/maxClosest + 1 times (i think)
+                    int iterations = closestDays > 0 ? (int)(serv.CurrentDays / closestDays) : 0;
+                    for (int iter = 0; iter < iterations; iter++)
+                    {
+                        closestDays = serv.serviceDays.Where(d => d <= actualCheckDays).Max();
+                        actualCheckDays -= closestDays;
+                    }
 
-                        //find which services need to be done
-                        string allDescr = string.Empty;
-                        for (int j = 0; j < serv.serviceDays.Count; j++)
-                        {
-                            if (actualCheckDays / serv.serviceDays[j] >= 1) //(actualCheckDays % serv.serviceDays[j] == 0)
-                                allDescr += string.Format("{0}\n", serv.descriptions[j]);
-                        }
+                    //find which services need to be done
+                    string allDescr = string.Empty;
+                    for (int j = 0; j < serv.serviceDays.Count; j++)
+                    {
+                        if (actualCheckDays / serv.serviceDays[j] >= 1) //(actualCheckDays % serv.serviceDays[j] == 0)
+                            allDescr += string.Format("{0}\n", serv.descriptions[j]);
+                    }
 
-                        Debug.Log(allDescr.TrimEnd());
+                    Debug.Log(allDescr.TrimEnd());
                 },
                 SortResultsBy.none, null, "ServiceDescr");
             //TODO populate some interface with buttons for each machinery that has pending services 
@@ -100,31 +116,62 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
             DatabaseManager.Instance.ReadData(names[i], SelectFromDatabaseMode.specificColumns,
                 (data) =>
                 {
-                    Service serv = new Service(data[0][0].StringValue);
-                    int closestHours = serv.serviceHours.Where(d => d <= serv.CurrentHours).Count() > 0 ? serv.serviceHours.Where(d => d <= serv.CurrentHours).Max() : 0;
+                    //Service serv = new Service(data[0][0].StringValue);
+                    //int closestHours = serv.serviceHours.Where(d => d <= serv.CurrentHours).Count() > 0 ? serv.serviceHours.Where(d => d <= serv.CurrentHours).Max() : 0;
 
-                    int actualCheckHours = serv.CurrentHours;// > closestHours ? serv.CurrentHours - closestHours : serv.CurrentHours;
-                    int iterations = closestHours > 0 ? (int)(serv.CurrentHours / closestHours) : 0;
+                    //int actualCheckHours = serv.CurrentHours > closestHours ? serv.CurrentHours - closestHours : serv.CurrentHours;
+                    //int iterations = 0;
+
+
                     //for (int iter = 0; iter < iterations; iter++)
                     //{
                     //    closestHours = serv.serviceHours.Where(d => d <= actualCheckHours).Max();
                     //    actualCheckHours -= closestHours;
                     //}
 
-                    string allDescr = string.Empty;
-                    for (int j = 0; j < serv.serviceHours.Count; j++)
-                    {
-                        if (actualCheckHours / serv.serviceHours[j] >= 1)//(actualCheckHours % serv.serviceHours[j] == 0)
-                            allDescr += string.Format("{0}\n", serv.descriptions[j]);
-                    }
+                    //string allDescr = string.Empty;
+                    //for (int j = 0; j < serv.serviceHours.Count; j++)
+                    //{
+                    //    if (actualCheckHours / serv.serviceHours[j] >= 1)//(actualCheckHours % serv.serviceHours[j] == 0)
+                    //        allDescr += string.Format("{0}\n", serv.descriptions[j]);
+                    //}
 
-                    Debug.Log(allDescr.TrimEnd());
-                    //next service hours should also be displayed somewhere, which should also show the services that will be due
-                    //also need a way to save last service hours and postpone. marking a service as complete should update lastServiceHours
-                    //this does not seem to work properly, at least that's what i think
-                    //2 possible solutions are:
-                    //                          lookup table with hours -> will be super slow per machinery
-                    //                          if a service has a sevicetype > than its previous services, include all previous services
+                    //Debug.Log(allDescr.TrimEnd());
+                    ////this does not work properly
+
+                    Service serv = new Service(data[0][0].StringValue);
+                    List<int> serviceTimes = serv.serviceHours;
+
+                    int iter = MAX_AMOUNT_HOURS / serviceTimes.Min();
+                    List<ServiceTableEntry> serviceHours = new List<ServiceTableEntry>();
+                    for (int j = 1; j <= iter; j++)
+                    {
+                        int currentHours = j * serviceTimes.Min();
+                        List<int> servicesToBeDone = new List<int>();
+                        for (int k = 0; k < serviceTimes.Count; k++)
+                        {
+                            if (currentHours % serviceTimes[k] == 0)
+                            {
+                                servicesToBeDone.Add(k);
+                            }
+
+                        }
+
+                        serviceHours.Add(new ServiceTableEntry(currentHours, servicesToBeDone));
+                        if (j > 1)
+                        {
+                            if (serv.CurrentHours > serviceHours[j - 2].Hours & serv.CurrentHours < serviceHours[j-1].Hours)
+                            {
+                                string descr = "";
+                                for (int l = 0; l < serviceHours[j - 2].Services.Count; l++)
+                                {
+                                    descr += string.Format("{0}\n", serv.descriptions[l]);
+                                }
+                                Debug.Log(string.Format("services to be done: {0}", descr.Trim()));
+                                break;
+                            }
+                        }
+                    }
 
                 },
                 SortResultsBy.none, null, "ServiceDescr");
