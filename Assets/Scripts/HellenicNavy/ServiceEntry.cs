@@ -177,7 +177,7 @@ public class ServiceEntry : MonoBehaviour
         LayoutRebuilder.ForceRebuildLayoutImmediate(GetComponent<RectTransform>());
     }
 
-    public IEnumerator CreateInterfaceFromData(string descr, int hours, int days, ServiceAssignmentType serviceTypesHours, ServiceAssignmentType serviceTypesDays, ServiceStatus status, List<ServiceAssignment> _assignments)
+    public IEnumerator CreateInterfaceFromData(string descr, int hours, int days, /*ServiceAssignmentType serviceTypesHours, ServiceAssignmentType serviceTypesDays,*/ ServiceStatus status, List<ServiceAssignment> _assignments)
     {
         bool accessible = AccountManagement.Instance.CurrentAccount.AccessLevel == UnitySQLite.Utilities.AccessLevel.admin;
         descriptionField.text = descr;

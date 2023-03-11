@@ -778,7 +778,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         displayPostponeServiceButton.interactable = status;
     }
 
-    void EnableInputFieldsInDisplay(AccessLevel level) 
+    void EnableInputFieldsInDisplay(AccessLevel level)
     {
         switch (level)
         {
@@ -792,7 +792,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 displayDateInput.interactable = true;
                 displayDescriptionInput.interactable = true;
                 displaySystemDropdown.interactable = true;
-                displayIdInput.interactable= true;
+                displayIdInput.interactable = true;
                 break;
         }
     }
@@ -939,7 +939,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         {
             ServiceEntry currentEntry = Instantiate(serviceEntryPrefab, displayServiceEntryParent).GetComponent<ServiceEntry>();
             //currentEntry.DisplayFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceDays[i], serv.serviceTypesHours[i], serv.serviceTypesDays[i]);
-            StartCoroutine(currentEntry.CreateInterfaceFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceDays[i], serv.serviceTypesHours[i], serv.serviceTypesDays[i], serv.serviceStatuses[i], serv.serviceAssignments[i]));
+            StartCoroutine(currentEntry.CreateInterfaceFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceDays[i], /*serv.serviceTypesHours[i], serv.serviceTypesDays[i],*/ serv.serviceStatuses[i], serv.serviceAssignments[i]));
             yield return new WaitForEndOfFrame();
         }
 
@@ -1019,26 +1019,43 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         Instantiate(assignmentPrefab, assignmentsPanel.transform.GetChild(1).GetChild(0).GetChild(0));
     }
 
-    void CloseAssignmentsPanel() 
+    void CloseAssignmentsPanel()
     {
-        List<Assignment> assignments= assignmentsPanelScrollView.GetComponentsInChildren<Assignment>().ToList();
-        List<ServiceAssignment> serviceAssignments = new List<ServiceAssignment>(assignments.Count);
-        List<ServiceStatus> serviceStatuses = new List<ServiceStatus>();
-        for (int i = 0; i < assignments.Count; i++)
+        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
         {
-            serviceAssignments.Add(new ServiceAssignment(assignments[i].descrInput.text, assignments[i].isSelected.isOn));
-            serviceStatuses.Add(ServiceStatus.pending);
-        }
-        _currentEntry.assignments = serviceAssignments;
-        _currentEntry.assignmentsStatuses = serviceStatuses;
-        _currentEntry = null;
-        assignmentsPanel.SetActive(false);
+            showLabel = true,
+            label = "Αποθήκευση αλλαγών",
+            mainText = "Είστε σίγουροι ότι θέλετε να αποθηκεύσετε τις αλλαγές;",
+            useRightButton = true,
+            rightButtonLabel = "NAI",
+            onRightButtonClick = () =>
+            {
+                MessageBox.Instance.HideMessageBox(); List<Assignment> assignments = assignmentsPanelScrollView.GetComponentsInChildren<Assignment>().ToList();
+                List<ServiceAssignment> serviceAssignments = new List<ServiceAssignment>(assignments.Count);
+                List<ServiceStatus> serviceStatuses = new List<ServiceStatus>();
+                for (int i = 0; i < assignments.Count; i++)
+                {
+                    serviceAssignments.Add(new ServiceAssignment(assignments[i].descrInput.text, assignments[i].isSelected.isOn));
+                    serviceStatuses.Add(ServiceStatus.pending);
+                }
+                _currentEntry.assignments = serviceAssignments;
+                _currentEntry.assignmentsStatuses = serviceStatuses;
+                _currentEntry = null;
+                assignmentsPanel.SetActive(false);
+                assignmentsPanel.SetActive(false);
+            },
+            useLeftButton = true,
+            leftButtonLabel = "OXI",
+            onLeftButtonClick = () => { MessageBox.Instance.HideMessageBox(); assignmentsPanel.SetActive(false); },
+
+        },-1);
+
     }
 
-    void MarkAssignmentsComplete() 
+    void MarkAssignmentsComplete()
     {
-        GameObject[] assignments = assignmentsPanel.transform.GetChild(1).GetChild(0).GetChild(0).GetComponentsInChildren<GameObject>();
-        foreach (GameObject assignment in assignments) 
+        Transform[] assignments = assignmentsPanel.transform.GetChild(1).GetChild(0).GetChild(0).GetComponentsInChildren<Transform>();
+        foreach (Transform assignment in assignments)
         {
             Assignment assign = assignment.GetComponent<Assignment>();
             if (assign.isSelected.isOn)
