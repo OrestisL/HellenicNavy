@@ -15,7 +15,7 @@ using System.Linq;
 public class InterfaceManager : GenericSingleton<InterfaceManager>
 {
     [SerializeField]
-    Service _currentService;
+    public Service _currentService;
     [SerializeField]
     CreateTables tables;
     Dictionary<string, string> systemsDict;
@@ -927,6 +927,20 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             StartCoroutine(currentEntry.CreateInterfaceFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceDays[i], serv.serviceTypesHours[i], serv.serviceTypesDays[i], serv.serviceStatuses[i]));
             yield return new WaitForEndOfFrame();
         }
+
+        //create service here
+        serviceEntries = new List<ServiceEntry>();
+
+        for (int i = 0; i < displayServiceEntryParent.childCount; i++)
+        {
+            serviceEntries.Add(displayServiceEntryParent.GetChild(i).GetComponent<ServiceEntry>());
+        }
+
+        _currentService = new Service(
+            displayNameInput.text, displayDescriptionInput.text, displayIdInput.text, displayHoursInput.text.Length > 0 ? int.Parse(displayHoursInput.text) : 0,
+            displayDateInput.text, displaySystemDropdown.value,
+            serviceEntries);
+
         displayMachineryPanel.SetActive(true);
         LayoutRebuilder.ForceRebuildLayoutImmediate(displayEnableEditingButton.transform.parent.parent.GetComponent<RectTransform>());
         MessageBox.Instance.HideMessageBox();
@@ -943,17 +957,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             showLoadingIndicator = true,
             mainText = "Παρακαλώ περιμένετε, ανανέωση δεδομένων...",
         });
-        serviceEntries = new List<ServiceEntry>();
 
-        for (int i = 0; i < displayServiceEntryParent.childCount; i++)
-        {
-            serviceEntries.Add(displayServiceEntryParent.GetChild(i).GetComponent<ServiceEntry>());
-        }
-
-        _currentService = new Service(
-            displayNameInput.text, displayDescriptionInput.text, displayIdInput.text, displayHoursInput.text.Length > 0 ? int.Parse(displayHoursInput.text) : 0,
-            displayDateInput.text, displaySystemDropdown.value,
-            serviceEntries, true);
         Debug.Log(_currentService.ToJson());
         //write to database
         DatabaseManager.Instance.WriteOnce(() =>
