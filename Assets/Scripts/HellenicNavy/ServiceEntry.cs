@@ -142,7 +142,7 @@ public class ServiceEntry : MonoBehaviour
             }
         });
 
-        selectionToggle.onValueChanged.AddListener((b) => bgImg.color = b ? selectedColor : normalColor);
+        selectionToggle.onValueChanged.AddListener((b) => { bgImg.color = b ? selectedColor : normalColor; ChangeBGColor(); });
     }
 
     public void DisplayFromData(string descr, int hours, int days, ServiceAssignmentType serviceTypesHours, ServiceAssignmentType serviceTypesDays, ServiceStatus status)
@@ -164,6 +164,7 @@ public class ServiceEntry : MonoBehaviour
                 bgImg.color = postponedColor;
                 break;
         }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(GetComponent<RectTransform>());
     }
 
     public IEnumerator CreateInterfaceFromData(string descr, int hours, int days, ServiceAssignmentType serviceTypesHours, ServiceAssignmentType serviceTypesDays, ServiceStatus status)
@@ -189,8 +190,6 @@ public class ServiceEntry : MonoBehaviour
         yield return new WaitForEndOfFrame();
 
         Status = status;
-
-
         daysField.text.TrimEnd();
 
         //selectionToggle.interactable = accessible;
