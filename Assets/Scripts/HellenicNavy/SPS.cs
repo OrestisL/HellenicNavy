@@ -59,6 +59,9 @@ namespace SPS
         public int nextServiceHours;
         //public ServiceStatus status;
         public string postponedServiceDescr;
+        public string completedServiceDescr;
+        public string serviceHistoryPostponed;
+        public string serviceHistoryCompleted;
         public int CurrentHours
         {
             get { return _currentHours; }
@@ -94,10 +97,14 @@ namespace SPS
             systemName = s.systemName;
             CurrentHours = s.CurrentHours;
             lastServiceDate = s.lastServiceDate;
+            postponedServiceDescr = s.postponedServiceDescr;
+            completedServiceDescr = s.completedServiceDescr;
+            serviceHistoryPostponed = s.serviceHistoryPostponed;
+            serviceHistoryCompleted = s.serviceHistoryCompleted;
             lastServiceHours = s.lastServiceHours;
-            nextServiceHours= s.nextServiceHours;
-            lastServiceDays= s.lastServiceDays;
-            nextServiceDays= s.nextServiceDays; 
+            nextServiceHours = s.nextServiceHours;
+            lastServiceDays = s.lastServiceDays;
+            nextServiceDays = s.nextServiceDays;
             descriptions = s.descriptions;
             serviceHours = s.serviceHours;
             serviceDays = s.serviceDays;
@@ -107,7 +114,7 @@ namespace SPS
             serviceAssignments = s.serviceAssignments;
         }
 
-        public Service(string name, string descr, string id, int hours, string lastDate, int system, List<ServiceEntry> entries, bool update=false)
+        public Service(string name, string descr, string id, int hours, string lastDate, int system, List<ServiceEntry> entries, bool update = false)
         {
             this.name = name;
             this.id = id;
@@ -132,13 +139,13 @@ namespace SPS
                 descriptions.Add(entries[i].Descr);
                 serviceTypesHours.Add(entries[i].TypesHours);
                 serviceTypesDays.Add(entries[i].TypesDays);
-                serviceStatuses.Add(entries[i].status);
+                serviceStatuses.Add(entries[i].Status);
             }
             if (update)
             {
                 lastServiceHours = CurrentHours / serviceHours.Min() * serviceHours.Min();
                 nextServiceHours = (CurrentHours / serviceHours.Min() + 1) * serviceHours.Min();
-                lastServiceDays = (CurrentDays / serviceDays.Min()) * serviceDays.Min();
+                lastServiceDays = CurrentDays / serviceDays.Min() * serviceDays.Min();
                 nextServiceDays = (CurrentDays / serviceDays.Min() + 1) * serviceDays.Min();
             }
         }
@@ -155,31 +162,36 @@ namespace SPS
 
         public void SetServiceStatusPostponed(ServiceEntry[] entries)
         {
-            List<ServiceEntry> postponed = entries.Where(x => x.IsSelected).ToList();
-            if (postponed.Count > 0)
+            for (int i = 0; i < entries.Length; i++)
             {
-                postponedServiceDescr = string.Format("Την {0} αναβλήθησαν οι εξής επισκευές:", DateTime.Now.ToString("dd-MM-yy"));
-                for (int i = 0; i < postponed.Count; i++)
+                if (entries[i].IsSelected)
                 {
-                    postponed[i].status = ServiceStatus.postponed;
-                    postponedServiceDescr = string.Format("{0}\n{1}", postponedServiceDescr, postponed[i].Descr);
-                    postponed[i].bgImg.color = postponed[i].postponedColor;
+                    serviceHistoryPostponed += string.Format("Την {0} αναβλήθησαν οι κάτωθι επισκευές:\n", DateTime.Now.ToString("dd-MM-yy"));
+                    postponedServiceDescr = string.Format("Την {0} αναβλήθησαν οι εξής επισκευές:", DateTime.Now.ToString("dd-MM-yy"));
+
+                    entries[i].Status = ServiceStatus.postponed;
+                    postponedServiceDescr = string.Format("{0}\n{1}", postponedServiceDescr, entries[i].Descr);
+                    serviceHistoryPostponed += string.Format("{0}\n", entries[i].Descr);
+                    entries[i].IsSelected = false;
+
                 }
             }
-
         }
 
         public void SetServiceStatusCompleted(ServiceEntry[] entries)
         {
-            List<ServiceEntry> completed = entries.Where(x => x.IsSelected).ToList();
-            if (completed.Count > 0)
+            for (int i = 0; i < entries.Length; i++)
             {
-                lastServiceDate = DateTime.Now;
-                lastServiceHours = CurrentHours;
-                for (int i = 0; i < completed.Count; i++)
+                if (entries[i].IsSelected)
                 {
-                    completed[i].status = ServiceStatus.completed;
-                    completed[i].bgImg.color = completed[i].normalColor;
+                    serviceHistoryCompleted += string.Format("Την {0} ολοκληρώθηκαν οι κάτωθι επισκευές:\n", DateTime.Now.ToString("dd-MM-yy"));
+                    completedServiceDescr = string.Format("Την {0} ολοκληρώθηκαν οι εξής επισκευές:", DateTime.Now.ToString("dd-MM-yy"));
+
+                    entries[i].Status = ServiceStatus.completed;
+                    completedServiceDescr = string.Format("{0}\n{1}", completedServiceDescr, entries[i].Descr);
+                    serviceHistoryCompleted += string.Format("{0}\n", entries[i].Descr);
+                    entries[i].IsSelected = false;
+
                 }
             }
         }
