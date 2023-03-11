@@ -20,7 +20,12 @@ public class ServiceEntry : MonoBehaviour
     public RectTransform serviceTypesParentDays;
     public List<ServiceAssignmentType> serviceAssignmentTypesHours;
     public List<ServiceAssignmentType> serviceAssignmentTypesDays;
-    public ServiceStatus status;
+    private ServiceStatus status;
+    public ServiceStatus Status 
+    {
+        get { return status; }
+        set { status = value; ChangeBGColor(); }
+    }
 
     public int Hours
     {
@@ -64,7 +69,7 @@ public class ServiceEntry : MonoBehaviour
         }
     }
 
-    public bool IsSelected { get { return selectionToggle.isOn; } }
+    public bool IsSelected { get { return selectionToggle.isOn; } set { selectionToggle.isOn = value; } }
 
     private void Start()
     {
@@ -145,6 +150,22 @@ public class ServiceEntry : MonoBehaviour
         StartCoroutine(CreateInterfaceFromData(descr, hours, days, serviceTypesHours, serviceTypesDays, status));
     }
 
+    public void ChangeBGColor() 
+    {
+        switch (status)
+        {
+            case ServiceStatus.pending:
+                bgImg.color = highlightedColor;
+                break;
+            case ServiceStatus.completed:
+                bgImg.color = normalColor;
+                break;
+            case ServiceStatus.postponed:
+                bgImg.color = postponedColor;
+                break;
+        }
+    }
+
     public IEnumerator CreateInterfaceFromData(string descr, int hours, int days, ServiceAssignmentType serviceTypesHours, ServiceAssignmentType serviceTypesDays, ServiceStatus status)
     {
         bool accessible = AccountManagement.Instance.CurrentAccount.AccessLevel == UnitySQLite.Utilities.AccessLevel.admin;
@@ -167,19 +188,8 @@ public class ServiceEntry : MonoBehaviour
         daysField.interactable = accessible;
         yield return new WaitForEndOfFrame();
 
-        this.status = status;
-        switch (status)
-        {
-            case ServiceStatus.pending:
-            case ServiceStatus.completed:
-                bgImg.color = normalColor;
-                break;
-            case ServiceStatus.postponed: //highlight previously postponed service entries
-                bgImg.color = Color.yellow;
-                break;
-            default:
-                break;
-        }
+        Status = status;
+
 
         daysField.text.TrimEnd();
 
