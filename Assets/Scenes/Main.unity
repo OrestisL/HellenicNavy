@@ -21242,7 +21242,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1629924767}
   m_HandleRect: {fileID: 1629924766}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -30743,7 +30743,13 @@ MonoBehaviour:
     id: 
     descr: 
     lastServiceHours: 0
+    nextServiceHours: 0
     postponedServiceDescr: 
+    completedServiceDescr: 
+    serviceHistoryPostponed: 
+    serviceHistoryCompleted: 
+    lastServiceDays: 0
+    nextServiceDays: 0
     systemName: 0
     descriptions: []
     serviceHours: 

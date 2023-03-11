@@ -214,7 +214,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 break;
         }
         displayEnableEditingButton.onClick.RemoveAllListeners();
-        displayEnableEditingButton.onClick.AddListener(() => DisplayMachineryChangeButtonsStatus(accessLevel == AccessLevel.admin));
+        displayEnableEditingButton.onClick.AddListener(() => { DisplayMachineryChangeButtonsStatus(accessLevel == AccessLevel.admin); EnableInputFieldsInDisplay(accessLevel); });
         //apply validator for dates
         if (textValidatorDateTime == null)
             textValidatorDateTime = ScriptableObject.CreateInstance<TextValidatorDateTime>();
@@ -784,6 +784,25 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         displayDeleteMachineryButton.interactable = status;
         displayCompleteServiceButton.interactable = status;
         displayPostponeServiceButton.interactable = status;
+    }
+
+    void EnableInputFieldsInDisplay(AccessLevel level) 
+    {
+        switch (level)
+        {
+            case AccessLevel.user:
+                break;
+            case AccessLevel.supervisor:
+                displayHoursInput.interactable = true;
+                break;
+            case AccessLevel.admin:
+                displayHoursInput.interactable = true;
+                displayDateInput.interactable = true;
+                displayDescriptionInput.interactable = true;
+                displaySystemDropdown.interactable = true;
+                displayIdInput.interactable= true;
+                break;
+        }
     }
 
     void CompleteServiceEntries()
