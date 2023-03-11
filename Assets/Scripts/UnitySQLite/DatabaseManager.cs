@@ -91,6 +91,8 @@ namespace UnitySQLite
         {
             //initialize singleton
             base.Awake();
+
+            m_writeFrequency = SettingsHolder.Instance.settings.writeFrequency;
         }
 
         public void Initialize(string dbLocation, string dbName)

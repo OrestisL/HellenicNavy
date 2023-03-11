@@ -61,3 +61,7 @@ __REMAINING__
 - export/import database (change extension? does it matter?)
 - refactor database manager to command pattern (read write) (consider message box hide)(might omit entirely)
 - reports (pdf)
+- user manual
+
+#################################################################################################################################################
+11/3/2023 - 4224 lines of code
