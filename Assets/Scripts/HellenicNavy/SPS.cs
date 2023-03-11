@@ -13,13 +13,13 @@ namespace SPS
     [Serializable]
     public class ServiceAssignment
     {
-        public string date;
+        //public string date;
         public string description;
         public bool isCompleted;
 
-        public ServiceAssignment(string _date, string _description, bool _isCompleted)
+        public ServiceAssignment(/*string _date,*/ string _description, bool _isCompleted)
         {
-            date = _date;
+            //date = _date;
             description = _description;
             isCompleted = _isCompleted;
         }
@@ -83,7 +83,8 @@ namespace SPS
         public List<ServiceAssignmentType> serviceTypesHours;
         public List<ServiceAssignmentType> serviceTypesDays;
         public List<ServiceStatus> serviceStatuses;
-        public List<ServiceAssignment> serviceAssignments; //WIP
+        public List<List<ServiceAssignment>> serviceAssignments; //WIP
+        public List<List<ServiceStatus>> serviceAssignmentsStatuses;
 
         public Service() { }
 
@@ -112,6 +113,7 @@ namespace SPS
             serviceTypesDays = s.serviceTypesDays;
             serviceStatuses = s.serviceStatuses;
             serviceAssignments = s.serviceAssignments;
+            serviceAssignmentsStatuses = s.serviceAssignmentsStatuses;
         }
 
         public Service(string name, string descr, string id, int hours, string lastDate, int system, List<ServiceEntry> entries)
@@ -131,15 +133,20 @@ namespace SPS
             serviceTypesHours = new List<ServiceAssignmentType>();
             serviceTypesDays = new List<ServiceAssignmentType>();
             serviceStatuses = new List<ServiceStatus>();
+            serviceAssignments = new List<List<ServiceAssignment>>();
+            serviceAssignmentsStatuses = new List<List<ServiceStatus>>();
+
 
             for (int i = 0; i < entries.Count; i++)
             {
                 serviceHours.Add(entries[i].Hours);
                 serviceDays.Add(entries[i].Days);
                 descriptions.Add(entries[i].Descr);
-                serviceTypesHours.Add(entries[i].TypesHours);
-                serviceTypesDays.Add(entries[i].TypesDays);
+                //serviceTypesHours.Add(entries[i].TypesHours);
+                //serviceTypesDays.Add(entries[i].TypesDays);
                 serviceStatuses.Add(entries[i].Status);
+                serviceAssignments.Add(entries[i].assignments);
+                serviceAssignmentsStatuses.Add(entries[i].assignmentsStatuses);
             }
         }
 
@@ -183,11 +190,11 @@ namespace SPS
                     entries[i].Status = ServiceStatus.completed;
                     completedServiceDescr = string.Format("{0}\n{1}", completedServiceDescr, entries[i].Descr);
                     serviceHistoryCompleted += string.Format("{0}\n", entries[i].Descr);
-                    entries[i].IsSelected = false;                
+                    entries[i].IsSelected = false;
                 }
             }
 
-            if (entries.Length > 0) 
+            if (entries.Length > 0)
             {
                 lastServiceHours = CurrentHours / serviceHours.Min() * serviceHours.Min();
                 nextServiceHours = (CurrentHours / serviceHours.Min() + 1) * serviceHours.Min();
@@ -198,14 +205,9 @@ namespace SPS
             }
         }
 
-        public void UpdateServiceStatuses(ServiceStatus[] statuses) 
+        public void UpdateServiceStatuses(ServiceStatus[] statuses)
         {
             serviceStatuses = statuses.ToList();
-        }
-
-        public void ChangeAssignmentDescription(int index, string description)
-        {
-            serviceAssignments[index].description = description;
         }
 
         public string ToJson()

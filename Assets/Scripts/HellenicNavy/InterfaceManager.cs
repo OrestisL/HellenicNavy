@@ -16,6 +16,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 {
     [SerializeField]
     public Service _currentService;
+    public ServiceEntry _currentEntry;
     [SerializeField]
     CreateTables tables;
     Dictionary<string, string> systemsDict;
@@ -109,11 +110,19 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public GameObject selectMachineryWithPendingServicePanel;
     private GameObject _currentRowPendingMachinery;
 
+    [Header("Assignments Panel")]
+    public GameObject assignmentsPanel;
+    public GameObject assignmentsPanelScrollView;
+    public Button addAsignmentButton;
+    public Button markAssignmentCompleteButton;
+    public Button closeAssignmentsPanelButton;
+
     [Header("Prefabs")]
     public GameObject serviceEntryPrefab;
     public GameObject serviceTypePrefab;
     public GameObject selectDeptPrefab;
     public GameObject buttonRow;
+    public GameObject assignmentPrefab;
 
     [Header("Text validators")]
     public TextValidator textValidator;
@@ -321,6 +330,12 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         displayDateInput.onDeselect.AddListener((dt) => TextValidatorDateTime.CheckDateInput(dt));
         displayDateInput.onSubmit.AddListener((dt) => TextValidatorDateTime.CheckDateInput(dt));
         displayDateInput.onEndEdit.AddListener((dt) => TextValidatorDateTime.CheckDateInput(dt));
+        #endregion
+
+        #region assignments
+        addAsignmentButton.onClick.AddListener(AddAssignment);
+        markAssignmentCompleteButton.onClick.AddListener(MarkAssignmentsComplete);
+        closeAssignmentsPanelButton.onClick.AddListener(CloseAssignmentsPanel);
         #endregion
     }
 
@@ -924,7 +939,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         {
             ServiceEntry currentEntry = Instantiate(serviceEntryPrefab, displayServiceEntryParent).GetComponent<ServiceEntry>();
             //currentEntry.DisplayFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceDays[i], serv.serviceTypesHours[i], serv.serviceTypesDays[i]);
-            StartCoroutine(currentEntry.CreateInterfaceFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceDays[i], serv.serviceTypesHours[i], serv.serviceTypesDays[i], serv.serviceStatuses[i]));
+            StartCoroutine(currentEntry.CreateInterfaceFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceDays[i], serv.serviceTypesHours[i], serv.serviceTypesDays[i], serv.serviceStatuses[i], serv.serviceAssignments[i]));
             yield return new WaitForEndOfFrame();
         }
 
@@ -997,6 +1012,40 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 }, 1f);
             });
         });
+    }
+
+    void AddAssignment()
+    {
+        Instantiate(assignmentPrefab, assignmentsPanel.transform.GetChild(1).GetChild(0).GetChild(0));
+    }
+
+    void CloseAssignmentsPanel() 
+    {
+        List<Assignment> assignments= assignmentsPanelScrollView.GetComponentsInChildren<Assignment>().ToList();
+        List<ServiceAssignment> serviceAssignments = new List<ServiceAssignment>(assignments.Count);
+        List<ServiceStatus> serviceStatuses = new List<ServiceStatus>();
+        for (int i = 0; i < assignments.Count; i++)
+        {
+            serviceAssignments.Add(new ServiceAssignment(assignments[i].descrInput.text, assignments[i].isSelected.isOn));
+            serviceStatuses.Add(ServiceStatus.pending);
+        }
+        _currentEntry.assignments = serviceAssignments;
+        _currentEntry.assignmentsStatuses = serviceStatuses;
+        _currentEntry = null;
+        assignmentsPanel.SetActive(false);
+    }
+
+    void MarkAssignmentsComplete() 
+    {
+        GameObject[] assignments = assignmentsPanel.transform.GetChild(1).GetChild(0).GetChild(0).GetComponentsInChildren<GameObject>();
+        foreach (GameObject assignment in assignments) 
+        {
+            Assignment assign = assignment.GetComponent<Assignment>();
+            if (assign.isSelected.isOn)
+            {
+                assign.Complete();
+            }
+        }
     }
 
     void DeleteMachinery()

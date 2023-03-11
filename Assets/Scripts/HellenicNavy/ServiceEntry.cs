@@ -16,6 +16,7 @@ public class ServiceEntry : MonoBehaviour
     public TMP_InputField descriptionField;
     public TMP_InputField hoursField;
     public TMP_InputField daysField;
+    public Button displayAssignments;
     public Toggle selectionToggle;
     public Image bgImg;
     public Color normalColor, selectedColor, postponedColor, highlightedColor;
@@ -23,6 +24,9 @@ public class ServiceEntry : MonoBehaviour
     public RectTransform serviceTypesParentDays;
     public List<ServiceAssignmentType> serviceAssignmentTypesHours;
     public List<ServiceAssignmentType> serviceAssignmentTypesDays;
+    public List<ServiceAssignment> assignments;
+    public List<ServiceStatus> assignmentsStatuses;
+
     [SerializeField]
     private ServiceStatus status;
     public ServiceStatus Status 
@@ -147,12 +151,14 @@ public class ServiceEntry : MonoBehaviour
         });
 
         selectionToggle.onValueChanged.AddListener((b) => { bgImg.color = b ? selectedColor : normalColor; ChangeBGColor(); });
+
+        displayAssignments.onClick.AddListener(ShowAssignments);
     }
 
-    public void DisplayFromData(string descr, int hours, int days, ServiceAssignmentType serviceTypesHours, ServiceAssignmentType serviceTypesDays, ServiceStatus status)
-    {
-        StartCoroutine(CreateInterfaceFromData(descr, hours, days, serviceTypesHours, serviceTypesDays, status));
-    }
+    //public void DisplayFromData(string descr, int hours, int days, ServiceAssignmentType serviceTypesHours, ServiceAssignmentType serviceTypesDays, ServiceStatus status)
+    //{
+    //    StartCoroutine(CreateInterfaceFromData(descr, hours, days, serviceTypesHours, serviceTypesDays, status));
+    //}
 
     public void ChangeBGColor() 
     {
@@ -171,34 +177,51 @@ public class ServiceEntry : MonoBehaviour
         LayoutRebuilder.ForceRebuildLayoutImmediate(GetComponent<RectTransform>());
     }
 
-    public IEnumerator CreateInterfaceFromData(string descr, int hours, int days, ServiceAssignmentType serviceTypesHours, ServiceAssignmentType serviceTypesDays, ServiceStatus status)
+    public IEnumerator CreateInterfaceFromData(string descr, int hours, int days, ServiceAssignmentType serviceTypesHours, ServiceAssignmentType serviceTypesDays, ServiceStatus status, List<ServiceAssignment> _assignments)
     {
         bool accessible = AccountManagement.Instance.CurrentAccount.AccessLevel == UnitySQLite.Utilities.AccessLevel.admin;
         descriptionField.text = descr;
         descriptionField.interactable = accessible;
 
         hoursField.text += string.Format("{0}", hours);
-        TMP_Dropdown dh = Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentHours).GetComponent<TMP_Dropdown>();
-        dh.value = (int)serviceTypesHours;
-        dh.interactable = accessible;
+        //TMP_Dropdown dh = Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentHours).GetComponent<TMP_Dropdown>();
+        //dh.value = (int)serviceTypesHours;
+        //dh.interactable = accessible;
         hoursField.interactable = accessible;
         yield return new WaitForEndOfFrame();
 
         hoursField.text.TrimEnd();
 
         daysField.text += string.Format("{0}", days);
-        TMP_Dropdown dd = Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentDays).GetComponent<TMP_Dropdown>();
-        dd.value = (int)serviceTypesDays;
-        dd.interactable = accessible;
+        //TMP_Dropdown dd = Instantiate(InterfaceManager.Instance.serviceTypePrefab, serviceTypesParentDays).GetComponent<TMP_Dropdown>();
+        //dd.value = (int)serviceTypesDays;
+        //dd.interactable = accessible;
         daysField.interactable = accessible;
         yield return new WaitForEndOfFrame();
 
         Status = status;
         daysField.text.TrimEnd();
 
+        assignments = new List<ServiceAssignment>();
+        for (int i = 0; i < _assignments.Count; i++)
+        {
+            assignments.Add(new ServiceAssignment(_assignments[i].description, _assignments[i].isCompleted));
+        }
         //selectionToggle.interactable = accessible;
     }
-   
+
+    void ShowAssignments()
+    {
+        //clear previous entries in assignment panel
+        InterfaceManager.Instance.assignmentsPanelScrollView.transform.ClearChildren();
+        InterfaceManager.Instance._currentEntry = this;
+        for (int i = 0; i < assignments.Count; i++)
+        {
+           Instantiate(InterfaceManager.Instance.assignmentPrefab, InterfaceManager.Instance.assignmentsPanelScrollView.transform).GetComponent<Assignment>().Set(assignments[i].description);
+        }
+        InterfaceManager.Instance.assignmentsPanel.SetActive(true);
+    }
+
     void ClearChildren(Transform parent)
     {
         Transform[] children = parent.GetComponentsInChildren<Transform>();
