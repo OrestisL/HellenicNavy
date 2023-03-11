@@ -115,13 +115,22 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                         {
                             if (serv.CurrentHours >= serviceHours[j - 1].TimeInterval & serv.CurrentHours <= serviceHours[j].TimeInterval)
                             {
-                                if (serv.lastServiceHours == serviceHours[j - 1].TimeInterval)
+                                int currentInterval = 0;
+                                int indx = 0;
+                                if (serv.CurrentHours == serviceHours[j].TimeInterval)
+                                    indx = j;
+                                else
+                                    indx = j - 1;
+
+                                currentInterval = serviceHours[indx].TimeInterval;
+
+                                if (serv.lastServiceHours == currentInterval)
                                 {
                                     //service for this time interval has already been done
                                     break;
                                 }
                                 string descr = "";
-                                servicesToBeDone = serviceHours[j - 1].Services;
+                                servicesToBeDone = serviceHours[indx].Services;
 
                                 int l = servicesToBeDone.Max();
                                 while (l >= 0)
@@ -129,6 +138,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                                     if (servicesToBeDone.Contains(l))
                                     {
                                         descr += string.Format("{0}\n", serv.descriptions[l]);
+                                        serv.serviceStatuses[l] = ServiceStatus.pending;
                                     }
                                     l--;
                                 }
@@ -164,7 +174,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                         {
                             if (serv.CurrentDays >= servDays[jj - 1].TimeInterval & serv.CurrentDays <= servDays[jj].TimeInterval)
                             {
-                                if (serv.lastServiceDays == servDays[jj-1].TimeInterval) 
+                                if (serv.lastServiceDays == servDays[jj - 1].TimeInterval)
                                 {
                                     //service has already been done for the given days
                                     break;
@@ -178,12 +188,13 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                                     if (servicesToBeDone.Contains(ll))
                                     {
                                         descr += string.Format("{0}\n", serv.descriptions[ll]);
+                                        serv.serviceStatuses[ll] = ServiceStatus.pending;
                                     }
                                     ll--;
                                 }
 
                                 int ss = machineryButtonsToDisplay.Select(x => x.name == serv.name).Count();
-                                if ( ss == 0)
+                                if (ss == 0)
                                 {
                                     Button toAdd = InterfaceManager.Instance.ShowMachineryWithPendingServiceButtons(serv.name);
                                     machineryButtonsToDisplay.Add(toAdd);
@@ -198,11 +209,11 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
 
                     #region postponed
                     //check if any service entries are marked as postponed
-                    int postponedServiceEntries = serv.serviceStatuses.Where(x => x == ServiceStatus.postponed).Count();
+                    int postponedServiceEntries = serv.serviceStatuses.Where(x => x == ServiceStatus.postponed | x == ServiceStatus.pending).Count();
                     if (postponedServiceEntries > 0)
                     {
                         //add button here, if not already exists
-                        int pp = machineryButtonsToDisplay.Select(x => x.name == serv.name).Count();                     
+                        int pp = machineryButtonsToDisplay.Select(x => x.name == serv.name).Count();
                         if (pp == 0)
                         {
                             Button postponed = InterfaceManager.Instance.ShowMachineryWithPendingServiceButtons(serv.name);
@@ -215,13 +226,17 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                     watch.Stop();
                     Debug.Log(string.Format("Took {0}ms to create lookup tables, check if there exist postponed services and determine services for {1}", watch.ElapsedMilliseconds, serv.name));
 #endif
-                    
+                    TableRow row = new TableRow(new TableColumn[] { new TableColumn("Name", "TEXT", false, true), new TableColumn("ServiceDescr", "TEXT") });
+                    row.AddValues(new DataEntry[] { new DataEntry(serv.name), new DataEntry(string.Format("{0}", serv.ToJson())) });
+                    DatabaseManager.Instance.UpdateValuesOnTable(serv.name, row.GetColumnNames(), row.GetValues(), "", () => Debug.Log($"ServiceDesrc for {serv.name} updated"));
                 },
                 SortResultsBy.none, null, "ServiceDescr");
 
             yield return new WaitForSeconds(1);
+
         }
-        //TODO populate some interface with buttons for each machinery that has pending services 
+        //update database with change service (to show pending)
+
         if (machineryButtonsToDisplay.Count > 0)
         {
             MessageBox.Instance.HideMessageBox();
@@ -229,7 +244,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
         }
         else
         {
-            MessageBox.Instance.ShowMessageBox(new MessageBoxSettings 
+            MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
             {
                 showLabel = false,
                 mainText = "Δεν υπάρχουν μηχανήματα.",

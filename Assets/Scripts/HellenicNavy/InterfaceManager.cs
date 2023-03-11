@@ -876,7 +876,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         MessageBox.Instance.HideMessageBox();
     }
 
-    public Button ShowMachineryWithPendingServiceButtons(string machineryName) 
+    public Button ShowMachineryWithPendingServiceButtons(string machineryName)
     {
         if (_currentRowPendingMachinery == null)
         {
@@ -890,7 +890,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         current.name = machineryName;
         current.GetComponentInChildren<TextMeshProUGUI>().text = machineryName;
         //each button should setup the machinery buttons for the system
-        current.onClick.AddListener(() => ShowMachineryEntry(machineryName));
+        current.onClick.AddListener(() => { ShowMachineryEntry(machineryName); });
 
         return current;
     }
