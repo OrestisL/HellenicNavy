@@ -7,7 +7,7 @@ __COMPLETED__
 
 - loading message (done - message box)
 
-- limit hours/days input to comma separated ints only (done)(it uses newlines but w/e same difference)
+- limit hours/days input to comma separated ints only (done)(it uses newlines but w/e same difference)(each entry only has 1 value for days/hours now)
 
 - add a way to add the assignment types (done)
 
@@ -28,7 +28,7 @@ __COMPLETED__
 
 - fix weird ui behavior (force update layout immediate does not work) 
 	(this is weird and still doesnt work properly, workaround is to have all panels enabled before starting and disable them in awake)
-	(some panels need to be enabled, some disabled but it's mostly fixed)
+	(some panels need to be enabled, some disabled but it's mostly fixed) (ui behavior is mostly fixed)
 
 - add button for updating info on machinery (done)
 
@@ -48,12 +48,14 @@ __COMPLETED__
 
 - figure out a generic way to show which services are pending, depending on the hours and the days (5th (lmao) iteration works (uses dynamic lookup table))
 
--added settings class (atm only holds fps and max hours for lookup table)
+- added settings class 
 
 - add a way to mark a service as completed and one to postpone service, this should also change the last service hours/date 
   (done, selecting entries + pressing complete marks as complete and changes date - if there are services that havent been done (pending|postponed), they are will still pop up)
 
 - should also highlight the service entries that need to be done -> add a way to mark service as done/postponed (done - pending = orangish, postoponed = redish, completed = white)
+
+- updating the last service hours does not work properly (fixed)
 #################################################################################################################################################
 
 __REMAINING__
@@ -63,5 +65,6 @@ __REMAINING__
 - reports (pdf)
 - user manual
 
+
 #################################################################################################################################################
-11/3/2023 - 4224 lines of code
+11/3/2023 - 4234 lines of code

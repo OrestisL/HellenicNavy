@@ -183,14 +183,24 @@ namespace SPS
                     entries[i].Status = ServiceStatus.completed;
                     completedServiceDescr = string.Format("{0}\n{1}", completedServiceDescr, entries[i].Descr);
                     serviceHistoryCompleted += string.Format("{0}\n", entries[i].Descr);
-                    entries[i].IsSelected = false;
-
-                    lastServiceHours = CurrentHours / serviceHours.Min() * serviceHours.Min();
-                    nextServiceHours = (CurrentHours / serviceHours.Min() + 1) * serviceHours.Min();
-                    lastServiceDays = CurrentDays / serviceDays.Min() * serviceDays.Min();
-                    nextServiceDays = (CurrentDays / serviceDays.Min() + 1) * serviceDays.Min();
+                    entries[i].IsSelected = false;                
                 }
             }
+
+            if (entries.Length > 0) 
+            {
+                lastServiceHours = CurrentHours / serviceHours.Min() * serviceHours.Min();
+                nextServiceHours = (CurrentHours / serviceHours.Min() + 1) * serviceHours.Min();
+                lastServiceDays = CurrentDays / serviceDays.Min() * serviceDays.Min();
+                nextServiceDays = (CurrentDays / serviceDays.Min() + 1) * serviceDays.Min();
+
+                UpdateServiceStatuses(entries.Select(entry => entry.Status).ToArray());
+            }
+        }
+
+        public void UpdateServiceStatuses(ServiceStatus[] statuses) 
+        {
+            serviceStatuses = statuses.ToList();
         }
 
         public void ChangeAssignmentDescription(int index, string description)

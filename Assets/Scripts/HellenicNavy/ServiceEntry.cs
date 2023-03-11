@@ -23,6 +23,7 @@ public class ServiceEntry : MonoBehaviour
     public RectTransform serviceTypesParentDays;
     public List<ServiceAssignmentType> serviceAssignmentTypesHours;
     public List<ServiceAssignmentType> serviceAssignmentTypesDays;
+    [SerializeField]
     private ServiceStatus status;
     public ServiceStatus Status 
     {
