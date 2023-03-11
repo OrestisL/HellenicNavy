@@ -3,6 +3,9 @@ using UnityEngine;
 using UnitySQLite;
 using UnitySQLite.Utilities;
 
+/// <summary>
+/// This class holds all the table templates that are used throught the app.
+/// </summary>
 public class CreateTables : MonoBehaviour
 {
     public TableRow users;

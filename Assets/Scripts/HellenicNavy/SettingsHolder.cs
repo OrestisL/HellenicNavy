@@ -3,6 +3,9 @@ using System.IO;
 using Newtonsoft.Json;
 using UnityEngine;
 
+/// <summary>
+/// Application settings.
+/// </summary>
 public class SettingsHolder : GenericSingleton<SettingsHolder>
 {
     [Serializable]
@@ -11,6 +14,7 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
         public int rate = 30;
         public int maxLookupTableHours = 50000;
         public int maxLookupTableDays = 10000;
+        //in order to avoid weird behavior and excess resource usage, some bounds are set
         #region bounds
         private int minRate = 20;
         private int maxRate = 30;

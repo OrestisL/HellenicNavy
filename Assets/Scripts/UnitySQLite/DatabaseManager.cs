@@ -12,6 +12,9 @@ using UnityEditor;
 #endregion
 namespace UnitySQLite
 {
+    /// <summary>
+    /// Database manager handles all interactions with the database.
+    /// </summary>
     public class DatabaseManager : GenericSingleton<DatabaseManager>, IDisposable
     {
         #region Variables, Delegates and Events

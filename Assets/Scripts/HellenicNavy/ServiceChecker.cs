@@ -8,6 +8,15 @@ using SPS;
 using System.Linq;
 using UnityEngine.UI;
 
+/// <summary>
+/// Service checker creates a lookup table for each machinery for hours & days.
+/// Lookup table is created as follows: 
+///                                     - [0-maxhours/maxdays] range is split into sections based on the most frequent service time
+///                                     - if the current service's current hours/days are between 2 values or equal to 1 value, current service is assigned
+///                                         the necessary services. creation stops there to avoid excess memory and cpu usage
+/// After the above procedure is complete, this class also checks for pending/postponed services in the current service.
+/// After everything is checked, each machinery with 1 or more services is displayed with a button.
+/// </summary>
 public class ServiceChecker : GenericSingleton<ServiceChecker>
 {
     [SerializeField]
@@ -18,6 +27,9 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
     private List<string> names;
     List<Button> machineryButtonsToDisplay = new List<Button>();
 
+    /// <summary>
+    /// Class used for lookup table.
+    /// </summary>
     private struct ServiceTableEntry
     {
         int timeInterval;
@@ -38,7 +50,6 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
         today = DateTime.Now;
 
     }
-
     public void Check()
     {
         MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
@@ -66,11 +77,11 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
             //after populating the list, should read all tables and check the days of the service entries
             //Invoke(nameof(CheckDates), 2f);         
             //StartCoroutine(CheckDates());
-            StartCoroutine(CheckHours());
+            StartCoroutine(CheckForPendingService());
         }, SortResultsBy.none, null, "Name, LastServiceTime");
     }
 
-    private /*void*/ IEnumerator CheckHours()
+    private IEnumerator CheckForPendingService()
     {
         //wait for a bit
         yield return new WaitForSeconds(1);
@@ -107,7 +118,6 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                             {
                                 servicesToBeDone.Add(k);
                             }
-
                         }
 
                         serviceHours.Add(new ServiceTableEntry(currentHours, servicesToBeDone));

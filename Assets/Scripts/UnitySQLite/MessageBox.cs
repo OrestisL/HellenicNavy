@@ -5,6 +5,10 @@ using UnitySQLite.Utilities;
 using System.Collections;
 using System;
 
+/// <summary>
+/// Message box class is used to inform the user about certain events thoughout the app's usage.
+/// Make sure MessageBoxSettings are set correctly.
+/// </summary>
 public class MessageBox : GenericSingleton<MessageBox>
 {
     public Button rightButton, leftButton;
@@ -49,6 +53,7 @@ public class MessageBox : GenericSingleton<MessageBox>
         }
 
         if (settings.useRightButton | settings.useLeftButton) { leftButton.transform.parent.gameObject.SetActive(true); }
+        else if (!settings.useRightButton && !settings.useLeftButton) { leftButton.transform.parent.gameObject.SetActive(false); }
 
         label.gameObject.SetActive(settings.showLabel);
         if (settings.showLabel) { label.text = settings.label; label.gameObject.SetActive(true); }

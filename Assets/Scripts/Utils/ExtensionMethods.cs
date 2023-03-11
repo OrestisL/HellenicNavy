@@ -10,11 +10,9 @@ public static class ExtensionMethods
 {
     public static int ToInt(this bool b)
     {
-        return b ? 1 : -1;
+        return b ? 1 : 0;
     }
 
-    //Extension class to provide serialize / deserialize methods to object.
-    //src: http://stackoverflow.com/questions/1446547/how-to-convert-an-object-to-a-byte-array-in-c-sharp
     //NOTE: You need add [Serializable] attribute in your class to enable serialization
     public static byte[] SerializeToByteArray(this object obj)
     {

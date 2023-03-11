@@ -3,6 +3,10 @@ using System.Linq;
 using TMPro;
 using UnitySQLite.Utilities;
 
+/// <summary>
+/// Restrict input to numbers only.
+/// Also restrict to int.MaxValue.
+/// </summary>
 public class TextValidator : TMP_InputValidator
 {
     public override char Validate(ref string text, ref int pos, char ch)
@@ -13,9 +17,19 @@ public class TextValidator : TMP_InputValidator
             pos++;
             return ch;
         }
+
+        if (int.Parse(text) >= int.MaxValue) 
+        {
+            text = int.MaxValue.ToString();
+            return (char)0;
+        }
         return (char)0;
     }
 }
+
+/// <summary>
+/// Name should not contain , and .
+/// </summary>
 public class TextValidatorNameInput : TMP_InputValidator
 {
     public override char Validate(ref string text, ref int pos, char ch)
@@ -33,6 +47,9 @@ public class TextValidatorNameInput : TMP_InputValidator
     }
 }
 
+/// <summary>
+/// Input validation for dates, to achieve consistency.
+/// </summary>
 public class TextValidatorDateTime : TMP_InputValidator
 {
     private static List<int> longMonths = new List<int>() { 1, 3, 5, 7, 8, 10, 12 };

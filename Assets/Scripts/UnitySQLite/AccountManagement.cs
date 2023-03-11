@@ -10,6 +10,9 @@ using UnityEngine.UI;
 
 namespace UnitySQLite
 {
+    /// <summary>
+    /// Handles creating accounts, logging in and changing passwords.
+    /// </summary>
     public class AccountManagement : GenericSingleton<AccountManagement>
     {
         [Header("User data")]
@@ -42,7 +45,8 @@ namespace UnitySQLite
         public override void Awake()
         {
             base.Awake();
-
+            //consider added a check so as not to do this over and over
+            Account.CreateDefaultAccounts();
             // onLoginAttempt += (b, text) => output.text = text;
             onSuccessfulLogin += (acc) => { CurrentAccount = acc; };
 

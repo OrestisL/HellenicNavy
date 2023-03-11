@@ -3,11 +3,14 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using SPS;
-using System;
 using System.Linq;
 using UnityEngine.UI;
 using UnitySQLite;
 
+
+/// <summary>
+/// Each service entry holds all the required information about a service (description, frequency in hours and days)
+/// </summary>
 public class ServiceEntry : MonoBehaviour
 {
     public TMP_InputField descriptionField;

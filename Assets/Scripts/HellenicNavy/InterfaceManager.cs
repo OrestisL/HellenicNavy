@@ -9,6 +9,9 @@ using System.Collections;
 using System;
 using System.Linq;
 
+/// <summary>
+/// Interface manager holds all necessary objects and functions for the interface.
+/// </summary>
 public class InterfaceManager : GenericSingleton<InterfaceManager>
 {
     [SerializeField]
@@ -184,9 +187,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         //TODO hide UI elements according to access level
         switch (accessLevel)
         {
-            case AccessLevel.None:
-                //this doesnt really pop up anywhere
-                break;
             case AccessLevel.user:
                 //user should not be able to add system, dept and machinery
                 addSystemButton.gameObject.SetActive(false);
@@ -343,7 +343,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     }
 
-    void ApplicationSetup() //maybe consider changing this 
+    void ApplicationSetup()
     {
         Application.targetFrameRate = SettingsHolder.Instance.settings.rate;
         QualitySettings.vSyncCount = 0;
@@ -403,7 +403,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     void AddMachinery()
     {
-
         if (nameInput.text == "")
         {
             MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
@@ -552,28 +551,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 });
             //Debug.Log(string.Format("successfully added system {0} to the database", name));
         });
-    }
-
-    void ShowDepartmentsAndSystems(TMP_Dropdown departments, TMP_Dropdown systems)
-    {
-        List<string> deptNames = new List<string>();
-        List<string> systemNames = new List<string>();
-        //read departments table
-        DatabaseManager.Instance.ReadData("SystemsDepartmentsList", SelectFromDatabaseMode.everything,
-            (data) =>
-            {
-
-                for (int i = 0; i < data.Count; i++)
-                {
-                    if (data[i][1].IntegerValue == 0)
-                        deptNames.Add(data[i][0].StringValue);
-                    else if (data[i][1].IntegerValue == 1)
-                        systemNames.Add(data[i][0].StringValue);
-                }
-                if (departments != null) { departments.ClearOptions(); departments.AddOptions(deptNames); }
-
-                if (systems != null) { systems.ClearOptions(); systems.AddOptions(systemNames); }
-            });
     }
 
     void ShowDepartments(TMP_Dropdown departments)
@@ -820,12 +797,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     void CloseDisplayPanel()
     {
         //everyone should be able to update info on close
-        //if (AccountManagement.Instance.CurrentAccount.AccessLevel == AccessLevel.user)
-        //{
-        //    displayMachineryPanel.SetActive(false);
-        //    return;
-        //}
-
         //show message box in order to save the data
         MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
         {
