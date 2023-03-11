@@ -134,7 +134,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 0.8
+  bundleVersion: 1.0.0
   preloadedAssets:
   - {fileID: 5539512954592331567, guid: f39a243bc8539f248b92a58ea7959a59, type: 3}
   - {fileID: 19600443213698789, guid: 96c8fd9ceb426d24cb4327cb1170d4f5, type: 3}
@@ -274,7 +274,14 @@ PlayerSettings:
   AndroidMinifyDebug: 0
   AndroidValidateAppBundleSize: 1
   AndroidAppBundleSizeToValidate: 150
-  m_BuildTargetIcons: []
+  m_BuildTargetIcons:
+  - m_BuildTarget: 
+    m_Icons:
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: 516efda372ca00d4a8379585635bdc61, type: 3}
+      m_Width: 128
+      m_Height: 128
+      m_Kind: 0
   m_BuildTargetPlatformIcons:
   - m_BuildTarget: Android
     m_Icons:

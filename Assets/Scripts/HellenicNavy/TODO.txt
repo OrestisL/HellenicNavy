@@ -56,10 +56,12 @@ __COMPLETED__
 - should also highlight the service entries that need to be done -> add a way to mark service as done/postponed (done - pending = orangish, postoponed = redish, completed = white)
 
 - updating the last service hours does not work properly (fixed)
+
+- added service assignments, might need slight rework
 #################################################################################################################################################
 
 __REMAINING__
-- message box should disable buttons and inputs etc
+- message box should disable buttons and inputs etc (this is getting increasingly difficult)
 - export/import database (change extension? does it matter?)
 - refactor database manager to command pattern (read write) (consider message box hide)(might omit entirely)
 - reports (pdf)
@@ -67,4 +69,4 @@ __REMAINING__
 
 
 #################################################################################################################################################
-11/3/2023 - 4334 lines of code
+11/3/2023 - 4351 lines of code

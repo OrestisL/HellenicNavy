@@ -366,7 +366,9 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         for (int i = 0; i < buttons.Length; i++)
         {
             buttons[i].DelayedEnableButton(0.5f);
-            buttons[i].gameObject.AddComponent<ReEnableButton>();
+
+            if (buttons[i].GetComponent<ReEnableButton>() == null)
+                buttons[i].gameObject.AddComponent<ReEnableButton>();
         }
     }
 
@@ -1048,7 +1050,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             leftButtonLabel = "OXI",
             onLeftButtonClick = () => { MessageBox.Instance.HideMessageBox(); assignmentsPanel.SetActive(false); },
 
-        },-1);
+        }, -1);
 
     }
 
