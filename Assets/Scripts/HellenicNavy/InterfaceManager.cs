@@ -974,7 +974,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             showLoadingIndicator = true,
             mainText = "Παρακαλώ περιμένετε, ανανέωση δεδομένων...",
         });
-
+        _currentService.ChangeHours(int.Parse(displayHoursInput.text));
         Debug.Log(_currentService.ToJson());
         //write to database
         DatabaseManager.Instance.WriteOnce(() =>

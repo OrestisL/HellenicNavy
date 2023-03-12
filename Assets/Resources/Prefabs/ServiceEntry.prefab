@@ -1125,7 +1125,7 @@ MonoBehaviour:
   serviceAssignmentTypesDays: 
   assignments: []
   assignmentsStatuses: 
-  status: 0
+  status: 1
 --- !u!222 &5655067832443855022
 CanvasRenderer:
   m_ObjectHideFlags: 0

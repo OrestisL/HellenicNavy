@@ -121,7 +121,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                         }
 
                         serviceHours.Add(new ServiceTableEntry(currentHours, servicesToBeDone));
-                        if (j > 1)
+                        if (j > 0)
                         {
                             if (serv.CurrentHours >= serviceHours[j - 1].TimeInterval & serv.CurrentHours <= serviceHours[j].TimeInterval)
                             {

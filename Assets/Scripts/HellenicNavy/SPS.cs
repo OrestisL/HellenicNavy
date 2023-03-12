@@ -150,9 +150,9 @@ namespace SPS
             }
         }
 
-        public void AddHours(int hours)
+        public void ChangeHours(int hours)
         {
-            CurrentHours += hours;
+            CurrentHours = hours;
         }
 
         public void ChangeDescription(int index, string description)
