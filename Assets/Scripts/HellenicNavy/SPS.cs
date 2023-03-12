@@ -41,6 +41,7 @@ namespace SPS
     [Serializable]
     public enum ServiceStatus
     {
+        nothing,
         pending,
         completed,
         postponed
@@ -153,6 +154,31 @@ namespace SPS
         public void ChangeHours(int hours)
         {
             CurrentHours = hours;
+        }
+
+        public void ChangeEntries(ServiceEntry[] entries)
+        {
+
+            serviceHours = new List<int>();
+            serviceDays = new List<int>();
+            descriptions = new List<string>();
+            serviceTypesHours = new List<ServiceAssignmentType>();
+            serviceTypesDays = new List<ServiceAssignmentType>();
+            serviceStatuses = new List<ServiceStatus>();
+            serviceAssignments = new List<List<ServiceAssignment>>();
+            serviceAssignmentsStatuses = new List<List<ServiceStatus>>();
+
+            for (int i = 0; i < entries.Length; i++)
+            {
+                serviceHours.Add(entries[i].Hours);
+                serviceDays.Add(entries[i].Days);
+                descriptions.Add(entries[i].Descr);
+                //serviceTypesHours.Add(entries[i].TypesHours);
+                //serviceTypesDays.Add(entries[i].TypesDays);
+                serviceStatuses.Add(entries[i].Status);
+                serviceAssignments.Add(entries[i].assignments);
+                serviceAssignmentsStatuses.Add(entries[i].assignmentsStatuses);
+            }
         }
 
         public void ChangeDescription(int index, string description)

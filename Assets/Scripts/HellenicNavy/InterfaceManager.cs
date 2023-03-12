@@ -974,7 +974,16 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             showLoadingIndicator = true,
             mainText = "Παρακαλώ περιμένετε, ανανέωση δεδομένων...",
         });
+        //update some info
         _currentService.ChangeHours(int.Parse(displayHoursInput.text));
+        serviceEntries = new List<ServiceEntry>();
+
+        for (int i = 0; i < displayServiceEntryParent.childCount; i++)
+        {
+            serviceEntries.Add(displayServiceEntryParent.GetChild(i).GetComponent<ServiceEntry>());
+        }
+        _currentService.ChangeEntries(serviceEntries.ToArray());
+
         Debug.Log(_currentService.ToJson());
         //write to database
         DatabaseManager.Instance.WriteOnce(() =>

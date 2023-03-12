@@ -32,7 +32,7 @@ public class ServiceEntry : MonoBehaviour
     public ServiceStatus Status 
     {
         get { return status; }
-        set { status = value; ChangeBGColor(); }
+        set { status = value; bgImg.color = ChangeBGColor(); }
     }
 
     public int Hours
@@ -150,7 +150,7 @@ public class ServiceEntry : MonoBehaviour
             }
         });
 
-        selectionToggle.onValueChanged.AddListener((b) => { bgImg.color = b ? selectedColor : normalColor; ChangeBGColor(); });
+        selectionToggle.onValueChanged.AddListener((b) => { bgImg.color = b ? selectedColor : ChangeBGColor();   });
 
         displayAssignments.onClick.AddListener(ShowAssignments);
     }
@@ -160,21 +160,18 @@ public class ServiceEntry : MonoBehaviour
     //    StartCoroutine(CreateInterfaceFromData(descr, hours, days, serviceTypesHours, serviceTypesDays, status));
     //}
 
-    public void ChangeBGColor() 
+    public Color ChangeBGColor() 
     {
         switch (status)
         {
             case ServiceStatus.pending:
-                bgImg.color = highlightedColor;
-                break;
+                return highlightedColor;
             case ServiceStatus.completed:
-                bgImg.color = normalColor;
-                break;
+                return normalColor;
             case ServiceStatus.postponed:
-                bgImg.color = postponedColor;
-                break;
+                return postponedColor;
         }
-        LayoutRebuilder.ForceRebuildLayoutImmediate(GetComponent<RectTransform>());
+        return normalColor;
     }
 
     public IEnumerator CreateInterfaceFromData(string descr, int hours, int days, /*ServiceAssignmentType serviceTypesHours, ServiceAssignmentType serviceTypesDays,*/ ServiceStatus status, List<ServiceAssignment> _assignments)
