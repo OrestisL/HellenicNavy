@@ -8,7 +8,6 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Collections;
 using UnitySQLite.Utilities;
-using UnityEditor;
 #endregion
 namespace UnitySQLite
 {
@@ -595,7 +594,13 @@ namespace UnitySQLite
 
         public string GetDatabaseLocation()
         {
-            return Path.Combine(Application.persistentDataPath, m_dbLocation, m_dbName);
+            string name = m_dbName.EndsWith(".db") ? m_dbName : string.Format("{0}.db", m_dbName);
+            return Path.Combine(Application.persistentDataPath, m_dbLocation, name);
+        }
+
+        public string GetDatabaseName()
+        {
+            return sm_dbName.EndsWith(".db")? sm_dbName : string.Format("{0}.db", sm_dbName);
         }
         #endregion // base functions
 

@@ -7,7 +7,9 @@ using SPS;
 using UnitySQLite.Utilities;
 using System.Collections;
 using System;
+using System.IO;
 using System.Linq;
+using SimpleFileBrowser;
 
 /// <summary>
 /// Interface manager holds all necessary objects and functions for the interface.
@@ -436,10 +438,47 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     void ExportDatabase()
     {
         //open dialogue for folder selection only (starting on the desktop)
-        //on success, save the folder path _somewhere_
-        //after that, copy the database from database manager to the selecter folder
-        //check if works
-
+        string localDiskPath = @"C:\";
+        FileBrowser.OnSuccess onSuccess = delegate (string[] paths)
+        {
+            //paths will always have length 1 because multi selection will be disabled
+            string locatiom = DatabaseManager.Instance.GetDatabaseLocation();
+            string target = Path.Combine(paths[0], DatabaseManager.Instance.GetDatabaseName());
+            try
+            {
+                File.Copy(locatiom, target);
+            }
+            catch (Exception e) 
+            {
+                MessageBox.Instance.ShowMessageBox(new MessageBoxSettings 
+                {
+                    showLabel = false,
+                    useLeftButton = false,
+                    useRightButton = false,
+                    mainText = "Το αρχείο υπάρχει ήδη στην επιλεγμένη τοποθεσία.",
+                    showLoadingIndicator = false,
+                });
+            }
+            //show message box
+            MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+            {
+                showLabel = false,
+                mainText = string.Format("Επιτυχής εξαγωγής βάσης δεδομένων σε {0}.", target),
+                useRightButton = false,
+                useLeftButton = false,
+                showLoadingIndicator = false,
+            });
+            Debug.Log("Success when exporting database");
+        };
+        FileBrowser.OnCancel onCancel = delegate
+        {
+            Debug.Log("Export folder selection was canceled by user.");
+        };
+        if (FileBrowser.ShowLoadDialog(onSuccess, onCancel, FileBrowser.PickMode.Folders, false, localDiskPath))
+        {
+            Debug.Log("Opened export dialogue");
+            importExportDBPanel.SetActive(false);
+        };
     }
 
     void ImportDatabase()

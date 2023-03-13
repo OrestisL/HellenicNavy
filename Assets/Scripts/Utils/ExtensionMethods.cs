@@ -70,7 +70,7 @@ public static class ExtensionMethods
 
     public static void DelayedEnableButton(this Button button, float delay)
     {
-        button.onClick.AddListener(() => button.StartCoroutine(ToggleButton(button, delay)));
+        button.onClick.AddListener(() => { if (button.gameObject.activeSelf) button.StartCoroutine(ToggleButton(button, delay)); });
     }
 
     private static IEnumerator ToggleButton(Button button, float delay)
