@@ -109,7 +109,7 @@ public class MessageBox : GenericSingleton<MessageBox>
     {
         while (true)
         {
-            loadingIndicatorParent.Rotate(-Vector3.forward, Time.deltaTime * 300f);
+            loadingIndicatorParent.Rotate(-Vector3.forward, Time.deltaTime * 360f);
             yield return null;
         }
     }

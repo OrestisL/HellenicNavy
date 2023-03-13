@@ -47,7 +47,7 @@ __COMPLETED__
 - on start, after login(? maybe before) should search for all services that need to be done and notify (done with button, cause automatic would cause issues)
 
 - figure out a generic way to show which services are pending, depending on the hours and the days (5th (lmao) iteration works (uses dynamic lookup table))
-
+  consider changing this to check between lastServiceHours and currentServiceHours
 - added settings class 
 
 - add a way to mark a service as completed and one to postpone service, this should also change the last service hours/date 
@@ -69,4 +69,4 @@ __REMAINING__
 
 
 #################################################################################################################################################
-11/3/2023 - 4351 lines of code
+12/3/2023 - 4423 lines of code

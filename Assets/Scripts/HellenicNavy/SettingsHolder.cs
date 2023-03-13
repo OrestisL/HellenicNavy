@@ -2,10 +2,8 @@ using System;
 using System.Collections;
 using System.IO;
 using Newtonsoft.Json;
-using UnityEditor.Media;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 /// <summary>

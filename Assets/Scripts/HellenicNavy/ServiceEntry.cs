@@ -58,7 +58,6 @@ public class ServiceEntry : MonoBehaviour
         }
     }
 
-
     public string Descr { get { return descriptionField.text; } }
 
     public ServiceAssignmentType TypesHours
@@ -154,11 +153,6 @@ public class ServiceEntry : MonoBehaviour
 
         displayAssignments.onClick.AddListener(ShowAssignments);
     }
-
-    //public void DisplayFromData(string descr, int hours, int days, ServiceAssignmentType serviceTypesHours, ServiceAssignmentType serviceTypesDays, ServiceStatus status)
-    //{
-    //    StartCoroutine(CreateInterfaceFromData(descr, hours, days, serviceTypesHours, serviceTypesDays, status));
-    //}
 
     public Color ChangeBGColor() 
     {

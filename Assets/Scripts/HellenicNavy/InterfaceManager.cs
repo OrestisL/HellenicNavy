@@ -298,7 +298,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         createDeptEntryButton.onClick.AddListener(() => AddDepartment(addDeptName.text));
         createDeptButton.onClick.AddListener(() => addDeptPanel.SetActive(!addDeptPanel.activeSelf));
         closeDeptPanel.onClick.AddListener(() => addDeptPanel.SetActive(false));
-
         selectDeptButton.onClick.AddListener(() => { SetupDeptSelectionInterface(); });
         #endregion
 
