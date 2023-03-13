@@ -272,7 +272,7 @@ namespace SimpleFileBrowser
 			}
 		}
 
-		private static string m_allFilesFilterText = "All Files (.*)";
+		private static string m_allFilesFilterText = "Όλα (*.*)";
 		public static string AllFilesFilterText
 		{
 			get { return m_allFilesFilterText; }
@@ -301,7 +301,7 @@ namespace SimpleFileBrowser
 			}
 		}
 
-		private static string m_foldersFilterText = "Folders";
+		private static string m_foldersFilterText = "Φάκελοι";
 		public static string FoldersFilterText
 		{
 			get { return m_foldersFilterText; }
@@ -321,7 +321,7 @@ namespace SimpleFileBrowser
 			}
 		}
 
-		private static string m_pickFolderQuickLinkText = "Browse...";
+		private static string m_pickFolderQuickLinkText = "Αναζήτηση...";
 		public static string PickFolderQuickLinkText
 		{
 			get { return m_pickFolderQuickLinkText; }
@@ -2855,7 +2855,7 @@ namespace SimpleFileBrowser
 		public static bool ShowSaveDialog( OnSuccess onSuccess, OnCancel onCancel,
 										   PickMode pickMode, bool allowMultiSelection = false,
 										   string initialPath = null, string initialFilename = null,
-										   string title = "Save", string saveButtonText = "Save" )
+										   string title = "Αποθήκευση", string saveButtonText = "Αποθήκευση")
 		{
 			return ShowDialogInternal( onSuccess, onCancel, pickMode, allowMultiSelection, pickMode != PickMode.Folders, initialPath, initialFilename, title, saveButtonText );
 		}
@@ -2863,7 +2863,7 @@ namespace SimpleFileBrowser
 		public static bool ShowLoadDialog( OnSuccess onSuccess, OnCancel onCancel,
 										   PickMode pickMode, bool allowMultiSelection = false,
 										   string initialPath = null, string initialFilename = null,
-										   string title = "Load", string loadButtonText = "Select" )
+										   string title = "Επιλογή", string loadButtonText = "Επιλογή" )
 		{
 			return ShowDialogInternal( onSuccess, onCancel, pickMode, allowMultiSelection, false, initialPath, initialFilename, title, loadButtonText );
 		}
