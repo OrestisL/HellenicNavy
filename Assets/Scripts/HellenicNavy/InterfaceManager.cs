@@ -346,6 +346,11 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         markAssignmentCompleteButton.onClick.AddListener(MarkAssignmentsComplete);
         closeAssignmentsPanelButton.onClick.AddListener(CloseAssignmentsPanel);
         #endregion
+
+        #region import export db
+        importDBButton.onClick.AddListener(() => ImportDatabase());
+        exportDBButton.onClick.AddListener(() => ExportDatabase());
+        #endregion
     }
 
     void SetupLoginInterface(LoginInterfaceSetup setup)
@@ -393,6 +398,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         selectSystemPanel.SetActive(false);
         selectMachineryPanel.SetActive(false);
         selectMachineryWithPendingServicePanel.SetActive(false);
+        importExportDBPanel.SetActive(false);
     }
 
     void CreateSystemDepartmentDictionary()
@@ -425,6 +431,24 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         {
             if (entry.IsSelected) { Destroy(entry.gameObject); }
         }
+    }
+
+    void ExportDatabase()
+    {
+        //open dialogue for folder selection only (starting on the desktop)
+        //on success, save the folder path _somewhere_
+        //after that, copy the database from database manager to the selecter folder
+        //check if works
+
+    }
+
+    void ImportDatabase()
+    {
+        //open dialogue for file selection only (starting on C:\)
+        //on success, save the path _somewhere_
+        //stop the connection with the database to avoid weird issues
+        //copy the file from the path above to the path in database manager (overwrite)
+        //re create the connection to the database
     }
 
     void AddMachinery()
