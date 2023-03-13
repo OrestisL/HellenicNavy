@@ -79,6 +79,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public Button addSystemButton;
     public Button changePWButton;
     public Button checkForServiceButton;
+    public Button importExportMenuButton;
 
     [Header("Add System Interface")]
     public GameObject addSystemPanel;
@@ -116,6 +117,12 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public Button addAsignmentButton;
     public Button markAssignmentCompleteButton;
     public Button closeAssignmentsPanelButton;
+
+    [Header("Import/Export interface")]
+    public GameObject importExportDBPanel;
+    public Button importDBButton;
+    public Button exportDBButton;
+    public Button closeImportExportButton;
 
     [Header("Prefabs")]
     public GameObject serviceEntryPrefab;
@@ -320,6 +327,9 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             //show message
         });
         checkForServiceButton.onClick.AddListener(ServiceChecker.Instance.Check);
+
+        importExportMenuButton.onClick.AddListener(() => importExportDBPanel.SetActive(!importExportDBPanel.activeSelf));
+
         #endregion
 
         #region date checker

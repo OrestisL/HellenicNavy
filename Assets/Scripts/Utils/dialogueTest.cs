@@ -60,7 +60,7 @@ public class dialogueTest : MonoBehaviour
         }
         //copy expects full file path, including name
         string name = filePath.Substring(filePath.LastIndexOf('\\') + 1);
-        System.IO.File.Copy(filePath, Path.Combine(filePath, name));
+        System.IO.File.Copy(filePath, Path.Combine(targetPath, name));
         //also handle file exists (replace)
     }
 
