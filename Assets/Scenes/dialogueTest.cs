@@ -14,6 +14,7 @@ public class dialogueTest : MonoBehaviour
     {
         //[] has length 1 because multiselect is false
         dialogueTest.targetPath = paths[0];
+
         Debug.Log(targetPath);
     };
 
@@ -58,12 +59,9 @@ public class dialogueTest : MonoBehaviour
             return;
         }
         //copy expects full file path, including name
-
-        string name = filePath.Substring(filePath.LastIndexOf('\\'));
-        
-        //set full path like this to avoid weird behavior (target path would be reset for some reason)
-        string fullTargetPath = string.Format("{0}\\{1}", targetPath, name);
-        System.IO.File.Copy(filePath, fullTargetPath);
+        string name = filePath.Substring(filePath.LastIndexOf('\\') + 1);
+        System.IO.File.Copy(filePath, Path.Combine(filePath, name));
+        //also handle file exists (replace)
     }
 
 }

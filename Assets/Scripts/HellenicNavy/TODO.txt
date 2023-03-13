@@ -62,7 +62,8 @@ __COMPLETED__
 
 __REMAINING__
 - message box should disable buttons and inputs etc (this is getting increasingly difficult)
-- export/import database (change extension? does it matter?)
+- export/import database	(user presses export button -> dialogue to select folder -> copy file to folder)
+							(user presses import button -> dialogue to select file -> copy and replace to wherever the db is -> relink db manager)
 - refactor database manager to command pattern (read write) (consider message box hide)(might omit entirely)
 - reports (pdf)
 - user manual

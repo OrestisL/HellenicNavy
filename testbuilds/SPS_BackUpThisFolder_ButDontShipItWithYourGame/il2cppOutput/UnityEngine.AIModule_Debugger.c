@@ -36,14 +36,14 @@ static const Il2CppMethodExecutionContextInfoIndex g_methodExecutionContextInfoI
 IL2CPP_EXTERN_C Il2CppSequencePoint g_sequencePointsUnityEngine_AIModule[];
 Il2CppSequencePoint g_sequencePointsUnityEngine_AIModule[8] = 
 {
-	{ 48240, 0, 0, 0, 0, 0, -1, kSequencePointKind_Normal, 0, 0 } /* seqPointIndex: 0 */,
-	{ 48240, 0, 0, 0, 0, 0, 16777215, kSequencePointKind_Normal, 0, 1 } /* seqPointIndex: 1 */,
-	{ 48240, 1, 191, 191, 9, 10, 0, kSequencePointKind_Normal, 0, 2 } /* seqPointIndex: 2 */,
-	{ 48240, 1, 192, 192, 13, 37, 1, kSequencePointKind_Normal, 0, 3 } /* seqPointIndex: 3 */,
-	{ 48240, 1, 192, 192, 0, 0, 10, kSequencePointKind_Normal, 0, 4 } /* seqPointIndex: 4 */,
-	{ 48240, 1, 193, 193, 17, 31, 13, kSequencePointKind_Normal, 0, 5 } /* seqPointIndex: 5 */,
-	{ 48240, 1, 193, 193, 17, 31, 18, kSequencePointKind_StepOut, 0, 6 } /* seqPointIndex: 6 */,
-	{ 48240, 1, 194, 194, 9, 10, 24, kSequencePointKind_Normal, 0, 7 } /* seqPointIndex: 7 */,
+	{ 48257, 0, 0, 0, 0, 0, -1, kSequencePointKind_Normal, 0, 0 } /* seqPointIndex: 0 */,
+	{ 48257, 0, 0, 0, 0, 0, 16777215, kSequencePointKind_Normal, 0, 1 } /* seqPointIndex: 1 */,
+	{ 48257, 1, 191, 191, 9, 10, 0, kSequencePointKind_Normal, 0, 2 } /* seqPointIndex: 2 */,
+	{ 48257, 1, 192, 192, 13, 37, 1, kSequencePointKind_Normal, 0, 3 } /* seqPointIndex: 3 */,
+	{ 48257, 1, 192, 192, 0, 0, 10, kSequencePointKind_Normal, 0, 4 } /* seqPointIndex: 4 */,
+	{ 48257, 1, 193, 193, 17, 31, 13, kSequencePointKind_Normal, 0, 5 } /* seqPointIndex: 5 */,
+	{ 48257, 1, 193, 193, 17, 31, 18, kSequencePointKind_StepOut, 0, 6 } /* seqPointIndex: 6 */,
+	{ 48257, 1, 194, 194, 9, 10, 24, kSequencePointKind_Normal, 0, 7 } /* seqPointIndex: 7 */,
 };
 #else
 extern Il2CppSequencePoint g_sequencePointsUnityEngine_AIModule[];
@@ -65,7 +65,7 @@ static const Il2CppSequencePointSourceFile g_sequencePointSourceFiles[1] = { NUL
 #if IL2CPP_MONO_DEBUGGER
 static const Il2CppTypeSourceFilePair g_typeSourceFiles[1] = 
 {
-	{ 6777, 1 },
+	{ 6778, 1 },
 };
 #else
 static const Il2CppTypeSourceFilePair g_typeSourceFiles[1] = { { 0, 0 } };
