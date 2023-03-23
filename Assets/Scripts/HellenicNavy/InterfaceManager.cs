@@ -448,9 +448,9 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             {
                 File.Copy(locatiom, target);
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
-                MessageBox.Instance.ShowMessageBox(new MessageBoxSettings 
+                MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
                 {
                     showLabel = false,
                     useLeftButton = false,
@@ -459,16 +459,20 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                     showLoadingIndicator = false,
                 });
             }
-            //show message box
-            MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+            finally 
             {
-                showLabel = false,
-                mainText = string.Format("Επιτυχής εξαγωγής βάσης δεδομένων σε {0}.", target),
-                useRightButton = false,
-                useLeftButton = false,
-                showLoadingIndicator = false,
-            });
-            Debug.Log("Success when exporting database");
+                //show message box
+                MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+                {
+                    showLabel = false,
+                    mainText = string.Format("Επιτυχής εξαγωγής βάσης δεδομένων σε {0}.", target),
+                    useRightButton = false,
+                    useLeftButton = false,
+                    showLoadingIndicator = false,
+                });
+                Debug.Log("Success when exporting database");
+            }
+
         };
         FileBrowser.OnCancel onCancel = delegate
         {
