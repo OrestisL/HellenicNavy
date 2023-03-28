@@ -8,6 +8,16 @@ using UnityEngine;
 
 namespace UnitySQLite.Utilities
 {
+    public class Utilities
+    {
+        public static void LogException(Exception e)
+        {
+            string result = string.Format("Exception: {0}\nStack trace: {1}\nData: {2}\nSource: {3}",
+                e.Message, e.StackTrace, e.Data, e.Source);
+            Debug.Log(result);
+        }
+    }
+
     public enum SelectFromDatabaseMode
     {
         /// <summary>
@@ -401,10 +411,10 @@ namespace UnitySQLite.Utilities
             string values = string.Format("{0},{1}", hash, _salt);
 
             DatabaseManager.Instance.WriteOnce(() => DatabaseManager.Instance.UpdateValuesOnTable("Users", "Password,Salt", values, $"name = '{_accountName}'",
-                () => 
+                () =>
                 UnityMainThreadDispatcher.Instance.Enqueue(
-                    () => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings() 
-                    { 
+                    () => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+                    {
                         showLabel = true,
                         label = "Αλλαγή κωδικού πρόσβασης",
                         mainText = "Επιτυχής αλλαγή κωδικού πρόσβασης",
@@ -412,7 +422,7 @@ namespace UnitySQLite.Utilities
                         useLeftButton = false,
                         useRightButton = false,
                     }, 1.5f))
-                ,true));
+                , true));
         }
         /// <summary>
         /// Create account on database if not exists. 
@@ -502,6 +512,7 @@ namespace UnitySQLite.Utilities
                 return bytes.ByteArrayToString();
             }
         }
+
     }
 
     public class MessageBoxSettings

@@ -132,7 +132,10 @@ namespace UnitySQLite
                     mainText = "Δεν βρέθηκε βάση δεδομένων. Θέλετε να δημιουργήσετε ή να εισάγετε βάση δεδομένων;",
                     useRightButton = true,
                     rightButtonLabel = "Εισαγωγή",
-                    onRightButtonClick = () => { },
+                    onRightButtonClick = () => { 
+                        InterfaceManager.Instance.ImportDatabase();
+                        MessageBox.Instance.HideMessageBox();
+                    },
 
                     useLeftButton = true,
                     leftButtonLabel = "Δημιουργία",
@@ -624,10 +627,15 @@ namespace UnitySQLite
             Logger.Instance.AddMessage(query);
         }
 
-        public string GetDatabaseLocation()
+        public string GetDatabaseFullPath()
         {
             string name = m_dbName.EndsWith(".db") ? m_dbName : string.Format("{0}.db", m_dbName);
             return Path.Combine(Application.persistentDataPath, m_dbLocation, name);
+        }
+
+        public string GetDatabaseLocation() 
+        {
+            return Path.Combine(Application.persistentDataPath, m_dbLocation);
         }
 
         public string GetDatabaseName()

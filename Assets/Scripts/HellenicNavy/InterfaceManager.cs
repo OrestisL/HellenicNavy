@@ -438,26 +438,26 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         }
     }
 
-    void ExportDatabase()
+    public void ExportDatabase()
     {
         //first close connection to commit changes
         DatabaseManager.Instance.CloseConnection();
-        //open dialogue for folder selection only (starting on the desktop)
+        //open dialogue for folder selection only
         string localDiskPath = @"C:\";
         FileBrowser.OnSuccess onSuccess = delegate (string[] paths)
         {
             bool exists = false;
             //paths will always have length 1 because multi selection will be disabled
-            string locatiom = DatabaseManager.Instance.GetDatabaseLocation();
+            string location = DatabaseManager.Instance.GetDatabaseFullPath();
             string target = Path.Combine(paths[0], DatabaseManager.Instance.GetDatabaseName());
             try
             {
-                File.Copy(locatiom, target);
+                File.Copy(location, target);
             }
             catch (Exception e)
             {
                 exists = true;
-                Debug.LogException(e);
+                Utilities.LogException(e);
                 MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
                 {
                     showLabel = false,
@@ -467,7 +467,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                     showLoadingIndicator = false,
                 });
             }
-            finally 
+            finally
             {
                 if (!exists)
                 {
@@ -480,7 +480,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                         useLeftButton = false,
                         showLoadingIndicator = false,
                     });
-                    Debug.Log("Success when exporting database");
+                    Debug.Log(string.Format("Success when exporting database at {0}.", paths[0]));
 
 
                 }
@@ -500,13 +500,59 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         };
     }
 
-    void ImportDatabase()
+    public void ImportDatabase()
     {
-        //open dialogue for file selection only (starting on C:\)
-        //on success, save the path _somewhere_
         //stop the connection with the database to avoid weird issues
-        //copy the file from the path above to the path in database manager (overwrite)
-        //re create the connection to the database
+        DatabaseManager.Instance.CloseConnection();
+        //open dialogue for file selection only (starting on C:\)
+        string localDiskPath = @"C:\";
+
+        //on success, save the path _somewhere_
+        FileBrowser.OnSuccess onSuccess = delegate (string[] paths)
+        {
+            string target = DatabaseManager.Instance.GetDatabaseFullPath();
+            string[] parts = paths[0].Split('\\');
+            string name = parts[parts.Length - 1];
+            bool success = true;
+            //copy the file from the path above to the path in database manager (overwrite)
+            try
+            {
+                File.Copy(paths[0], target, true);
+            }
+            catch (Exception e) 
+            {
+                success = false;
+                Utilities.LogException(e);
+            }
+            finally
+            {
+                if (success)
+                {
+                    MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+                    {
+                        showLabel = false,
+                        useLeftButton = false,
+                        useRightButton = false,
+                        mainText = "Επιτυχής εισαγωγή βάσης δεδομένων.",
+                        showLoadingIndicator = false,
+                        
+                    });
+                    //re create the connection to the database
+                    DatabaseManager.Instance.Initialize(DatabaseManager.Instance.GetDatabaseLocation(), name);
+                }
+            }
+
+        };
+        FileBrowser.OnCancel onCancel = delegate
+        {
+            Debug.Log("Import file was canceled by user.");
+        };
+        if (FileBrowser.ShowLoadDialog(onSuccess, onCancel, FileBrowser.PickMode.Files, false, localDiskPath))
+        {
+            Debug.Log("Opened import dialogue");
+            importExportDBPanel.SetActive(false);
+        };
+
     }
 
     void AddMachinery()
