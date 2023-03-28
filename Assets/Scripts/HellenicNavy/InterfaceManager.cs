@@ -511,8 +511,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         FileBrowser.OnSuccess onSuccess = delegate (string[] paths)
         {
             string target = DatabaseManager.Instance.GetDatabaseFullPath();
-            string[] parts = paths[0].Split('\\');
-            string name = parts[parts.Length - 1];
             bool success = true;
             //copy the file from the path above to the path in database manager (overwrite)
             try
@@ -538,7 +536,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                         
                     });
                     //re create the connection to the database
-                    DatabaseManager.Instance.Initialize(DatabaseManager.Instance.GetDatabaseLocation(), name);
+                    DatabaseManager.Instance.Initialize("Databases", "Machinery");
                 }
             }
 
