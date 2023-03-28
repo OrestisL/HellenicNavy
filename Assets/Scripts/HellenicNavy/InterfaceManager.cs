@@ -443,6 +443,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         string localDiskPath = @"C:\";
         FileBrowser.OnSuccess onSuccess = delegate (string[] paths)
         {
+            bool exists = false;
             //paths will always have length 1 because multi selection will be disabled
             string locatiom = DatabaseManager.Instance.GetDatabaseLocation();
             string target = Path.Combine(paths[0], DatabaseManager.Instance.GetDatabaseName());
@@ -452,6 +453,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             }
             catch (Exception e)
             {
+                exists = true;
                 Debug.LogException(e);
                 MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
                 {
@@ -464,19 +466,22 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             }
             finally 
             {
-                //show message box
-                MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+                if (!exists)
                 {
-                    showLabel = false,
-                    mainText = string.Format("Επιτυχής εξαγωγή βάσης δεδομένων σε {0}.", target),
-                    useRightButton = false,
-                    useLeftButton = false,
-                    showLoadingIndicator = false,
-                });
-                Debug.Log("Success when exporting database");
+                    //show message box
+                    MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+                    {
+                        showLabel = false,
+                        mainText = string.Format("Επιτυχής εξαγωγή βάσης δεδομένων σε {0}.", target),
+                        useRightButton = false,
+                        useLeftButton = false,
+                        showLoadingIndicator = false,
+                    });
+                    Debug.Log("Success when exporting database");
 
-                //re open connection
-                DatabaseManager.Instance.Initialize("Databases", "Machinery");
+                    //re open connection
+                    DatabaseManager.Instance.Initialize("Databases", "Machinery");
+                }
             }
 
         };
