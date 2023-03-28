@@ -27,7 +27,7 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
         #region bounds
         private int minRate = 20;
         private int maxRate = 30;
-        private float minWriteFrequency = 0.5f;
+        private float minWriteFrequency = 1.5f;
         private float maxWriteFrequency = 5.0f;
         private int minLookupTableSizeHours = 30000;
         private int maxLookupTableSizeHours = 100000;
@@ -40,7 +40,7 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
             rate = 30;
             maxLookupTableHours = 50000;
             maxLookupTableDays = 10000;
-            writeFrequency = 1.0f;
+            writeFrequency = 2.0f;
             directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "SPSSettings");
             badgeName = "badge.png";
         }

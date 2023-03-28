@@ -480,6 +480,37 @@ namespace UnitySQLite.Utilities
             });
         }
 
+        public static void CreateDefaultDepts()
+        {
+            List<string> depts = new List<string>()
+            {
+                "ΒΜ",
+                "ΕΒ",
+                "ΗΝ",
+                "Η",
+                "ΨΥΚΤ",
+                "ΜΗΧ"
+            };
+            List<TableColumn> cols = GameObject.Find("Tables").GetComponent<CreateTables>().departmentsList.columns;
+            DatabaseManager.Instance.WriteOnce(() =>
+            {
+                for (int i = 0; i < depts.Count; i++)
+                {
+                    string current = depts[i];
+
+                    List<DataEntry> content = new List<DataEntry>
+                    {
+                        new DataEntry(current)
+                    };
+
+
+                    TableRow row = new TableRow(cols, content);
+                    DatabaseManager.Instance.ThreadedWriteToDatabase("DepartmentsList", row);
+                }
+            });
+
+        }
+
         public static bool ValidateCredentials(string username, string passwordHash, Account account)
         {
             bool valid = false;
