@@ -46,7 +46,7 @@ namespace UnitySQLite
         {
             base.Awake();
             //consider added a check so as not to do this over and over
-            //Account.CreateDefaultAccounts(); -> do this on database creation
+            //Account.CreateDefaultAccounts(); -> do this on database creation done
             // onLoginAttempt += (b, text) => output.text = text;
             onSuccessfulLogin += (acc) => { CurrentAccount = acc; };
 
