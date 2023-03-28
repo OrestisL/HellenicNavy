@@ -201,6 +201,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     private void Start()
     {
         SetupButtons();
+        FileBrowser.AllFilesFilterText = "Αρχεία DB  (*.db)";
+        FileBrowser.SetFilters(false, new string[] { ".db" });
     }
 
     void SetupInterface(AccessLevel accessLevel)
