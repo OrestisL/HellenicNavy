@@ -804,13 +804,19 @@ namespace UnitySQLite
 
         public void CloseConnection()
         {
-            sm_dbTransaction.Commit();
-            sm_dbTransaction.Dispose();
-            sm_dbTransaction = null;
+            if (sm_dbTransaction != null)
+            {
+                sm_dbTransaction.Commit();
+                sm_dbTransaction.Dispose();
+                sm_dbTransaction = null;
+            }
 
-            sm_dbConnection.Close();
-            sm_dbConnection.Dispose();
-            sm_dbConnection = null;
+            if (sm_dbConnection != null)
+            {
+                sm_dbConnection.Close();
+                sm_dbConnection.Dispose();
+                sm_dbConnection = null;
+            }
         }
 
         void ReadValuesFromDatabase(SqliteDataReader reader, out List<List<DataEntry>> entries)

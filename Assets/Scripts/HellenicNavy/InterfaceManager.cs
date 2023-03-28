@@ -190,6 +190,9 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             AccountManagement.Instance.ClearCurrentAccount();
             userPanel.SetActive(false);
             SetupLoginInterface(LoginInterfaceSetup.login);
+
+            //close connection?
+            //DatabaseManager.Instance.CloseConnection();
         };
 
         logoutButton.onClick.AddListener(() => AccountManagement.onLogout?.Invoke());
@@ -479,9 +482,10 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                     });
                     Debug.Log("Success when exporting database");
 
-                    //re open connection
-                    DatabaseManager.Instance.Initialize("Databases", "Machinery");
+
                 }
+                //re open connection
+                DatabaseManager.Instance.Initialize("Databases", "Machinery");
             }
 
         };
