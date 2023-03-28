@@ -83,6 +83,13 @@ namespace UnitySQLite
         /// </summary>
         private Action<List<List<DataEntry>>> OnDataReady;
 
+        /// <summary>
+        /// called after the user creates a database (only first run of program, unless someone deletes the file)
+        /// </summary>
+        public Action onDatabaseCreated = delegate 
+        {
+            Debug.Log("Created new database");
+        };
         #endregion
 
         #region Initializaton
@@ -114,9 +121,34 @@ namespace UnitySQLite
 
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
-
+            
             int currentHash = AddConnection(sm_dbName);
-            ChangeConnection(currentHash);
+            string databaseLocation = Path.Combine(directory, sm_dbName);
+            if (!File.Exists(databaseLocation))
+            {
+                MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
+                {
+                    showLabel = false,
+                    mainText = "Δεν βρέθηκε βάση δεδομένων. Θέλετε να δημιουργήσετε ή να εισάγετε βάση δεδομένων;",
+                    useRightButton = true,
+                    rightButtonLabel = "Εισαγωγή",
+                    onRightButtonClick = () => { },
+
+                    useLeftButton = true,
+                    leftButtonLabel = "Δημιουργία",
+                    onLeftButtonClick = () =>
+                    {
+                        ChangeConnection(currentHash);
+                        MessageBox.Instance.HideMessageBox();
+                        onDatabaseCreated.Invoke();
+                    },
+                }, -1);
+            }
+            else
+            {
+                ChangeConnection(currentHash);
+            }
+
         }
         #endregion
 
@@ -770,7 +802,7 @@ namespace UnitySQLite
             return dbConnection;
         }
 
-        private void CloseConnection()
+        public void CloseConnection()
         {
             sm_dbTransaction.Commit();
             sm_dbTransaction.Dispose();

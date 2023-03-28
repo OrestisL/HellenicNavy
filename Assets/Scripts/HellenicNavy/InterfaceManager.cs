@@ -437,6 +437,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     void ExportDatabase()
     {
+        //first close connection to commit changes
+        DatabaseManager.Instance.CloseConnection();
         //open dialogue for folder selection only (starting on the desktop)
         string localDiskPath = @"C:\";
         FileBrowser.OnSuccess onSuccess = delegate (string[] paths)
@@ -450,6 +452,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             }
             catch (Exception e)
             {
+                Debug.LogException(e);
                 MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
                 {
                     showLabel = false,
@@ -465,12 +468,15 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
                 {
                     showLabel = false,
-                    mainText = string.Format("Επιτυχής εξαγωγής βάσης δεδομένων σε {0}.", target),
+                    mainText = string.Format("Επιτυχής εξαγωγή βάσης δεδομένων σε {0}.", target),
                     useRightButton = false,
                     useLeftButton = false,
                     showLoadingIndicator = false,
                 });
                 Debug.Log("Success when exporting database");
+
+                //re open connection
+                DatabaseManager.Instance.Initialize("Databases", "Machinery");
             }
 
         };
