@@ -2,7 +2,7 @@
   "rate": 30,
   "maxLookupTableHours": 50000,
   "maxLookupTableDays": 10000,
-  "writeFrequency": 1.0,
+  "accessTime": 0.5,
   "directoryPath": "C:\\Users\\Orestis\\Desktop\\unity projects\\SPS\\SPSSettings",
   "badgeName": "badge.png",
   "FullPath": "C:\\Users\\Orestis\\Desktop\\unity projects\\SPS\\SPSSettings\\badge.png"
