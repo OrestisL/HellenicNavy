@@ -828,6 +828,7 @@ GameObject:
   - component: {fileID: 1421043084}
   - component: {fileID: 1421043083}
   - component: {fileID: 1421043087}
+  - component: {fileID: 1421043088}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -935,6 +936,19 @@ MonoBehaviour:
   selectTargetButton: {fileID: 1326400639}
   selectFileButton: {fileID: 2000099164}
   copyFileButton: {fileID: 421078914}
+--- !u!114 &1421043088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1421043082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f41d014210c4b242a8412c773260184, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 147434692}
 --- !u!1 &1425657024
 GameObject:
   m_ObjectHideFlags: 0
