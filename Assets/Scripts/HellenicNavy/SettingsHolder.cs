@@ -57,7 +57,7 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
             rate = Mathf.Clamp(s.rate, minRate, maxRate);
             maxLookupTableDays = Mathf.Clamp(s.maxLookupTableDays, minLookupTableSizeDays, maxLookupTableSizeDays);
             maxLookupTableHours = Mathf.Clamp(s.maxLookupTableHours, minLookupTableSizeHours, maxLookupTableSizeHours);
-            accessTime = Mathf.Clamp(s.accessTime, minaccessTime, maxaccessTime);
+            accessTime = 0.5f; //0.5 seems to make everything work properly// Mathf.Clamp(s.accessTime, minaccessTime, maxaccessTime);
             directoryPath = s.directoryPath;
             badgeName = s.badgeName;
         }

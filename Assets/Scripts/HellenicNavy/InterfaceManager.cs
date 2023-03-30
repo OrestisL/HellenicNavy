@@ -21,7 +21,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public ServiceEntry _currentEntry;
     [SerializeField]
     CreateTables tables;
-    Dictionary<string, string> systemsDict;
+    Dictionary<string, string> systemsDict = new Dictionary<string, string>();
 
     public GameObject canvas;
 
@@ -275,6 +275,18 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         #region add machinery
         addMachineryButton.onClick.AddListener(() =>
         {
+            if (systemsDict.Count == 0)
+            {
+                MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
+                {
+                    showLabel = false,
+                    useLeftButton = false,
+                    useRightButton = false,
+                    mainText = "Δεν υπάρχουν συστήματα στη βάση δεδομένων, παρακαλώ χρησιμοποιήστε το αντίστοιχο κουμπί για να προσθέσετε συστήματα.",
+                    showLoadingIndicator = false,
+                });
+                return;
+            }
             ShowSystems(systemDropdown, deptDropdown);
             addMachineryPanel.SetActive(!addMachineryPanel.activeSelf);
         });
@@ -519,7 +531,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             {
                 File.Copy(paths[0], target, true);
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 success = false;
                 Utilities.LogException(e);
@@ -535,7 +547,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                         useRightButton = false,
                         mainText = "Επιτυχής εισαγωγή βάσης δεδομένων.",
                         showLoadingIndicator = false,
-                        
+
                     });
                     //re create the connection to the database
                     DatabaseManager.Instance.Initialize("Databases", "Machinery");
