@@ -505,7 +505,25 @@ namespace UnitySQLite.Utilities
 
 
                     TableRow row = new TableRow(cols, content);
-                    DatabaseManager.Instance.ThreadedWriteToDatabase("DepartmentsList", row);
+                    if (i == depts.Count - 1)
+                    {
+                        //last dept should close the message box
+                        DatabaseManager.Instance.ThreadedWriteToDatabase("DepartmentsList", row, false, null, 
+                            () => UnityMainThreadDispatcher.Instance.Enqueue(() =>
+                        {
+                            MessageBox.Instance.HideMessageBox();
+                            MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
+                            {
+                                showLabel = false,
+                                useLeftButton = false,
+                                useRightButton = false,
+                                mainText = "Επιτυχής δημιουργία βάσης δεδομένων.",
+                                showLoadingIndicator = false,
+                            });
+                        }));
+                    }
+                    else
+                        DatabaseManager.Instance.ThreadedWriteToDatabase("DepartmentsList", row);
                 }
             });
 

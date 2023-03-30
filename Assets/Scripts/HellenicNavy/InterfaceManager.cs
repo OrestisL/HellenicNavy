@@ -284,7 +284,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                     useRightButton = false,
                     mainText = "Δεν υπάρχουν συστήματα στη βάση δεδομένων, παρακαλώ χρησιμοποιήστε το αντίστοιχο κουμπί για να προσθέσετε συστήματα.",
                     showLoadingIndicator = false,
-                });
+                }, 3);
                 return;
             }
             ShowSystems(systemDropdown, deptDropdown);

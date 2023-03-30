@@ -143,6 +143,14 @@ namespace UnitySQLite
                     {
                         ChangeConnection(currentHash);
                         MessageBox.Instance.HideMessageBox();
+                        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings 
+                        {
+                            useLeftButton = false,
+                            useRightButton = false,
+                            mainText = "Παρακαλώ περιμένετε",
+                            showLoadingIndicator = true,
+                            showLabel = false,
+                        },-1);
                         onDatabaseCreated.Invoke();
                     },
                 }, -1);
