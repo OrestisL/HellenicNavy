@@ -86,7 +86,7 @@ namespace UnitySQLite
         /// <summary>
         /// called after the user creates a database (only first run of program, unless someone deletes the file)
         /// </summary>
-        public Action onDatabaseCreated = delegate 
+        public Action onDatabaseCreated = delegate
         {
             Debug.Log("Created new database");
         };
@@ -121,18 +121,23 @@ namespace UnitySQLite
 
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
-            
+
             int currentHash = AddConnection(sm_dbName);
             string databaseLocation = Path.Combine(directory, sm_dbName);
             if (!File.Exists(databaseLocation))
             {
+                //disable the buttons to avoid issues
+                InterfaceManager.Instance.loginButton.interactable = false;
+                InterfaceManager.Instance.quitButton.interactable = false;
+                //show message box
                 MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
                 {
                     showLabel = false,
                     mainText = "Δεν βρέθηκε βάση δεδομένων. Θέλετε να δημιουργήσετε ή να εισάγετε βάση δεδομένων;",
                     useRightButton = true,
                     rightButtonLabel = "Εισαγωγή",
-                    onRightButtonClick = () => { 
+                    onRightButtonClick = () =>
+                    {
                         InterfaceManager.Instance.ImportDatabase();
                         MessageBox.Instance.HideMessageBox();
                     },
@@ -143,14 +148,14 @@ namespace UnitySQLite
                     {
                         ChangeConnection(currentHash);
                         MessageBox.Instance.HideMessageBox();
-                        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings 
+                        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
                         {
                             useLeftButton = false,
                             useRightButton = false,
                             mainText = "Παρακαλώ περιμένετε",
                             showLoadingIndicator = true,
                             showLabel = false,
-                        },-1);
+                        }, -1);
                         onDatabaseCreated.Invoke();
                     },
                 }, -1);
@@ -641,14 +646,14 @@ namespace UnitySQLite
             return Path.Combine(Application.persistentDataPath, m_dbLocation, name);
         }
 
-        public string GetDatabaseLocation() 
+        public string GetDatabaseLocation()
         {
             return Path.Combine(Application.persistentDataPath, m_dbLocation);
         }
 
         public string GetDatabaseName()
         {
-            return sm_dbName.EndsWith(".db")? sm_dbName : string.Format("{0}.db", sm_dbName);
+            return sm_dbName.EndsWith(".db") ? sm_dbName : string.Format("{0}.db", sm_dbName);
         }
         #endregion // base functions
 

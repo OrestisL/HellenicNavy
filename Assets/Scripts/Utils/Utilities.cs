@@ -519,6 +519,11 @@ namespace UnitySQLite.Utilities
                                 useRightButton = false,
                                 mainText = "Επιτυχής δημιουργία βάσης δεδομένων.",
                                 showLoadingIndicator = false,
+                                //also reenable buttons
+                                onHide = () => {
+                                    InterfaceManager.Instance.loginButton.interactable = true;
+                                    InterfaceManager.Instance.quitButton.interactable = true;
+                                }
                             });
                         }));
                     }
