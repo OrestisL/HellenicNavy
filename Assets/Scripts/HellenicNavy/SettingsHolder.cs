@@ -15,10 +15,12 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
     [Serializable]
     public class Settings
     {
+        [NonSerialized]
         public int rate = 30;
         public int maxLookupTableHours = 50000;
         public int maxLookupTableDays = 10000;
-        public float accessTime = 2.0f;
+        [NonSerialized]
+        public float AccessTime = 2.0f;
 
         public string directoryPath;
         public string badgeName;
@@ -40,7 +42,7 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
             rate = 30;
             maxLookupTableHours = 50000;
             maxLookupTableDays = 10000;
-            accessTime = 1.0f;
+            AccessTime = 0.5f;
             directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "SPSSettings");
             badgeName = "badge.png";
         }
@@ -49,15 +51,15 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
             this.rate = Mathf.Clamp(rate, minRate, maxRate);
             this.maxLookupTableHours = Mathf.Clamp(maxLookupTableHours, minLookupTableSizeHours, maxLookupTableSizeHours);
             this.maxLookupTableDays = Mathf.Clamp(maxLookupTableDays, minLookupTableSizeDays, maxLookupTableSizeDays);
-            this.accessTime = Mathf.Clamp(accessTime, minaccessTime, maxaccessTime);
+            this.AccessTime = Mathf.Clamp(accessTime, minaccessTime, maxaccessTime);
         }
         public Settings(string json)
         {
             Settings s = JsonConvert.DeserializeObject<Settings>(json);
-            rate = Mathf.Clamp(s.rate, minRate, maxRate);
+            rate = 30;
             maxLookupTableDays = Mathf.Clamp(s.maxLookupTableDays, minLookupTableSizeDays, maxLookupTableSizeDays);
             maxLookupTableHours = Mathf.Clamp(s.maxLookupTableHours, minLookupTableSizeHours, maxLookupTableSizeHours);
-            accessTime = 0.5f; //0.5 seems to make everything work properly// Mathf.Clamp(s.accessTime, minaccessTime, maxaccessTime);
+            AccessTime = 0.5f; //0.5 seems to make everything work properly// Mathf.Clamp(s.accessTime, minaccessTime, maxaccessTime);
             directoryPath = s.directoryPath;
             badgeName = s.badgeName;
         }

@@ -63,14 +63,15 @@ __COMPLETED__
 							(user presses import button -> dialogue to select file -> copy and replace to wherever the db is -> relink db manager) (done)
 							(change default folder to be desktop for selecting folder to export, local disk C for importing database)
 							(restrict to only show .db files)(or change file extension, barely matters anyway)(done)
+
+- message box should disable buttons and inputs etc (this is not done in tne most elegant way but it works so done)
 #################################################################################################################################################
 
 __REMAINING__
-- message box should disable buttons and inputs etc (this is getting increasingly difficult)
 - refactor database manager to command pattern (read write) (consider message box hide)(might omit entirely)
 - reports (pdf)
 - user manual
 
 
 #################################################################################################################################################
-12/3/2023 - 4423 lines of code
+31/3/2023 - 4755 lines of code

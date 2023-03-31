@@ -17,6 +17,10 @@ public class MessageBox : GenericSingleton<MessageBox>
     private Action onHide;
     public Transform loadingIndicatorParent;
 
+    private Button[] buttonsOnScreen;
+    private TMP_InputField[] inputFieldsOnScreen;
+
+
     public override void Awake()
     {
         base.Awake();
@@ -36,6 +40,22 @@ public class MessageBox : GenericSingleton<MessageBox>
 
     public void ShowMessageBox(MessageBoxSettings settings, float delay = 2f)
     {
+        //first find, assign and disable all buttons and input fields
+        buttonsOnScreen = Resources.FindObjectsOfTypeAll<Button>();
+        inputFieldsOnScreen = Resources.FindObjectsOfTypeAll<TMP_InputField>();
+        for (int i = 0; i < buttonsOnScreen.Length; i++)
+        {
+            buttonsOnScreen[i].interactable = false;
+        }
+        for (int i = 0; i < inputFieldsOnScreen.Length; i++) 
+        {
+            inputFieldsOnScreen[i].interactable = false;
+        }
+
+        //clear arrays
+        buttonsOnScreen = null;
+        inputFieldsOnScreen = null;
+
         settings.onShow?.Invoke();
 
         rightButton.gameObject.SetActive(settings.useRightButton);
@@ -83,6 +103,20 @@ public class MessageBox : GenericSingleton<MessageBox>
     {
         rightButton.onClick.RemoveAllListeners();
         leftButton.onClick.RemoveAllListeners();
+        buttonsOnScreen = Resources.FindObjectsOfTypeAll<Button>();
+        inputFieldsOnScreen = Resources.FindObjectsOfTypeAll<TMP_InputField>();
+        for (int i = 0; i < buttonsOnScreen.Length; i++)
+        {
+            buttonsOnScreen[i].interactable = true;
+        }
+        for (int i = 0; i < inputFieldsOnScreen.Length; i++)
+        {
+            inputFieldsOnScreen[i].interactable = true;
+        }
+        //clear arrays
+        buttonsOnScreen = null;
+        inputFieldsOnScreen = null;
+
         onHide?.Invoke();
         onHide = null;
         gameObject.SetActive(false);
