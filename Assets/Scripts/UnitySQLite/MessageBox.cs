@@ -59,6 +59,7 @@ public class MessageBox : GenericSingleton<MessageBox>
         settings.onShow?.Invoke();
 
         rightButton.gameObject.SetActive(settings.useRightButton);
+        rightButton.interactable = settings.useRightButton;
         if (settings.useRightButton)
         {
             rightButton.onClick.AddListener(() => settings.onRightButtonClick?.Invoke());
@@ -66,6 +67,7 @@ public class MessageBox : GenericSingleton<MessageBox>
         }
 
         leftButton.gameObject.SetActive(settings.useLeftButton);
+        leftButton.interactable = settings.useLeftButton;
         if (settings.useLeftButton)
         {
             leftButton.onClick.AddListener(() => settings.onLeftButtonClick?.Invoke());
