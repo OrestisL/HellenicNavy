@@ -17,9 +17,6 @@ public class MessageBox : GenericSingleton<MessageBox>
     private Action onHide;
     public Transform loadingIndicatorParent;
 
-    private Button[] buttonsOnScreen;
-    private TMP_InputField[] inputFieldsOnScreen;
-
 
     public override void Awake()
     {
@@ -40,9 +37,9 @@ public class MessageBox : GenericSingleton<MessageBox>
 
     public void ShowMessageBox(MessageBoxSettings settings, float delay = 2f)
     {
-        //first find, assign and disable all buttons and input fields
-        buttonsOnScreen = Resources.FindObjectsOfTypeAll<Button>();
-        inputFieldsOnScreen = Resources.FindObjectsOfTypeAll<TMP_InputField>();
+        //first find and disable all buttons and input fields
+        Button[] buttonsOnScreen = Resources.FindObjectsOfTypeAll<Button>();
+        TMP_InputField[] inputFieldsOnScreen = Resources.FindObjectsOfTypeAll<TMP_InputField>();
         for (int i = 0; i < buttonsOnScreen.Length; i++)
         {
             buttonsOnScreen[i].interactable = false;
@@ -105,8 +102,8 @@ public class MessageBox : GenericSingleton<MessageBox>
     {
         rightButton.onClick.RemoveAllListeners();
         leftButton.onClick.RemoveAllListeners();
-        buttonsOnScreen = Resources.FindObjectsOfTypeAll<Button>();
-        inputFieldsOnScreen = Resources.FindObjectsOfTypeAll<TMP_InputField>();
+        Button[] buttonsOnScreen = Resources.FindObjectsOfTypeAll<Button>();
+        TMP_InputField[] inputFieldsOnScreen = Resources.FindObjectsOfTypeAll<TMP_InputField>();
         for (int i = 0; i < buttonsOnScreen.Length; i++)
         {
             buttonsOnScreen[i].interactable = true;

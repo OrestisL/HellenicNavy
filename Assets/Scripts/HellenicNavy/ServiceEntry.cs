@@ -40,7 +40,7 @@ public class ServiceEntry : MonoBehaviour
         get
         {
             hoursField.text = hoursField.text.Trim();
-            return int.Parse(hoursField.text);
+            return int.Parse(hoursField.text); //for some reason this didnt work once, check
         }
     }
 
