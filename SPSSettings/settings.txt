@@ -3,5 +3,7 @@
   "maxLookupTableDays": 10000,
   "directoryPath": "C:\\Users\\Orestis\\Desktop\\unity projects\\SPS\\SPSSettings",
   "badgeName": "badge.png",
-  "FullPath": "C:\\Users\\Orestis\\Desktop\\unity projects\\SPS\\SPSSettings\\badge.png"
+  "shipName": "ΠΓΥ ΗΡΑΚΛΗΣ",
+  "BadgeFullPath": "C:\\Users\\Orestis\\Desktop\\unity projects\\SPS\\SPSSettings\\badge.png",
+  "HNFullPath": "C:\\Users\\Orestis\\Desktop\\unity projects\\SPS\\SPSSettings\\HN.png"
 }

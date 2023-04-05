@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.IO;
 using Newtonsoft.Json;
@@ -24,7 +24,9 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
 
         public string directoryPath;
         public string badgeName;
-        public string FullPath { get { return Path.Combine(directoryPath, badgeName); } }
+        public string BadgeFullPath { get { return Path.Combine(directoryPath, badgeName); } }
+        public string HNFullPath { get { return Path.Combine(directoryPath, "HN.png"); } }
+        public string shipName;
         //in order to avoid weird behavior and excess resource usage, some bounds are set
         #region bounds
         private int minRate = 20;
@@ -45,6 +47,7 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
             AccessTime = 0.5f;
             directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "SPSSettings");
             badgeName = "badge.png";
+            shipName = "ΠΓΥ ΗΡΑΚΛΗΣ";
         }
         public Settings(int rate, int maxLookupTableHours, int maxLookupTableDays, float accessTime)
         {
@@ -62,6 +65,7 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
             AccessTime = 0.5f; //0.5 seems to make everything work properly// Mathf.Clamp(s.accessTime, minaccessTime, maxaccessTime);
             directoryPath = s.directoryPath;
             badgeName = s.badgeName;
+            shipName = s.shipName;
         }
         public string ToJson()
         {
@@ -79,6 +83,11 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
 
     void LoadFromJson(string name)
     {
+        if (settings == null)
+        {
+            settings = new Settings();
+            //return;
+        }
         //ensure path exists (path is next to the exe)
         if (!Directory.Exists(settings.directoryPath))
         {
@@ -97,6 +106,7 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
                 json = reader.ReadToEnd();
             }
             settings = new Settings(json);
+            Debug.Log($"Successfully read settings from {jsonPath}.");
         }
         else
         {
@@ -109,7 +119,7 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
             }
         }
 
-        StartCoroutine(LoadBadgeIcon(settings.FullPath));
+        StartCoroutine(LoadBadgeIcon(settings.BadgeFullPath));
     }
 
 
@@ -131,10 +141,13 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
             float w = texture.width;
             float h = texture.height;
             float max = Mathf.Max(w, h);
-            float width = ((float)(w / max) * badgeImg.rectTransform.rect.width);
-            float height = ((float)(h / max) * badgeImg.rectTransform.rect.height);
-            badgeImg.texture = texture;
-            badgeImg.rectTransform.sizeDelta = new Vector2(width, height);
+            if (badgeImg != null)
+            {
+                float width = ((float)(w / max) * badgeImg.rectTransform.rect.width);
+                float height = ((float)(h / max) * badgeImg.rectTransform.rect.height);
+                badgeImg.texture = texture;
+                badgeImg.rectTransform.sizeDelta = new Vector2(width, height);
+            }
         }
     }
 
