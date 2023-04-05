@@ -230,7 +230,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                             machineryButtonsToDisplay.Add(postponed);
                         }
                         Debug.Log(string.Format("{0} has {1} postponed service entries", serv.name, postponedServiceEntries));
-                    }//check if this actually works properly
+                    }
                     #endregion
 #if UNITY_EDITOR
                     watch.Stop();

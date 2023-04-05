@@ -68,6 +68,24 @@ public static class ExtensionMethods
         Resources.UnloadUnusedAssets();
     }
 
+    public static string ChunkedString(this string text, int chunkSize)
+    {
+        if (text.Length == 0 | text == null | text.Length <= chunkSize)
+            return text;
+
+        string result = string.Empty;
+
+        for (int i = 0; i < text.Length; i += chunkSize)
+        {
+            if (i + chunkSize > text.Length) 
+                chunkSize = text.Length - i;
+
+            result += string.Format("{0}\n", text.Substring(i, chunkSize));
+        }
+
+        return result;
+    }
+
     public static void DelayedEnableButton(this Button button, float delay)
     {
         button.onClick.AddListener(() => { if (button.gameObject.activeSelf) button.StartCoroutine(ToggleButton(button, delay)); });

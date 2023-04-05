@@ -20,11 +20,11 @@ MonoBehaviour:
     x: 0
     y: 30
     width: 1536
-    height: 747.6
+    height: 747.60004
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 651
+  controlID: 19
 --- !u!114 &2
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -137,11 +137,11 @@ MonoBehaviour:
     x: 0
     y: 0
     width: 1082.4
-    height: 747.6
+    height: 747.60004
   m_MinSize: {x: 200, y: 200}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 652
+  controlID: 20
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -166,7 +166,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 653
+  controlID: 21
 --- !u!114 &5
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -224,9 +224,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: ea600000
-      m_LastClickedID: 24810
-      m_ExpandedIDs: 26fbffff52630000
+      m_SelectedIDs: b46d0000
+      m_LastClickedID: 0
+      m_ExpandedIDs: 98b7ffffe2c9ffff26fbfffff66d0000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -557,9 +557,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 1005.7366, y: 468.6412, z: -8.990453}
+    m_Target: {x: 748.1513, y: 434.30618, z: 1.0919513}
     speed: 2
-    m_Value: {x: 1005.7366, y: 468.6412, z: -8.990453}
+    m_Value: {x: 748.1513, y: 434.30618, z: 1.0919513}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -610,9 +610,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 700.048
+    m_Target: 344.98505
     speed: 2
-    m_Value: 700.048
+    m_Value: 344.98505
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -647,7 +647,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 1
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: ConsoleWindow
+  m_Name: ProjectBrowser
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
@@ -655,16 +655,16 @@ MonoBehaviour:
     x: 0
     y: 449.6
     width: 1082.4
-    height: 297.99997
-  m_MinSize: {x: 101, y: 121}
-  m_MaxSize: {x: 4001, y: 4021}
-  m_ActualView: {fileID: 11}
+    height: 298.00003
+  m_MinSize: {x: 231, y: 271}
+  m_MaxSize: {x: 10001, y: 10021}
+  m_ActualView: {fileID: 10}
   m_Panes:
   - {fileID: 10}
   - {fileID: 11}
   - {fileID: 12}
-  m_Selected: 1
-  m_LastSelected: 0
+  m_Selected: 0
+  m_LastSelected: 1
 --- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -688,7 +688,7 @@ MonoBehaviour:
     x: 0
     y: 514.4
     width: 1081.4
-    height: 276.99997
+    height: 277.00003
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
@@ -706,22 +706,22 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts/UnitySQLite
+    - Assets/Scenes
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/Scripts/UnitySQLite
+  - Assets/Scenes
   m_LastFoldersGridSize: 16
   m_LastProjectPath: C:\Users\Orestis\Desktop\unity projects\SPS
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 0}
+    scrollPos: {x: 0, y: 51.00003}
     m_SelectedIDs: d86c0000
     m_LastClickedID: 27864
-    m_ExpandedIDs: 00000000ba6c0000bc6c0000be6c0000c06c0000c26c000000ca9a3b
+    m_ExpandedIDs: 00000000ba6c0000bc6c0000be6c0000c06c0000c26c0000da6c0000a06d0000a26d000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -749,7 +749,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000ba6c0000bc6c0000be6c0000c06c0000c26c000000ca9a3b
+    m_ExpandedIDs: 00000000ba6c0000bc6c0000be6c0000c06c0000c26c0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -774,8 +774,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: ea600000
-    m_LastClickedInstanceID: 24810
+    m_SelectedInstanceIDs: b46d0000
+    m_LastClickedInstanceID: 28084
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c623000000000000
     m_RenameOverlay:
@@ -1738,15 +1738,16 @@ MonoBehaviour:
     x: 1082.4
     y: 0
     width: 453.59998
-    height: 747.6
+    height: 747.60004
   m_MinSize: {x: 276, y: 71}
   m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 14}
   m_Panes:
   - {fileID: 14}
   - {fileID: 15}
+  - {fileID: 16}
   m_Selected: 0
-  m_LastSelected: 1
+  m_LastSelected: 2
 --- !u!114 &14
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -1770,7 +1771,7 @@ MonoBehaviour:
     x: 1082.4
     y: 64.8
     width: 452.59998
-    height: 726.6
+    height: 726.60004
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
@@ -1838,3 +1839,520 @@ MonoBehaviour:
       m_IsRenamingFilename: 0
       m_ClientGUIView: {fileID: 0}
     m_SearchString: 
+--- !u!114 &16
+MonoBehaviour:
+  m_ObjectHideFlags: 52
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcf6ea9ed8fc4074da149ff7d600ca45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MinSize: {x: 100, y: 100}
+  m_MaxSize: {x: 4000, y: 4000}
+  m_TitleContent:
+    m_Text: NuGet
+    m_Image: {fileID: 0}
+    m_Tooltip: 
+  m_Pos:
+    serializedVersion: 2
+    x: 1082.4
+    y: 64.8
+    width: 452.59998
+    height: 726.6
+  m_ViewDataDictionary: {fileID: 0}
+  m_OverlayCanvas:
+    m_LastAppliedPresetName: Default
+    m_SaveData: []
+  availablePackages:
+  - Id: PdfSharp
+    Version: 1.50.5147
+    Authors: empira Software GmbH
+    Description: 'PDFsharp is the Open Source .NET library that easily creates and
+      processes PDF documents on the fly from any .NET language. The same drawing
+      routines can be used to create PDF documents, draw on the screen, or send output
+      to any printer.
+
+
+      This is the PDFsharp PDF Core package. See Project
+      Information for details.'
+    DownloadCount: 16523430
+    DownloadUrl: https://www.nuget.org/api/v2/package/PdfSharp/1.50.5147
+    icon: {fileID: 0}
+    IconUrl: https://api.nuget.org/v3-flatcontainer/pdfsharp/1.50.5147/icon
+    LicenseUrl: http://www.pdfsharp.net/PDFsharp_License.ashx
+    ProjectUrl: http://www.pdfsharp.net/
+    ReleaseNotes: 
+    RepositoryBranch: 
+    RepositoryCommit: 
+    RepositoryType: 0
+    RepositoryUrl: 
+    Summary: 'A .NET library for processing PDF.
+
+      This is the PDFsharp PDF
+      Core package. See Project Information for details.'
+    Title: PDFsharp
+  - Id: PdfSharpCore
+    Version: 1.3.47
+    Authors: Stefan Steiger and Contributors
+    Description: 'PdfSharp for .NET Core
+
+
+      PdfSharpCore is a partial port of
+      PdfSharp.Xamarin for .NET Core Additionally MigraDoc has been ported as well
+      (from version 1.32). Images have been implemented with ImageSharp from https://www.nuget.org/packages/SixLabors.ImageSharp'
+    DownloadCount: 6391070
+    DownloadUrl: https://www.nuget.org/api/v2/package/PdfSharpCore/1.3.47
+    icon: {fileID: 0}
+    IconUrl: 
+    LicenseUrl: https://www.nuget.org/packages/PdfSharpCore/1.3.47/license
+    ProjectUrl: https://github.com/ststeiger/PdfSharpCore
+    ReleaseNotes: 'Merge pull request #334 from artehe/port-rounded-corners
+
+
+      Port
+      rounded table corners from migradoc'
+    RepositoryBranch: 
+    RepositoryCommit: 
+    RepositoryType: 0
+    RepositoryUrl: 
+    Summary: 
+    Title: PdfSharpCore
+  - Id: Aspose.PDF
+    Version: 23.3.1
+    Authors: Aspose
+    Description: "Aspose.PDF for .NET is a PDF document creation and manipulation
+      component that enables your .NET applications to read, write and manipulate
+      existing PDF documents without using Adobe Acrobat. It also allows you to create
+      forms and manage form fields embedded in a PDF document. This component is
+      written in managed C# and it allows developers to add PDF creation and manipulation
+      functionality to their Microsoft .NET applications (WinForms, ASP.NET and .NET
+      Compact Framework).\n        Aspose.PDF for .NET is affordable and offers an
+      incredible wealth of features including PDF compression options; table creation
+      and manipulation; support for graph objects; extensive hyperlink functionality;
+      extended security controls; custom font handling; integration with data sources;
+      add or remove bookmarks; create table of contents; add, update, delete attachments
+      and annotations; import or export PDF form data; add, replace or remove text
+      and images; split, concatenate, extract or insert pages; transform pages to
+      image; print PDF documents and much more."
+    DownloadCount: 12190712
+    DownloadUrl: https://www.nuget.org/api/v2/package/Aspose.PDF/23.3.1
+    icon: {fileID: 0}
+    IconUrl: 
+    LicenseUrl: https://www.nuget.org/packages/Aspose.PDF/23.3.1/license
+    ProjectUrl: https://products.aspose.com/pdf/net
+    ReleaseNotes: https://docs.aspose.com/pdf/net/aspose-pdf-for-net-23-3-1-release-notes/
+    RepositoryBranch: 
+    RepositoryCommit: 
+    RepositoryType: 0
+    RepositoryUrl: 
+    Summary: Aspose.PDF for .NET is an amazing component which provides the feature
+      to create and manipulate PDF documents.
+    Title: Aspose.PDF for .NET
+  - Id: PDFsharp-MigraDoc-GDI
+    Version: 1.50.5147
+    Authors: empira Software GmbH
+    Description: 'MigraDoc Foundation - the Open Source .NET library that easily
+      creates documents based on an object model with paragraphs, tables, styles,
+      etc. and renders them into PDF or RTF.
+
+
+      This is the MigraDoc GDI package.
+      See Project Information for details.'
+    DownloadCount: 2899082
+    DownloadUrl: https://www.nuget.org/api/v2/package/PDFsharp-MigraDoc-GDI/1.50.5147
+    icon: {fileID: 0}
+    IconUrl: https://api.nuget.org/v3-flatcontainer/pdfsharp-migradoc-gdi/1.50.5147/icon
+    LicenseUrl: http://www.pdfsharp.net/MigraDoc_License.ashx
+    ProjectUrl: http://www.pdfsharp.net/
+    ReleaseNotes: 
+    RepositoryBranch: 
+    RepositoryCommit: 
+    RepositoryType: 0
+    RepositoryUrl: 
+    Summary: 'Creating Documents on the Fly.
+
+      This is the MigraDoc GDI package.
+      See Project Information for details.'
+    Title: PDFsharp + MigraDoc (GDI)
+  - Id: IronPdf
+    Version: 2023.4.4
+    Authors: Iron PDF Development Team https://IronPdf.com
+    Description: "IronPDF helps C# Software Engineers to create, edit and extract
+      PDF content in .NET projects.\n\n# C# HTML to PDF for .NET 7, .NET 6, .NET
+      5, Core, Standard, and Framework\n# Work with PDFs in C# using HTML, MVC, ASPX,
+      and images\n# Generate, Edit, Read and Secure PDF Documents\n\nGenerate PDFs
+      with Pixel Perfect Chrome HTML to PDF Rendering:\nThe Iron PDF library takes
+      the frustration out of generating PDF documents by not relying on proprietary
+      APIs. \u201CHtml-To-Pdf\u201D renders pixel-perfect PDFs from open standard
+      document types: HTML, JS, CSS, JPG, PNG, GIF, and SVG. In short, it uses the
+      skills that developers already possess.\n\nFully Supports:\n* .NET 7, .NET
+      6, .NET 5, Framework, Core, and Standard\n* Windows, MacOS, Linux, Azure, Docker
+      and AWS\n\nFor code examples, tutorials and documentation visit:\nhttps://ironpdf.com/"
+    DownloadCount: 5671862
+    DownloadUrl: https://www.nuget.org/api/v2/package/IronPdf/2023.4.4
+    icon: {fileID: 0}
+    IconUrl: https://api.nuget.org/v3-flatcontainer/ironpdf/2023.4.4/icon
+    LicenseUrl: https://ironpdf.com/licensing/?utm_source=developer-ide&utm_medium=nuget-package-manager#license-terms-modal-tabs-eula
+    ProjectUrl: https://ironpdf.com/
+    ReleaseNotes: '* Supports both ImageSharp 2 and ImageSharp 3 (see https://iron.helpscoutdocs.com/article/307-iron-drawing-imagesharp-version)
+
+      *
+      Supports containerized client/server model PDF generation (see https://hub.docker.com/r/ironsoftwareofficial/ironpdfengine)
+
+      *
+      Fixes some cases of license key not being read from application config file
+
+      *
+      Fixes some cases of missing or incompatible assembly references when targeting
+      .NET 4.6.2 - 4.8'
+    RepositoryBranch: 
+    RepositoryCommit: 
+    RepositoryType: 0
+    RepositoryUrl: 
+    Summary: "IronPDF helps C# Software Engineers to create, edit and extract PDF
+      content in .NET projects.\n\n# C# HTML to PDF for .NET 7, .NET 6, .NET 5, Core,
+      Standard, and Framework\n# Work with PDFs in C# using HTML, MVC, ASPX, and
+      images\n# Generate, Edit, Read and Secure PDF Documents\n\nGenerate PDFs with
+      Pixel Perfect Chrome HTML to PDF Rendering:\nThe Iron PDF library takes the
+      frustration out of generating PDF documents by not relying on proprietary APIs.
+      \u201CHtml-To-Pdf\u201D renders pixel-perfect PDFs from open standard document
+      types: HTML, JS, CSS, JPG, PNG, GIF, and SVG. In short, it uses the skills
+      that developers already possess.\n\nFully Supports:\n* .NET 7, .NET 6, .NET
+      5, Framework, Core, and Standard\n* Windows, MacOS, Linux, Azure, Docker and
+      AWS\n\nFor code examples, tutorials and documentation visit https://ironpdf.com/"
+    Title: IronPDF - The Cutting Edge C# PDF Library
+  - Id: DinkToPdf
+    Version: 1.0.8
+    Authors: Rok Dvojmoc
+    Description: .NET Core P/Invoke wrapper for wkhtmltopdf library that uses Webkit
+      engine to convert HTML pages to PDF.
+    DownloadCount: 5817311
+    DownloadUrl: https://www.nuget.org/api/v2/package/DinkToPdf/1.0.8
+    icon: {fileID: 0}
+    IconUrl: 
+    LicenseUrl: 
+    ProjectUrl: https://github.com/rdvojmoc/DinkToPdf
+    ReleaseNotes: 
+    RepositoryBranch: 
+    RepositoryCommit: 
+    RepositoryType: 0
+    RepositoryUrl: 
+    Summary: .NET Core P/Invoke wrapper for wkhtmltopdf library that uses Webkit
+      engine to convert HTML pages to PDF.
+    Title: DinkToPdf
+  - Id: PdfPig
+    Version: 0.1.7
+    Authors: UglyToad
+    Description: Reads text content from PDF documents and supports document creation.
+      Apache 2.0 licensed.
+    DownloadCount: 2142474
+    DownloadUrl: https://www.nuget.org/api/v2/package/PdfPig/0.1.7
+    icon: {fileID: 0}
+    IconUrl: https://api.nuget.org/v3-flatcontainer/pdfpig/0.1.7/icon
+    LicenseUrl: https://www.nuget.org/packages/PdfPig/0.1.7/license
+    ProjectUrl: https://github.com/UglyToad/PdfPig
+    ReleaseNotes: 
+    RepositoryBranch: 
+    RepositoryCommit: 
+    RepositoryType: 0
+    RepositoryUrl: 
+    Summary: 
+    Title: PdfPig
+  - Id: Syncfusion.Pdf.Net.Core
+    Version: 21.1.38
+    Authors: Syncfusion Inc.
+    Description: "The Syncfusion Essential PDF is a .NET standard PDF library that
+      enables your .NET core applications to read, write, and manipulate existing
+      PDF documents. It has various features such table creation, PDF form creation
+      and filling, digital signature, and advanced PDF encryption.\n\t\t\n\t\tIt
+      also has various PDF manipulation features such as PDF compression, redaction,
+      split and merge PDF, watermark, import and export PDF form data, replace or
+      remove images, extract text and find text."
+    DownloadCount: 5529244
+    DownloadUrl: https://www.nuget.org/api/v2/package/Syncfusion.Pdf.Net.Core/21.1.38
+    icon: {fileID: 0}
+    IconUrl: https://api.nuget.org/v3-flatcontainer/syncfusion.pdf.net.core/21.1.38/icon
+    LicenseUrl: https://www.nuget.org/packages/Syncfusion.Pdf.Net.Core/21.1.38/license
+    ProjectUrl: https://www.syncfusion.com/?utm_source=nuget&utm_medium=listing
+    ReleaseNotes: https://help.syncfusion.com/aspnet-core/release-notes/v21.1.38?utm_source=nuget&utm_medium=listing
+    RepositoryBranch: 
+    RepositoryCommit: 
+    RepositoryType: 0
+    RepositoryUrl: 
+    Summary: 
+    Title: Create, Read and Edit PDF file in .NET Core using Syncfusion PDF library
+  - Id: iTextSharp
+    Version: 5.5.13.3
+    Authors: iText Software
+    Description: "PLEASE NOTE: iTextSharp is EOL, and has been replaced by iText\_7.
+      Only security fixes will be added\n\nWe HIGHLY recommend customers use iText
+      7 for new projects, and to consider moving existing projects from iTextSharp
+      to iText 7 to benefit from the many improvements such as:\n- HTML to PDF (PDF/A)
+      conversion\n- PDF Redaction\n- SVG support\n- Better language support (Indic,
+      Thai, Khmer, Arabic, Hebrew)\n- PDF Debugging for your IDE\n- Data Extraction\n-
+      Better continued support and bugfixes\n- More modular, extensible handling
+      of your document workflow\n- Extra practical add-ons\n- Encryption, hashing
+      and digital signatures\n\niText is a PDF library that allows you to CREATE,
+      ADAPT, INSPECT and MAINTAIN documents in the Portable Document Format (PDF),
+      allowing you to add PDF functionality to your software projects with ease. 
+      We even have documentation to help you get coding.\n\niText\_7 is available
+      under AGPL and Commercial license. iText\_7 Community: https://www.nuget.org/packages/itext7/\n\niText\_7
+      is a complete re-write of iText\_5, allowing you to choose your adventure with
+      add-ons, all based on a simple, modular code structure that is easy to use
+      and well documented.\n\niText\_7 includes pdfDebug, the first debugging tool
+      that gives you a clear overview of your content streams and document structure
+      as well as pdfCalligraph, allowing you to leverage advanced typography.\n\nSeveral
+      iText engineers are actively supporting the project on StackOverflow: https://stackoverflow.com/questions/tagged/itext"
+    DownloadCount: 27410092
+    DownloadUrl: https://www.nuget.org/api/v2/package/iTextSharp/5.5.13.3
+    icon: {fileID: 0}
+    IconUrl: https://api.nuget.org/v3-flatcontainer/itextsharp/5.5.13.3/icon
+    LicenseUrl: https://www.gnu.org/licenses/agpl.html
+    ProjectUrl: https://itextpdf.com/
+    ReleaseNotes: 
+    RepositoryBranch: 
+    RepositoryCommit: 
+    RepositoryType: 0
+    RepositoryUrl: 
+    Summary: "iTextSharp is a DEPRECATED library for PDF generation written entirely
+      in C# for the .NET platform. Please use iText\_7 instead.\niText\_7 Community:
+      https://www.nuget.org/packages/itext7/"
+    Title: iTextSharp
+  - Id: itext7.pdfhtml
+    Version: 4.0.5
+    Authors: iText Software
+    Description: pdfHTML is an iText 7 add-on for C# (.NET) that allows you to easily
+      convert HTML and CSS into standards compliant PDFs that are accessible, searchable
+      and usable for indexing.
+    DownloadCount: 3718863
+    DownloadUrl: https://www.nuget.org/api/v2/package/itext7.pdfhtml/4.0.5
+    icon: {fileID: 0}
+    IconUrl: https://api.nuget.org/v3-flatcontainer/itext7.pdfhtml/4.0.5/icon
+    LicenseUrl: https://www.gnu.org/licenses/agpl.html
+    ProjectUrl: https://itextpdf.com/en/products/itext-7/pdfhtml
+    ReleaseNotes: https://itextpdf.com/itext7release
+    RepositoryBranch: 
+    RepositoryCommit: 
+    RepositoryType: 0
+    RepositoryUrl: 
+    Summary: pdfHTML is an iText 7 add-on that lets you to parse (X)HTML snippets
+      and the associated CSS and converts them to PDF.
+    Title: iText 7 pdfHTML
+  - Id: HtmlRenderer.PdfSharp
+    Version: 1.5.0.6
+    Authors: Arthur Teplitzki
+    Description: "PDF document generator from HTML snippet, 100% managed (C#), High
+      performance library using PdfSharp.\n\n      Features and Benefits:\n     
+      ---\n      * 100% managed code depends only on PdfSharp library, no ActiveX,
+      no MSHTML.\n      * Extensive HTML 4.01 and CSS level 2 specifications support.\n     
+      * Support separating CSS from HTML by loading stylesheet code separately.\n     
+      * Handles \"real world\" malformed HTML, it doesn't have to be XHTML.\n     
+      * Supports .NET 2.0 or higher including Client Profile.\n      * Lightweight,
+      only two DLLs (~300K).\n      * High performance and low memory footprint.\n     
+      * Extendable and configurable."
+    DownloadCount: 3131474
+    DownloadUrl: https://www.nuget.org/api/v2/package/HtmlRenderer.PdfSharp/1.5.0.6
+    icon: {fileID: 0}
+    IconUrl: https://api.nuget.org/v3-flatcontainer/htmlrenderer.pdfsharp/1.5.0.6/icon
+    LicenseUrl: https://htmlrenderer.codeplex.com/license
+    ProjectUrl: https://htmlrenderer.codeplex.com/
+    ReleaseNotes: See http://htmlrenderer.codeplex.com/releases.
+    RepositoryBranch: 
+    RepositoryCommit: 
+    RepositoryType: 0
+    RepositoryUrl: 
+    Summary: PDF document generator from HTML snippet, 100% managed (C#), High performance
+      library using PdfSharp.
+    Title: HTML Renderer for PDF using PdfSharp
+  - Id: PDFsharp-MigraDoc
+    Version: 1.50.5147
+    Authors: empira Software GmbH
+    Description: 'MigraDoc Foundation - the Open Source .NET library that easily
+      creates documents based on an object model with paragraphs, tables, styles,
+      etc. and renders them into PDF or RTF.
+
+
+      This is the MigraDoc PDF Core
+      package. See Project Information for details.'
+    DownloadCount: 1200978
+    DownloadUrl: https://www.nuget.org/api/v2/package/PDFsharp-MigraDoc/1.50.5147
+    icon: {fileID: 0}
+    IconUrl: https://api.nuget.org/v3-flatcontainer/pdfsharp-migradoc/1.50.5147/icon
+    LicenseUrl: http://www.pdfsharp.net/MigraDoc_License.ashx
+    ProjectUrl: http://www.pdfsharp.net/
+    ReleaseNotes: 
+    RepositoryBranch: 
+    RepositoryCommit: 
+    RepositoryType: 0
+    RepositoryUrl: 
+    Summary: 'Creating Documents on the Fly.
+
+      This is the MigraDoc PDF Core
+      package. See Project Information for details.'
+    Title: PDFsharp + MigraDoc
+  - Id: Select.HtmlToPdf
+    Version: 22.2.0
+    Authors: SelectPdf
+    Description: "SelectPdf Html To Pdf Converter for .NET - Community Edition is
+      the free version of the powerful html to pdf converter available in SelectPdf
+      Library for .NET.\n\nThe converter offers a lot of powerful options (convert
+      any web page to pdf, convert any html string to pdf, html5/css3/javascript
+      support, headers and footers support, etc) and the only limitation is that
+      it can generate pdf documents up to 5 pages long.\n\nFree Html to Pdf Converter
+      For .NET \u2013 Community Edition Features: Generate pdf documents up to 5
+      pages, Convert any web page to pdf, Convert any raw html string to pdf, Set
+      pdf page settings (page size, page orientation, page margins), Resize content
+      during conversion to fit the pdf page, Set pdf document properties, Set pdf
+      viewer preferences, Set pdf security (passwords, permissions), Set conversion
+      delay and web page navigation timeout, Custom headers and footers, Support
+      for html in headers and footers, Automatic and manual page breaks, Repeat html
+      table headers on each page, Support for @media types screen and print, Support
+      for internal and external links, Generate bookmarks automatically based on
+      html elements, Support for HTTP headers, Support for HTTP cookies, Support
+      for web pages that require authentication, Support for proxy servers, Enable/disable
+      javascript, Modify color space, Multithreading support, HTML5/CSS3 support,
+      Web fonts support and many more."
+    DownloadCount: 2486888
+    DownloadUrl: https://www.nuget.org/api/v2/package/Select.HtmlToPdf/22.2.0
+    icon: {fileID: 0}
+    IconUrl: https://api.nuget.org/v3-flatcontainer/select.htmltopdf/22.2.0/icon
+    LicenseUrl: 
+    ProjectUrl: https://selectpdf.com/community-edition/
+    ReleaseNotes: 
+    RepositoryBranch: 
+    RepositoryCommit: 
+    RepositoryType: 0
+    RepositoryUrl: 
+    Summary: SelectPdf Free Html To Pdf for .NET - Community Edition is a powerful,
+      free library that can convert from html to pdf in .NET.
+    Title: SelectPdf Html To Pdf Converter for .NET - Community Edition (FREE)
+  - Id: NReco.PdfGenerator
+    Version: 1.2.1
+    Authors: Vitalii Fedorchenko
+    Description: 'HTML to PDF converter for C#/.NET (WkHtmlToPdf wrapper). Generates
+      pretty-looking PDF by HTML template or web page URL. Web page is rendered using
+      QtWebKit engine and PDF result is very similar to a web browser view. Engine
+      supports page header/footer, page numbering, custom fonts, javascript execution.
+
+      NReco.PdfGenerator
+      nuget can be used for free in non-SaaS apps that have only one single-server
+      production deployment.
+
+
+      This nuget package embeds wkhtmltopdf binaries
+      (for Windows; they''re extracted on first use automatically - you don''t need
+      to deploy wkhtmltopdf separately) and can be used only on Windows. For cross-platform
+      deployments NReco.PdfGenerator.LT nuget should be used instead.
+
+
+      var
+      htmlContent = String.Format("Hello world: {0}",DateTime.Now);
+
+      var htmlToPdf
+      = new NReco.PdfGenerator.HtmlToPdfConverter();
+
+      var pdfBytes = htmlToPdf.GeneratePdf(htmlContent);
+
+
+      More
+      info (PdfGenerator online demo, examples): https://www.nrecosite.com/pdf_generator_net.aspx'
+    DownloadCount: 3147290
+    DownloadUrl: https://www.nuget.org/api/v2/package/NReco.PdfGenerator/1.2.1
+    icon: {fileID: 0}
+    IconUrl: https://api.nuget.org/v3-flatcontainer/nreco.pdfgenerator/1.2.1/icon
+    LicenseUrl: https://www.nrecosite.com/pdf_generator_net.aspx
+    ProjectUrl: https://www.nrecosite.com/pdf_generator_net.aspx
+    ReleaseNotes: 'NReco.PdfGenerator nuget includes wkhtmltopdf binaries (Windows
+      build) and can be used only on Windows; for cross-platform deployments use
+      NReco.PdfGenerator.LT nuget package.
+
+
+      v.1.2.1 changes:
+
+      - added
+      netstandard2.0 build: now NReco.PdfGenerator nuget (includes wkhtmltopdf) can
+      be used in NET6/NET7/.NET Core apps (Windows deployments only) with free offering!
+
+      -
+      added more options to PageSize enum (A0-A9, B0-B9, Legal)
+
+      - added static
+      License.SetLicenseKey to set a license key globally (for all HtmlToPdfConverter
+      instances)
+
+
+      v.1.2.0 changes:
+
+      - wkhtmltopdf upgraded to 0.12.6
+      (released on 2020-Jun-11)
+
+      - framework target changed to net45 (net20
+      is not supported anymore)
+
+
+      v.1.1.15 changes:
+
+      - added GeneratePdfFromFiles
+      overload that accepts individual options (like header/footer) for each input
+
+
+      v.1.1.14
+      changes:
+
+      - WkHtmlToPdf tool upgraded to version 0.12.4 (released 2016-Nov-22)
+
+      -
+      all necessary VC++ Runtime 2015  dlls are included
+
+      - now for ASP.NET
+      apps wkhtmltopdf binaries are extracted to App_Data\wkhtmltopdf by default'
+    RepositoryBranch: 
+    RepositoryCommit: 
+    RepositoryType: 0
+    RepositoryUrl: 
+    Summary: 
+    Title: HTML to PDF Generator
+  - Id: Select.HtmlToPdf.NetCore
+    Version: 22.2.0
+    Authors: SelectPdf
+    Description: "SelectPdf Html To Pdf Converter for .NET Core - Community Edition
+      is the free version of the powerful html to pdf converter available in SelectPdf
+      Library for .NET Core.\n\nThe converter offers a lot of powerful options (convert
+      any web page to pdf, convert any html string to pdf, html5/css3/javascript
+      support, headers and footers support, etc) and the only limitation is that
+      it can generate pdf documents up to 5 pages long.\n\nFree Html to Pdf Converter
+      For .NET \u2013 Community Edition Features: Generate pdf documents up to 5
+      pages, Convert any web page to pdf, Convert any raw html string to pdf, Set
+      pdf page settings (page size, page orientation, page margins), Resize content
+      during conversion to fit the pdf page, Set pdf document properties, Set pdf
+      viewer preferences, Set pdf security (passwords, permissions), Set conversion
+      delay and web page navigation timeout, Custom headers and footers, Support
+      for html in headers and footers, Automatic and manual page breaks, Repeat html
+      table headers on each page, Support for @media types screen and print, Support
+      for internal and external links, Generate bookmarks automatically based on
+      html elements, Support for HTTP headers, Support for HTTP cookies, Support
+      for web pages that require authentication, Support for proxy servers, Enable/disable
+      javascript, Modify color space, Multithreading support, HTML5/CSS3 support,
+      Web fonts support and many more."
+    DownloadCount: 2398310
+    DownloadUrl: https://www.nuget.org/api/v2/package/Select.HtmlToPdf.NetCore/22.2.0
+    icon: {fileID: 0}
+    IconUrl: https://api.nuget.org/v3-flatcontainer/select.htmltopdf.netcore/22.2.0/icon
+    LicenseUrl: 
+    ProjectUrl: https://selectpdf.com/community-edition/
+    ReleaseNotes: 
+    RepositoryBranch: 
+    RepositoryCommit: 
+    RepositoryType: 0
+    RepositoryUrl: 
+    Summary: SelectPdf Free Html To Pdf for .NET Core - Community Edition is a powerful,
+      free library that can convert from html to pdf in .NET Core.
+    Title: SelectPdf Html To Pdf Converter for .NET Core - Community Edition (FREE)
+  defaultIcon: {fileID: 2800000, guid: 0efa0a38ec1ce484896502259d7ee8f7, type: 3}
+  hasRefreshed: 1
+  numberToSkip: 0
+  updatePackages: []

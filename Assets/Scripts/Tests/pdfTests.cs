@@ -1,45 +1,55 @@
 using UnityEngine;
-using sharpPDF;
+using PdfSharpCore;
+using PdfSharpCore.Drawing;
+using PdfSharpCore.Pdf;
+using PdfSharpCore.Pdf.IO;
 using TMPro;
 using System.IO;
 using System.Text;
+using System.Diagnostics;
+using PdfSharpCore.Drawing.Layout;
 
 public class pdfTests : MonoBehaviour
 {
     public TMP_InputField input;
-
+    public int margin = 30;
+    public int fontSize = 12;
     private void Start()
     {
+        if (input.text.Length == 0)
+            input.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam hendrerit nisi sed sollicitudin pellentesque. Nunc posuere purus rhoncus pulvinar aliquam. Ut aliquet tristique nisl vitae volutpat. Nulla aliquet porttitor venenatis. Donec a dui et dui fringilla consectetur id nec massa. Aliquam erat volutpat. Sed ut dui ut lacus dictum fermentum vel tincidunt neque. Sed sed lacinia lectus. Duis sit amet sodales felis. Duis nunc eros, mattis at dui ac, convallis semper risus. In adipiscing ultrices tellus, in suscipit massa vehicula eu.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam hendrerit nisi sed sollicitudin pellentesque. Nunc posuere purus rhoncus pulvinar aliquam. Ut aliquet tristique nisl vitae volutpat. Nulla aliquet porttitor venenatis. Donec a dui et dui fringilla consectetur id nec massa. Aliquam erat volutpat. Sed ut dui ut lacus dictum fermentum vel tincidunt neque. Sed sed lacinia lectus. Duis sit amet sodales felis. Duis nunc eros, mattis at dui ac, convallis semper risus. In adipiscing ultrices tellus, in suscipit massa vehicula eu.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam hendrerit nisi sed sollicitudin pellentesque. Nunc posuere purus rhoncus pulvinar aliquam. Ut aliquet tristique nisl vitae volutpat. Nulla aliquet porttitor venenatis. Donec a dui et dui fringilla consectetur id nec massa. Aliquam erat volutpat. Sed ut dui ut lacus dictum fermentum vel tincidunt neque. Sed sed lacinia lectus. Duis sit amet sodales felis. Duis nunc eros, mattis at dui ac, convallis semper risus. In adipiscing ultrices tellus, in suscipit massa vehicula eu.";
+
         input.onDeselect.AddListener((string s) =>
         {
-            pdfDocument document = new pdfDocument("Test", "no one");
-            pdfPage page = document.addPage();
-            int widths = s.Length / page.width + 1;
+            // Create a new PDF document
+            PdfDocument document = new PdfDocument();
+            //document.Info.Title = "Created with PDFsharp";
 
-            //for (int i = 1; i < widths; i++)
-            //{
-            //    //int start = (i - 1) * page.width;
-            //    //int length = page.width;
-            //    //if (length >= s.Length)
-            //    //    length = s.Length - 1;
-            //    //string write = s.Substring(start, length);
-            //    //page.addText(write, 0, 20 * i, sharpPDF.Enumerators.predefinedFont.csTimesBold, 20, sharpPDF.Enumerators.predefinedColor.csBlack);
+            // Create an empty page
+            PdfPage page = document.AddPage();
+            int width = (int)page.Width;
+            int height = (int)page.Height;
 
-            //}
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < s.Length; i++)
-            {
-                builder.Append(s[i]);
-                if (i % page.width == 0)
-                    builder.Append("\r\n");
-            }
-            string write = builder.ToString();
-            page.addText(write, 0, 250, sharpPDF.Enumerators.predefinedFont.csTimesBold, 20, sharpPDF.Enumerators.predefinedColor.csBlack);
+            // Get an XGraphics object for drawing
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+            XTextFormatter textFormatter = new XTextFormatter(gfx);
 
-            //<b><i> etc modifiers do not work so it would have to be done on the fly using sharpPDF's things
-            document.createPDF(Path.Combine(Directory.GetCurrentDirectory(), "test.pdf"));
-            page = null;
-            document = null;
+            // Create a font
+            XFont font = new XFont("Times New Roman", fontSize, XFontStyle.Regular);
+
+            //create the rect
+            XRect textRect = new XRect(margin / 2, margin / 2, page.Width - margin, page.Height - margin);
+            gfx.DrawRectangle(XBrushes.AntiqueWhite, textRect);
+            textFormatter.Alignment = XParagraphAlignment.Justify;
+            // Draw the text
+            textFormatter.DrawString(s, font, XBrushes.Black,
+              textRect, XStringFormats.TopLeft);
+
+            // Save the document...            
+            const string filename = "HelloWorld.pdf";
+            document.Save(filename);
+            // ...and start a viewer.
+            //Process.Start(filename);
         });
     }
 

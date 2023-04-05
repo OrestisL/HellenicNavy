@@ -1,0 +1,8 @@
+<linker>
+<assembly fullname="PdfSharpCore" preserve="all"/>
+<assembly fullname="System.Buffers" preserver="all"/>
+<assembly fullname="System.Memory" preserver="all"/>
+<assembly fullname="System.Runtime.CompilerServices.Unsafe" preserver="all"/>
+<assembly fullname="SixLabors.Core" preserver="all"/>
+<assembly fullname="SixLabors.ImageSharp" preserver="all"/>
+</linker>
