@@ -9,6 +9,7 @@ using System.Text;
 using PdfSharpCore.Drawing.Layout;
 using System;
 using Unity.VisualScripting;
+using System.Collections.Generic;
 
 public class pdfTests : MonoBehaviour
 {
@@ -44,11 +45,18 @@ public class pdfTests : MonoBehaviour
             (double maxW, double maxH) = CreateHeaderTemplate(gfx, page, 75);
             //create the text rect
             XRect textRect = new XRect(margin, margin / 2 + maxH, page.Width - 2 * margin, page.Height - 2 * margin);
-            gfx.DrawRectangle(XBrushes.AntiqueWhite, textRect);
+            //gfx.DrawRectangle(XBrushes.AntiqueWhite, textRect);
             textFormatter.Alignment = XParagraphAlignment.Justify;
             // Draw the text
-            textFormatter.DrawString(s, font, XBrushes.Black, textRect, XStringFormats.TopLeft);
-
+            //textFormatter.DrawString(s, font, XBrushes.Black, textRect, XStringFormats.TopLeft);
+            Dictionary<string, List<string>> dict = new Dictionary<string, List<string>>
+            {
+                { "test", new List<string> { "test", "test1", "" } },
+                { "test2", new List<string> { "test", "test1", "" } },
+                { "test3", new List<string> { "test", "test1", "" } },
+                { "test4", new List<string> { "test", "test1", "" } }
+            };
+            CreateTableInDocument(gfx, page, margin, maxH + 10, dict);
             // Save the document           
             SavePdfDocument(document);
         });
@@ -96,25 +104,27 @@ public class pdfTests : MonoBehaviour
         //badge top left, HN top right
         gfx.DrawImage(badgeImg, margin / 2, margin / 2, finalWidthBadge, finalHeightBadge);
         gfx.DrawImage(hnImg, page.Width - finalWidthHN - margin / 2, margin / 2, finalWidthHN, finalHeightHN);
+
         //draw text between images
         XTextFormatter tf = new XTextFormatter(gfx);
         tf.Alignment = XParagraphAlignment.Center;
         XFont font = new XFont("Verdana", 25, XFontStyle.Bold);
+
         double verticalPos = margin - 5;
         double horzSize = page.Width - finalWidthHN - finalWidthBadge - 2 * margin;
+
         XRect titleRect = new XRect(finalWidthBadge + margin, verticalPos, horzSize, 25);
-        gfx.DrawRectangle(XBrushes.Black, titleRect);
         tf.Alignment = XParagraphAlignment.Center;
         tf.DrawString(shipName, font, XBrushes.Black, titleRect);
+
         font = new XFont("Verdana", 18, XFontStyle.Regular);
         verticalPos += 30;
         titleRect = new XRect(finalWidthBadge + margin, verticalPos, horzSize, 18);
-        gfx.DrawRectangle(XBrushes.Black, titleRect);
         tf.DrawString("ΑΝΑΦΟΡΑ ΕΠΙΣΚΕΥΩΝ", font, XBrushes.Black, titleRect);
+
         font = new XFont("Verdana", 16, XFontStyle.Regular);
         verticalPos += 20;
         titleRect = new XRect(finalWidthBadge + margin, verticalPos, horzSize, 16);
-        gfx.DrawRectangle(XBrushes.Black, titleRect);
         tf.DrawString(string.Format("Ημερομηνία {0}", DateTime.Now.ToString("dd-MM-yy")), font, XBrushes.Black, titleRect);
 
         return (Math.Max(finalWidthHN, finalWidthBadge) + margin / 2, Math.Max(finalHeightBadge, finalHeightHN) + margin / 2);
@@ -155,7 +165,7 @@ public class pdfTests : MonoBehaviour
     }
 
 
-    void CreateTableInDocument(XGraphics gfx, PdfPage page, int amountElements, double offsetX, double offsetY)
+    void CreateTableInDocument(XGraphics gfx, PdfPage page, double offsetX, double offsetY, Dictionary<string, List<string>> contents)
     {
         // Text format
         XStringFormat format = new XStringFormat();
@@ -167,22 +177,36 @@ public class pdfTests : MonoBehaviour
         XFont cellFont = new XFont("Verdana", 10, XFontStyle.Regular);
         XFont headerFont = new XFont("Verdana", 11, XFontStyle.Bold);
 
-        //offset between lines
-        double lineHeight = 20;
-
-        //element element dimensions
+        //element dimensions
         int elementWidth = (int)(page.Width - margin) / 2;
         int doubleElementWidth = 2 * elementWidth;
         int elementHeight = 120; //consider changing?
 
-        int lineOffset = 1;
+        //offset between lines
+        int lineOffset = 3;
         int doubleLineOffset = 2 * lineOffset;
 
         //color of squares
-        XSolidBrush rect_style1 = new XSolidBrush(XColors.White);
+        XSolidBrush rectStyle = new XSolidBrush(XColors.White);
 
         //first draw the background black rect
-        gfx.DrawRectangle(XBrushes.Black, offsetX, offsetY, doubleElementWidth + doubleLineOffset, amountElements * elementHeight);
+        int amountElements = contents.Keys.Count; //keys will be machinery names
+        gfx.DrawRectangle(XBrushes.Black, offsetX - lineOffset, offsetY, doubleElementWidth + doubleLineOffset + lineOffset - margin, amountElements * (elementHeight + lineOffset) + lineOffset);
 
+        int i = 0;
+        foreach (KeyValuePair<string, List<string>> item in contents)
+        {
+            double currentYOffset = offsetY + lineOffset * (i + 1) + elementHeight * i;
+            //create a white box for the machinery
+            gfx.DrawRectangle(rectStyle, margin, currentYOffset, elementWidth - margin / 2, elementHeight);
+            //create a white box for all the info
+            gfx.DrawRectangle(rectStyle, margin / 2 + elementWidth + lineOffset, currentYOffset, elementWidth - margin / 2, elementHeight);
+
+            //write inside boxes
+            //machinery box
+            //info box
+
+            i++;
+        }
     }
 }
