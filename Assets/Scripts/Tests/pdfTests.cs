@@ -180,7 +180,11 @@ public class pdfTests : MonoBehaviour
         //element dimensions
         int elementWidth = (int)(page.Width - margin) / 2;
         int doubleElementWidth = 2 * elementWidth;
-        int elementHeight = 120; //consider changing?
+        //TODO change height according to how many lines there are per machinery, because 120 is too big
+        //or ask if it looks ok
+        int elementHeight = 120;    //consider changing? with this height page can hold a table of 6x2 cells
+                                    //add new page after 6
+                                    //also need new page for comments
 
         //offset between lines
         int lineOffset = 3;
@@ -198,15 +202,26 @@ public class pdfTests : MonoBehaviour
         {
             double currentYOffset = offsetY + lineOffset * (i + 1) + elementHeight * i;
             //create a white box for the machinery
-            gfx.DrawRectangle(rectStyle, margin, currentYOffset, elementWidth - margin / 2, elementHeight);
+            XRect nameRect = new XRect(margin, currentYOffset, elementWidth - margin / 2, elementHeight);
+            gfx.DrawRectangle(rectStyle, nameRect);
             //create a white box for all the info
-            gfx.DrawRectangle(rectStyle, margin / 2 + elementWidth + lineOffset, currentYOffset, elementWidth - margin / 2, elementHeight);
+            XRect infoRect = new XRect(margin / 2 + elementWidth + lineOffset, currentYOffset, elementWidth - margin / 2, elementHeight);
+            gfx.DrawRectangle(rectStyle, infoRect);
 
             //write inside boxes
             //machinery box
+            tf.DrawString(item.Key, cellFont, XBrushes.Black, nameRect);
             //info box
-
+            string infos = string.Empty;
+            for (int j  = 0; j < item.Value.Count; j++)
+            {
+                infos += string.Format("{0}\n", item.Value[j]);
+            }
+            infos.Remove(infos.Length - 2, 1);
+            tf.DrawString(infos, cellFont, XBrushes.Black, infoRect);
             i++;
         }
+
+        
     }
 }
