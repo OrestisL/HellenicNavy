@@ -222,6 +222,9 @@ public class pdfTests : MonoBehaviour
             i++;
         }
 
+        //table should probably be like this
+        //NAME|ID|SYSTEM|DEPT|ServiceDescr|Completed
+
         
     }
 }
