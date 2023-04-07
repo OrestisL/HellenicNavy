@@ -117,7 +117,7 @@ namespace SPS
             serviceAssignmentsStatuses = s.serviceAssignmentsStatuses;
         }
 
-        public Service(string name, string descr, string id, int hours, string lastDate, int system, List<ServiceEntry> entries)
+        public Service(string name, string descr, string id, int hours, int lastHours, int nextHours, string lastDate, int system, List<ServiceEntry> entries)
         {
             this.name = name;
             this.id = id;
@@ -125,7 +125,8 @@ namespace SPS
             CurrentHours = hours;
             //date SHOULD HAVE BEEN saved like this
             lastServiceDate = DateTime.ParseExact(lastDate, "dd-MM-yy", null);
-
+            lastServiceHours = lastHours;
+            nextServiceHours= nextHours;
             this.systemName = system;
 
             serviceHours = new List<int>();

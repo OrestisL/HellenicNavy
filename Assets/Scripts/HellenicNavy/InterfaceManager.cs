@@ -607,8 +607,9 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
         _currentService = new Service(
             nameInput.text, descriptionInput.text, idInput.text, hoursInput.text.Length > 0 ? int.Parse(hoursInput.text) : 0,
-            dateInput.text, systemDropdown.value,
+            0, 0, dateInput.text, systemDropdown.value,
             serviceEntries);
+        //creating machinery should have 0 as starting hours
         Debug.Log(_currentService.ToJson());
         //write to database
         DatabaseManager.Instance.WriteOnce(() =>
@@ -1075,6 +1076,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         //create new service from json
         Service serv = new Service(data[0][1].StringValue);
         _currentService = serv;
+        _currentService.lastServiceHours = serv.lastServiceHours;
+        _currentService.nextServiceHours = serv.nextServiceHours;
         ShowSystems(displaySystemDropdown, displayDeptDropdown, serv.systemName);
         //change label
         displayMachineryLabel.text = string.Format("<u>Επιστασία {0}, Σύστημα {1}, Πληροφορίες Μηχανήματος {2}</u>",
@@ -1104,7 +1107,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
         _currentService = new Service(
             displayNameInput.text, displayDescriptionInput.text, displayIdInput.text, displayHoursInput.text.Length > 0 ? int.Parse(displayHoursInput.text) : 0,
-            displayDateInput.text, displaySystemDropdown.value,
+            serv.lastServiceHours, serv.nextServiceHours, displayDateInput.text, displaySystemDropdown.value,
             serviceEntries);
 
         displayMachineryPanel.SetActive(true);
@@ -1215,6 +1218,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     void MarkAssignmentsComplete()
     {
         Transform[] assignments = assignmentsPanel.transform.GetChild(1).GetChild(0).GetChild(0).GetComponentsInChildren<Transform>();
+        if (assignments != null) { _currentService.lastServiceHours = int.Parse(hoursInput.text); _currentService.lastServiceDate = DateTime.Now; }
         foreach (Transform assignment in assignments)
         {
             Assignment assign = assignment.GetComponent<Assignment>();
