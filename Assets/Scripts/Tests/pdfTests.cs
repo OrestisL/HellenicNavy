@@ -87,7 +87,6 @@ public class pdfTests : MonoBehaviour
         });
     }
 
-
     void DrawImageOriginalSize(XGraphics gfx, PdfPage page, string path)
     {
         XImage img = XImage.FromFile(path);
@@ -225,7 +224,7 @@ public class pdfTests : MonoBehaviour
         }
     }
 
-    //the dictionary should change to a json file probably, and the loop should also change
+    //the dictionary should change to a json file (String) probably, and the loop should also change
     void CreateTableInDocument(double offsetX, double offsetY, Dictionary<string, List<string>> contents)
     {
         // Text format
@@ -243,9 +242,7 @@ public class pdfTests : MonoBehaviour
         int doubleElementWidth = 2 * elementWidth;
         ////TODO change height according to how many lines there are per machinery, because 120 is too big
         ////or ask if it looks ok
-        int elementHeight = 40; //consider changing? with this height page can hold a table of 6x2 cells
-                                //add new page after 6
-                                //also need new page for comments
+        int elementHeight = 40; //consider changing? with this height page can hold a table of 18 rows
 
         //offset between lines
         double lineOffset = 1;
@@ -264,9 +261,8 @@ public class pdfTests : MonoBehaviour
             double currentYOffset = offsetY + lineOffset * (i + 2) + elementHeight * (i + 1);
             double currentXOffset = margin;
             //table should probably be like this
-            //  NAME    ID  SYSTEM  DEPT    ServiceDescr    Status
-            //  82      40  50      20      290             82        (widths)
-            //used to be 2 cells 282x120 each = 564x120 total (check into these)
+            //  NAME    ID  SYSTEM  &   DEPT    ServiceDescr    Status
+            //  75      42  50          20      262             82        (widths)
             double nameWidth = 75;
             double idWidth = 42;
             double systemWidth = 50;

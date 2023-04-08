@@ -39,6 +39,3 @@ public class CreateTables : MonoBehaviour
         Account.CreateDefaultDepts();
     }
 }
-
-
-

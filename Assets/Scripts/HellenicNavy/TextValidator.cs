@@ -60,7 +60,7 @@ public class TextValidatorDateTime : TMP_InputValidator
 
     public override char Validate(ref string text, ref int pos, char ch)
     {
-        //ensure only 10 chars (year is 4, month is 2, date is 2 and 2 dashes)
+        //ensure only 8 chars (year is 2, month is 2, date is 2 and 2 dashes)
         if (pos == 8) { return (char)0; }
         if ((ch >= '0' && ch <= '9') | ch == '-')
         {
@@ -68,7 +68,6 @@ public class TextValidatorDateTime : TMP_InputValidator
             pos++;
             return ch;
         }
-
 
         return (char)0;
     }
@@ -104,7 +103,7 @@ public class TextValidatorDateTime : TMP_InputValidator
 
         if (split[0].Length != 2)
         {
-            //wrong year format, should be 4
+            //wrong day format, should be 2
             MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
             {
                 showLabel = true,
@@ -115,7 +114,7 @@ public class TextValidatorDateTime : TMP_InputValidator
                 rightButtonLabel = "OK",
                 onRightButtonClick = () => MessageBox.Instance.HideMessageBox(),
                 showLoadingIndicator = false
-            }, 15f);
+            }, -1);
             return false;
         }
         else if (split[1].Length != 2)
@@ -131,12 +130,12 @@ public class TextValidatorDateTime : TMP_InputValidator
                 rightButtonLabel = "OK",
                 onRightButtonClick = () => MessageBox.Instance.HideMessageBox(),
                 showLoadingIndicator = false
-            }, 15f);
+            }, -1);
             return false;
         }
         else if (split[2].Length != 2)
         {
-            //wrong day format, should be 2
+            //wrong year format, should be 2
             MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
             {
                 showLabel = true,
@@ -147,7 +146,7 @@ public class TextValidatorDateTime : TMP_InputValidator
                 rightButtonLabel = "OK",
                 onRightButtonClick = () => MessageBox.Instance.HideMessageBox(),
                 showLoadingIndicator = false
-            }, 15f);
+            }, -1);
             return false;
         }
 
@@ -183,7 +182,7 @@ public class TextValidatorDateTime : TMP_InputValidator
                     rightButtonLabel = "OK",
                     onRightButtonClick = () => MessageBox.Instance.HideMessageBox(),
                     showLoadingIndicator = false
-                }, 15f);
+                }, -1);
                 return false;
             }
             //check day depending on month
@@ -203,7 +202,7 @@ public class TextValidatorDateTime : TMP_InputValidator
                         rightButtonLabel = "OK",
                         onRightButtonClick = () => MessageBox.Instance.HideMessageBox(),
                         showLoadingIndicator = false
-                    }, 15f);
+                    }, -1);
                     return false;
                 }
             }
@@ -223,7 +222,7 @@ public class TextValidatorDateTime : TMP_InputValidator
                         rightButtonLabel = "OK",
                         onRightButtonClick = () => MessageBox.Instance.HideMessageBox(),
                         showLoadingIndicator = false
-                    }, 15f);
+                    }, -1);
                     return false;
                 }
             }
@@ -242,7 +241,7 @@ public class TextValidatorDateTime : TMP_InputValidator
                         rightButtonLabel = "OK",
                         onRightButtonClick = () => MessageBox.Instance.HideMessageBox(),
                         showLoadingIndicator = false
-                    }, 15f);
+                    }, -1);
                     return false;
                 }
             }

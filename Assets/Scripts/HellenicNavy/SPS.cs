@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnitySQLite.Utilities;
 
 namespace SPS
 {
@@ -152,9 +153,24 @@ namespace SPS
             }
         }
 
-        public void ChangeHours(int hours)
+        public bool ChangeHours(int hours)
         {
+            if (lastServiceHours > hours) 
+            {
+                MessageBox.Instance.ShowMessageBox(new MessageBoxSettings 
+                { 
+                    showLoadingIndicator = false,
+                    mainText = "Οι ώρες λειτουργίας δεν γίνεται να είναι λιγότερες από τις ώρες προηγούμενης επισκευής.",
+                    useRightButton = true,
+                    rightButtonLabel = "OK",
+                    onRightButtonClick = () => { MessageBox.Instance.HideMessageBox(); },
+                    useLeftButton = false,
+                    showLabel = false,
+                }, -1);
+                return false;
+            }
             CurrentHours = hours;
+            return true;
         }
 
         public void ChangeEntries(ServiceEntry[] entries)

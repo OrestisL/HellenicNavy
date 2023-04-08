@@ -69,9 +69,9 @@ __COMPLETED__
 
 __REMAINING__
 - refactor database manager to command pattern (read write) (consider message box hide)(might omit entirely)
-- reports (pdf)
+- reports (pdf) (partially done, need to do a better split on pages for better table creation + text box in the end for remarks)
 - user manual
 
 
 #################################################################################################################################################
-31/3/2023 - 4757 lines of code
+8/4/2023 - 5131 lines of code

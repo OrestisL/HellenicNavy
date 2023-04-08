@@ -1127,7 +1127,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             mainText = "Παρακαλώ περιμένετε, ανανέωση δεδομένων...",
         });
         //update some info
-        _currentService.ChangeHours(int.Parse(displayHoursInput.text));
+        if (!_currentService.ChangeHours(int.Parse(displayHoursInput.text)))
+            return;
         serviceEntries = new List<ServiceEntry>();
 
         for (int i = 0; i < displayServiceEntryParent.childCount; i++)
@@ -1281,5 +1282,4 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 #endif
 
     }
-
 }

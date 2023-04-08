@@ -981,6 +981,4 @@ namespace UnitySQLite
         }
 #endif
     }
-
-
 }
