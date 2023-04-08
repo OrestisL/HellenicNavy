@@ -16,8 +16,9 @@ public class pdfTests : MonoBehaviour
     public TMP_InputField input;
     public int margin = 30;
     public int fontSize = 12;
-    PdfPage currentPage;
-    XGraphics gfx;
+    public PdfPage currentPage;
+    public XGraphics gfx;
+    public PdfDocument pdfDocument;
     private void Start()
     {
         if (input.text.Length == 0)
@@ -26,11 +27,12 @@ public class pdfTests : MonoBehaviour
         input.onDeselect.AddListener((string s) =>
         {
             // Create a new PDF document
-            PdfDocument document = new PdfDocument();
+            pdfDocument = new PdfDocument();
             //document.Info.Title = "Report xx-xx-xx";
 
             // Create an empty page
-            currentPage = document.AddPage();
+            currentPage = pdfDocument.AddPage();
+
             int width = (int)currentPage.Width;
             int height = (int)currentPage.Height;
 
@@ -52,15 +54,15 @@ public class pdfTests : MonoBehaviour
                 { "test1", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
                 { "test2", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
                 { "test3", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
-                { "test4", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } }, 
+                { "test4", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
                 { "test5", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
                 { "test6", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
                 { "test7", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
-                { "test8", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } }, 
+                { "test8", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
                 { "test9", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
                 { "test10", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
                 { "test11", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
-                { "test12", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } }, 
+                { "test12", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
                 { "test13", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
                 { "test14", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
                 { "test15", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
@@ -70,7 +72,7 @@ public class pdfTests : MonoBehaviour
                 { "test19", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
                 { "test20", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
             };
-            ThreadedCreatePDF(document, 75, badgePath, hnBadgePath, shipName, dict);
+            ThreadedCreatePDF(75, badgePath, hnBadgePath, shipName, dict);
             //(double maxW, double maxH) = CreateHeaderTemplate(gfx, page, 75, badgePath, hnBadgePath, shipName);
             //create the text rect
             //XRect textRect = new XRect(margin, margin / 2 + maxH, page.Width - 2 * margin, page.Height - 2 * margin);
@@ -105,30 +107,29 @@ public class pdfTests : MonoBehaviour
         return new Vector2((float)finalWidth + margin / 2, (float)finalHeight + margin / 2);
     }
 
-    void ThreadedCreatePDF(PdfDocument document,
-        double biggestEdge, string badgePath, string hnBadgePath, string shipName, Dictionary<string, List<string>> contents)
+    void ThreadedCreatePDF(double biggestEdge, string badgePath, string hnBadgePath, string shipName, Dictionary<string, List<string>> contents)
     {
-        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings 
+        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
         {
             showLoadingIndicator = true,
             useLeftButton = false,
             useRightButton = false,
             mainText = "Παρακαλώ περιμένετε...",
             showLabel = false,
-        },-1);
-        Thread worker = new Thread(() => 
+        }, -1);
+        Thread worker = new Thread(() =>
         {
             //create header
             (double maxW, double maxH) = CreateHeaderTemplate(gfx, biggestEdge, badgePath, hnBadgePath, shipName);
             //create table
-            CreateTableInDocument(document, margin, maxH, contents);
+            CreateTableInDocument(margin, maxH, contents);
             //save
-            string path = SavePdfDocument(document);
+            string path = SavePdfDocument(pdfDocument);
             //hide message box
-            UnityMainThreadDispatcher.Instance.Enqueue(() => 
-            { 
+            UnityMainThreadDispatcher.Instance.Enqueue(() =>
+            {
                 MessageBox.Instance.HideMessageBox();
-                MessageBox.Instance.ShowMessageBox(new MessageBoxSettings 
+                MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
                 {
                     showLoadingIndicator = false,
                     useLeftButton = false,
@@ -225,7 +226,7 @@ public class pdfTests : MonoBehaviour
     }
 
     //the dictionary should change to a json file probably, and the loop should also change
-    void CreateTableInDocument(PdfDocument document, double offsetX, double offsetY, Dictionary<string, List<string>> contents)
+    void CreateTableInDocument(double offsetX, double offsetY, Dictionary<string, List<string>> contents)
     {
         // Text format
         XStringFormat format = new XStringFormat();
@@ -247,7 +248,7 @@ public class pdfTests : MonoBehaviour
                                 //also need new page for comments
 
         //offset between lines
-        double lineOffset = 0.75;
+        double lineOffset = 1;
         double doubleLineOffset = 2 * lineOffset;
 
         //color of squares
@@ -258,7 +259,6 @@ public class pdfTests : MonoBehaviour
         gfx.DrawRectangle(XBrushes.Black, offsetX - lineOffset, offsetY, doubleElementWidth + doubleLineOffset + lineOffset - margin, amountElements * (elementHeight + lineOffset) + lineOffset);
 
         int i = -1;
-        //page fits 18 rows, so split accordigly
         foreach (KeyValuePair<string, List<string>> item in contents)
         {
             double currentYOffset = offsetY + lineOffset * (i + 2) + elementHeight * (i + 1);
@@ -271,7 +271,7 @@ public class pdfTests : MonoBehaviour
             double idWidth = 42;
             double systemWidth = 50;
             double deptWidth = 20;
-            double serviceDescrWidth = 263.5;
+            double serviceDescrWidth = 262;
             double statusWidth = 82;
 
             //name box
@@ -326,12 +326,20 @@ public class pdfTests : MonoBehaviour
             infos.Remove(infos.Length - 2, 1);
             tf.DrawString(infos, cellFont, XBrushes.Black, serviceDescrRect, format);
             i++;
-            if (i % 18 == 0 & i!= 0)
+
+            if (i % 17 == 0 & i != 0)
             {
-                currentPage = document.AddPage();
+                currentPage.Close();
+                gfx.Dispose();
+                currentPage = pdfDocument.AddPage();
                 gfx = XGraphics.FromPdfPage(currentPage);
+                tf = null;
                 tf = new XTextFormatter(gfx);
             }
+            //TODO change how changing pages works
+            //resize black box for background
+            //atm first page holds up to 18 entries, other pages can hold more because no header
+            //also after table add a box for remarks
 
         }
     }
