@@ -16,6 +16,8 @@ public class pdfTests : MonoBehaviour
     public TMP_InputField input;
     public int margin = 30;
     public int fontSize = 12;
+    PdfPage currentPage;
+    XGraphics gfx;
     private void Start()
     {
         if (input.text.Length == 0)
@@ -28,12 +30,12 @@ public class pdfTests : MonoBehaviour
             //document.Info.Title = "Report xx-xx-xx";
 
             // Create an empty page
-            PdfPage page = document.AddPage();
-            int width = (int)page.Width;
-            int height = (int)page.Height;
+            currentPage = document.AddPage();
+            int width = (int)currentPage.Width;
+            int height = (int)currentPage.Height;
 
             // Get an XGraphics object for drawing
-            XGraphics gfx = XGraphics.FromPdfPage(page);
+            gfx = XGraphics.FromPdfPage(currentPage);
             XTextFormatter textFormatter = new XTextFormatter(gfx);
 
             // Create a font
@@ -50,9 +52,25 @@ public class pdfTests : MonoBehaviour
                 { "test1", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
                 { "test2", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
                 { "test3", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
-                { "test4", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } }
+                { "test4", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } }, 
+                { "test5", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
+                { "test6", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
+                { "test7", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
+                { "test8", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } }, 
+                { "test9", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
+                { "test10", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
+                { "test11", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
+                { "test12", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } }, 
+                { "test13", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
+                { "test14", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
+                { "test15", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
+                { "test16", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
+                { "test17", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
+                { "test18", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
+                { "test19", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
+                { "test20", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
             };
-            ThreadedCreatePDF(document, gfx, page, 75, badgePath, hnBadgePath, shipName, dict);
+            ThreadedCreatePDF(document, 75, badgePath, hnBadgePath, shipName, dict);
             //(double maxW, double maxH) = CreateHeaderTemplate(gfx, page, 75, badgePath, hnBadgePath, shipName);
             //create the text rect
             //XRect textRect = new XRect(margin, margin / 2 + maxH, page.Width - 2 * margin, page.Height - 2 * margin);
@@ -87,7 +105,7 @@ public class pdfTests : MonoBehaviour
         return new Vector2((float)finalWidth + margin / 2, (float)finalHeight + margin / 2);
     }
 
-    void ThreadedCreatePDF(PdfDocument document, XGraphics gfx, PdfPage page,
+    void ThreadedCreatePDF(PdfDocument document,
         double biggestEdge, string badgePath, string hnBadgePath, string shipName, Dictionary<string, List<string>> contents)
     {
         MessageBox.Instance.ShowMessageBox(new MessageBoxSettings 
@@ -101,9 +119,9 @@ public class pdfTests : MonoBehaviour
         Thread worker = new Thread(() => 
         {
             //create header
-            (double maxW, double maxH) = CreateHeaderTemplate(gfx, page, biggestEdge, badgePath, hnBadgePath, shipName);
+            (double maxW, double maxH) = CreateHeaderTemplate(gfx, biggestEdge, badgePath, hnBadgePath, shipName);
             //create table
-            CreateTableInDocument(gfx, page, margin, maxH, contents);
+            CreateTableInDocument(document, margin, maxH, contents);
             //save
             string path = SavePdfDocument(document);
             //hide message box
@@ -124,7 +142,7 @@ public class pdfTests : MonoBehaviour
         worker.Start();
     }
 
-    (double, double) CreateHeaderTemplate(XGraphics gfx, PdfPage page, double biggestEdge, string badgePath, string hnBadgePath, string shipName)
+    (double, double) CreateHeaderTemplate(XGraphics gfx, double biggestEdge, string badgePath, string hnBadgePath, string shipName)
     {
         //load images
         XImage badgeImg = XImage.FromFile(badgePath);
@@ -145,7 +163,7 @@ public class pdfTests : MonoBehaviour
         //draw images
         //badge top left, HN top right
         gfx.DrawImage(badgeImg, margin / 2, margin / 2, finalWidthBadge, finalHeightBadge);
-        gfx.DrawImage(hnImg, page.Width - finalWidthHN - margin / 2, margin / 2, finalWidthHN, finalHeightHN);
+        gfx.DrawImage(hnImg, currentPage.Width - finalWidthHN - margin / 2, margin / 2, finalWidthHN, finalHeightHN);
 
         //draw text between images
         XTextFormatter tf = new XTextFormatter(gfx);
@@ -153,7 +171,7 @@ public class pdfTests : MonoBehaviour
         XFont font = new XFont("Verdana", 25, XFontStyle.Bold);
 
         double verticalPos = margin - 5;
-        double horzSize = page.Width - finalWidthHN - finalWidthBadge - 2 * margin;
+        double horzSize = currentPage.Width - finalWidthHN - finalWidthBadge - 2 * margin;
 
         XRect titleRect = new XRect(finalWidthBadge + margin, verticalPos, horzSize, 25);
         tf.Alignment = XParagraphAlignment.Center;
@@ -206,8 +224,8 @@ public class pdfTests : MonoBehaviour
         }
     }
 
-
-    void CreateTableInDocument(XGraphics gfx, PdfPage page, double offsetX, double offsetY, Dictionary<string, List<string>> contents)
+    //the dictionary should change to a json file probably, and the loop should also change
+    void CreateTableInDocument(PdfDocument document, double offsetX, double offsetY, Dictionary<string, List<string>> contents)
     {
         // Text format
         XStringFormat format = new XStringFormat();
@@ -220,7 +238,7 @@ public class pdfTests : MonoBehaviour
         XFont headerFont = new XFont("Verdana", 7, XFontStyle.Bold);
 
         //element dimensions
-        int elementWidth = (int)(page.Width - margin) / 2; //282
+        int elementWidth = (int)(currentPage.Width - margin) / 2; //282
         int doubleElementWidth = 2 * elementWidth;
         ////TODO change height according to how many lines there are per machinery, because 120 is too big
         ////or ask if it looks ok
@@ -240,6 +258,7 @@ public class pdfTests : MonoBehaviour
         gfx.DrawRectangle(XBrushes.Black, offsetX - lineOffset, offsetY, doubleElementWidth + doubleLineOffset + lineOffset - margin, amountElements * (elementHeight + lineOffset) + lineOffset);
 
         int i = -1;
+        //page fits 18 rows, so split accordigly
         foreach (KeyValuePair<string, List<string>> item in contents)
         {
             double currentYOffset = offsetY + lineOffset * (i + 2) + elementHeight * (i + 1);
@@ -307,9 +326,13 @@ public class pdfTests : MonoBehaviour
             infos.Remove(infos.Length - 2, 1);
             tf.DrawString(infos, cellFont, XBrushes.Black, serviceDescrRect, format);
             i++;
+            if (i % 18 == 0 & i!= 0)
+            {
+                currentPage = document.AddPage();
+                gfx = XGraphics.FromPdfPage(currentPage);
+                tf = new XTextFormatter(gfx);
+            }
+
         }
-
-
-
     }
 }

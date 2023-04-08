@@ -173,7 +173,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                     useLeftButton = false,
                     showLabel = false,
                     mainText = string.Format("Επιτυχής σύνδεση {0}.", acc.AccountName),
-                }, 0.8f);
+                }, 1.5f);
 
                 //show info depending on account
                 SetupInterface(acc.AccessLevel);
