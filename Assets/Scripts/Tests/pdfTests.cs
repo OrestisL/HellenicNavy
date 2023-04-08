@@ -8,6 +8,8 @@ using System.IO;
 using PdfSharpCore.Drawing.Layout;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using UnitySQLite.Utilities;
 
 public class pdfTests : MonoBehaviour
 {
@@ -40,13 +42,9 @@ public class pdfTests : MonoBehaviour
             //add an image
             //DrawImageOriginalSize(gfx, page, SettingsHolder.Instance.settings.FullPath);
             //Vector2 imgSize = DrawImageScaled(gfx, page, SettingsHolder.Instance.settings.BadgeFullPath, 150, 150);
-            (double maxW, double maxH) = CreateHeaderTemplate(gfx, page, 75);
-            //create the text rect
-            XRect textRect = new XRect(margin, margin / 2 + maxH, page.Width - 2 * margin, page.Height - 2 * margin);
-            //gfx.DrawRectangle(XBrushes.AntiqueWhite, textRect);
-            textFormatter.Alignment = XParagraphAlignment.Justify;
-            // Draw the text
-            //textFormatter.DrawString(s, font, XBrushes.Black, textRect, XStringFormats.TopLeft);
+            string badgePath = SettingsHolder.Instance.settings.BadgeFullPath;
+            string hnBadgePath = SettingsHolder.Instance.settings.HNFullPath;
+            string shipName = SettingsHolder.Instance.settings.shipName;
             Dictionary<string, List<string>> dict = new Dictionary<string, List<string>>
             {
                 { "test1", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
@@ -54,9 +52,18 @@ public class pdfTests : MonoBehaviour
                 { "test3", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
                 { "test4", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } }
             };
-            CreateTableInDocument(gfx, page, margin, maxH + 10, dict);
+            ThreadedCreatePDF(document, gfx, page, 75, badgePath, hnBadgePath, shipName, dict);
+            //(double maxW, double maxH) = CreateHeaderTemplate(gfx, page, 75, badgePath, hnBadgePath, shipName);
+            //create the text rect
+            //XRect textRect = new XRect(margin, margin / 2 + maxH, page.Width - 2 * margin, page.Height - 2 * margin);
+            //gfx.DrawRectangle(XBrushes.AntiqueWhite, textRect);
+            //textFormatter.Alignment = XParagraphAlignment.Justify;
+            // Draw the text
+            //textFormatter.DrawString(s, font, XBrushes.Black, textRect, XStringFormats.TopLeft);
+
+            //CreateTableInDocument(gfx, page, margin, maxH + 10, dict);
             // Save the document           
-            SavePdfDocument(document);
+            //SavePdfDocument(document);
         });
     }
 
@@ -80,12 +87,49 @@ public class pdfTests : MonoBehaviour
         return new Vector2((float)finalWidth + margin / 2, (float)finalHeight + margin / 2);
     }
 
-    (double, double) CreateHeaderTemplate(XGraphics gfx, PdfPage page, double biggestEdge)
+    void ThreadedCreatePDF(PdfDocument document, XGraphics gfx, PdfPage page,
+        double biggestEdge, string badgePath, string hnBadgePath, string shipName, Dictionary<string, List<string>> contents)
+    {
+        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings 
+        {
+            showLoadingIndicator = true,
+            useLeftButton = false,
+            useRightButton = false,
+            mainText = "Παρακαλώ περιμένετε...",
+            showLabel = false,
+        },-1);
+        Thread worker = new Thread(() => 
+        {
+            //create header
+            (double maxW, double maxH) = CreateHeaderTemplate(gfx, page, biggestEdge, badgePath, hnBadgePath, shipName);
+            //create table
+            CreateTableInDocument(gfx, page, margin, maxH, contents);
+            //save
+            string path = SavePdfDocument(document);
+            //hide message box
+            UnityMainThreadDispatcher.Instance.Enqueue(() => 
+            { 
+                MessageBox.Instance.HideMessageBox();
+                MessageBox.Instance.ShowMessageBox(new MessageBoxSettings 
+                {
+                    showLoadingIndicator = false,
+                    useLeftButton = false,
+                    useRightButton = false,
+                    mainText = string.Format("Η αναφορά αποθηκεύτηκε επιτυχώς στην τοποθεσία {0}", path),
+                    showLabel = false,
+                });
+            });
+        });
+
+        worker.Start();
+    }
+
+    (double, double) CreateHeaderTemplate(XGraphics gfx, PdfPage page, double biggestEdge, string badgePath, string hnBadgePath, string shipName)
     {
         //load images
-        XImage badgeImg = XImage.FromFile(SettingsHolder.Instance.settings.BadgeFullPath);
-        XImage hnImg = XImage.FromFile(SettingsHolder.Instance.settings.HNFullPath);
-        string shipName = SettingsHolder.Instance.settings.shipName;
+        XImage badgeImg = XImage.FromFile(badgePath);
+        XImage hnImg = XImage.FromFile(hnBadgePath);
+        //string shipName = SettingsHolder.Instance.settings.shipName;
 
         //get max for normalized scaling 
         double maxSizeBadge = Math.Max(badgeImg.Size.Width, badgeImg.Size.Height);
@@ -125,10 +169,10 @@ public class pdfTests : MonoBehaviour
         titleRect = new XRect(finalWidthBadge + margin, verticalPos, horzSize, 16);
         tf.DrawString(string.Format("Ημερομηνία {0}", DateTime.Now.ToString("dd-MM-yy")), font, XBrushes.Black, titleRect);
 
-        return (Math.Max(finalWidthHN, finalWidthBadge) + margin / 2, Math.Max(finalHeightBadge, finalHeightHN) + margin / 2);
+        return (Math.Max(finalWidthHN, finalWidthBadge) + margin / 2, Math.Max(finalHeightBadge, finalHeightHN) + (float)margin * 0.66f);
     }
 
-    void SavePdfDocument(PdfDocument document)
+    string SavePdfDocument(PdfDocument document)
     {
         string reportsPath = Path.Combine(Directory.GetCurrentDirectory(), "Αναφορές");
         if (!Directory.Exists(reportsPath))
@@ -143,7 +187,7 @@ public class pdfTests : MonoBehaviour
         {
             document.Save(Path.Combine(reportsPath, string.Format("{0}.pdf", filename)));
             Debug.Log(string.Format("Successfully saved report {0} at {1}", filename, Path.Combine(reportsPath, filename)));
-            return;
+            return Path.Combine(reportsPath, string.Format("{0}.pdf", filename));
         }
         //if multiple files are saved within the same day, check and add a (#) at the end
         else
@@ -155,7 +199,7 @@ public class pdfTests : MonoBehaviour
                 {
                     document.Save(Path.Combine(reportsPath, string.Format("{0}.pdf", currentName)));
                     Debug.Log(string.Format("Successfully saved report {0} at {1}.pdf", currentName, Path.Combine(reportsPath, currentName)));
-                    return;
+                    return Path.Combine(reportsPath, string.Format("{0}.pdf", currentName));
                 }
             }
 
@@ -185,8 +229,8 @@ public class pdfTests : MonoBehaviour
                                 //also need new page for comments
 
         //offset between lines
-        int lineOffset = 2;
-        int doubleLineOffset = 2 * lineOffset;
+        double lineOffset = 0.75;
+        double doubleLineOffset = 2 * lineOffset;
 
         //color of squares
         XSolidBrush rectStyle = new XSolidBrush(XColors.White);
@@ -204,11 +248,11 @@ public class pdfTests : MonoBehaviour
             //  NAME    ID  SYSTEM  DEPT    ServiceDescr    Status
             //  82      40  50      20      290             82        (widths)
             //used to be 2 cells 282x120 each = 564x120 total (check into these)
-            double nameWidth = 82;
+            double nameWidth = 75;
             double idWidth = 42;
             double systemWidth = 50;
             double deptWidth = 20;
-            double serviceDescrWidth = 252;
+            double serviceDescrWidth = 263.5;
             double statusWidth = 82;
 
             //name box
