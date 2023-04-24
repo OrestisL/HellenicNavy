@@ -7,7 +7,6 @@ using UnitySQLite.Utilities;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
 using PdfSharpCore.Drawing.Layout;
-using System.Drawing.Printing;
 using System.IO;
 using System.Threading;
 
@@ -778,4 +777,5 @@ namespace SPS
             ClearEntries();
         }
     }
+
 }
