@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnitySQLite.Utilities;
@@ -302,6 +300,9 @@ namespace SPS
         }
     }
 
+    /// <summary>
+    /// The Report class holds all info on the current report, and saves it into a pdf file.
+    /// </summary>
     public class Report
     {
         private static List<ReportEntry> _reportEntries;
@@ -357,9 +358,9 @@ namespace SPS
 
         public static void ThreadedCreatePDF(double biggestEdge, string badgePath, string hnBadgePath, string shipName, string remarks)
         {
+            if (!IsReportPending) { return; } //report already done and no new info has been added
             // Create a new PDF document
             pdfDocument = new PdfDocument();
-            //document.Info.Title = "Report xx-xx-xx";
 
             // Create an empty page
             currentPage = pdfDocument.AddPage();
@@ -381,7 +382,6 @@ namespace SPS
             }, -1);
             Thread worker = new Thread(() =>
             {
-
                 //create header
                 (double maxW, double maxH) = CreateHeaderTemplate(gfx, biggestEdge, badgePath, hnBadgePath, shipName);
                 //create table
@@ -490,12 +490,13 @@ namespace SPS
         static void CreateReport(double offsetX, double offsetY, string remarks)
         {
             //first check how many entries the current report has
-            List<ReportEntry> reportEntries = Report.ConsumeData();
+            List<ReportEntry> reportEntries = ConsumeData();
             if (reportEntries.Count == 0)
             {
                 //there is no data, so we should just return
                 //there will be a warning shown from the ConsumeData function
                 //return here to avoid unecessary memory allocation
+                Debug.Log("There are no report entries in the list. Aborting pdf creation.");
                 return;
             }
 
@@ -774,6 +775,7 @@ namespace SPS
             //XRect pageNoRect = new XRect(currentPage.Width - margin * 0.6f, currentPage.Height - margin * 0.5f, 10, 10);
             gfx.DrawRectangle(rectStyle, pageNoRect);
             tf.DrawString(string.Format("{0}/{1}", currentPageNo + 1, amountElements / 18 + 1), cellFont, XBrushes.Black, pageNoRect, format);
+            ClearEntries();
         }
     }
 }

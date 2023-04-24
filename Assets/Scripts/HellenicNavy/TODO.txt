@@ -65,11 +65,12 @@ __COMPLETED__
 							(restrict to only show .db files)(or change file extension, barely matters anyway)(done)
 
 - message box should disable buttons and inputs etc (this is not done in tne most elegant way but it works so done)
+
+- reports (pdf) (partially done, need to do a better split on pages for better table creation + text box in the end for remarks) (done)
 #################################################################################################################################################
 
 __REMAINING__
 - refactor database manager to command pattern (read write) (consider message box hide)(might omit entirely)
-- reports (pdf) (partially done, need to do a better split on pages for better table creation + text box in the end for remarks)
 - user manual
 
 
