@@ -10,6 +10,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using UnitySQLite.Utilities;
+using SPS;
+using System.Runtime.Remoting.Contexts;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class pdfTests : MonoBehaviour
 {
@@ -72,7 +75,37 @@ public class pdfTests : MonoBehaviour
                 { "test19", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
                 { "test20", new List<string> { "test", "test1", "test3", "test", "test1", "test3" } },
             };
-            ThreadedCreatePDF(75, badgePath, hnBadgePath, shipName, dict);
+            List<ReportEntry> entries = new List<ReportEntry>()
+            {
+                new ReportEntry("test 1","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 2","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 3","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 4","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 5","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 6","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 7","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 8","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 9","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 10","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 11","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 12","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 13","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 14","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 15","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 16","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 17","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 18","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 19","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 20","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 21","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 22","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 23","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+
+            };
+
+            Report.AddReportEntries(entries);
+
+            ThreadedCreatePDF(75, badgePath, hnBadgePath, shipName);
             //(double maxW, double maxH) = CreateHeaderTemplate(gfx, page, 75, badgePath, hnBadgePath, shipName);
             //create the text rect
             //XRect textRect = new XRect(margin, margin / 2 + maxH, page.Width - 2 * margin, page.Height - 2 * margin);
@@ -122,6 +155,41 @@ public class pdfTests : MonoBehaviour
             (double maxW, double maxH) = CreateHeaderTemplate(gfx, biggestEdge, badgePath, hnBadgePath, shipName);
             //create table
             CreateTableInDocument(margin, maxH, contents);
+            //save
+            string path = SavePdfDocument(pdfDocument);
+            //hide message box
+            UnityMainThreadDispatcher.Instance.Enqueue(() =>
+            {
+                MessageBox.Instance.HideMessageBox();
+                MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
+                {
+                    showLoadingIndicator = false,
+                    useLeftButton = false,
+                    useRightButton = false,
+                    mainText = string.Format("Η αναφορά αποθηκεύτηκε επιτυχώς στην τοποθεσία {0}", path),
+                    showLabel = false,
+                });
+            });
+        });
+
+        worker.Start();
+    } 
+    void ThreadedCreatePDF(double biggestEdge, string badgePath, string hnBadgePath, string shipName)
+    {
+        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
+        {
+            showLoadingIndicator = true,
+            useLeftButton = false,
+            useRightButton = false,
+            mainText = "Παρακαλώ περιμένετε...",
+            showLabel = false,
+        }, -1);
+        Thread worker = new Thread(() =>
+        {
+            //create header
+            (double maxW, double maxH) = CreateHeaderTemplate(gfx, biggestEdge, badgePath, hnBadgePath, shipName);
+            //create table
+            CreateReport(margin, maxH);
             //save
             string path = SavePdfDocument(pdfDocument);
             //hide message box
@@ -331,6 +399,7 @@ public class pdfTests : MonoBehaviour
                 gfx = XGraphics.FromPdfPage(currentPage);
                 tf = null;
                 tf = new XTextFormatter(gfx);
+                i = 0;
             }
             //TODO change how changing pages works
             //resize black box for background
@@ -339,4 +408,232 @@ public class pdfTests : MonoBehaviour
 
         }
     }
+
+    void CreateReport(double offsetX, double offsetY)
+    {
+        //first check how many entries the current report has
+        List<ReportEntry> reportEntries = Report.ConsumeData();
+        if (reportEntries.Count == 0)
+        {
+            //there is no data, so we should just return
+            //there will be a warning shown from the ConsumeData function
+            //return here to avoid unecessary memory allocation
+            return;
+        }
+
+        //all pages will have the header
+        // Text format
+        XStringFormat format = new XStringFormat();
+        format.LineAlignment = XLineAlignment.Near;
+        format.Alignment = XStringAlignment.Near;
+        XTextFormatter tf = new XTextFormatter(gfx);
+
+        //fonts
+        XFont cellFont = new XFont("Verdana", 6, XFontStyle.Regular);
+        XFont headerFont = new XFont("Verdana", 7, XFontStyle.Bold);
+
+        //element dimensions
+        int elementWidth = (int)(currentPage.Width - margin) / 2; //282
+        int doubleElementWidth = 2 * elementWidth;
+        ////TODO change height according to how many lines there are per machinery, because 120 is too big
+        ////or ask if it looks ok
+        int elementHeight = 40; //consider changing? with this height page can hold a table of 18 rows
+
+        //offset between lines
+        double lineOffset = 1;
+        double doubleLineOffset = 2 * lineOffset;
+
+        //color of squares
+        XSolidBrush rectStyle = new XSolidBrush(XColors.White);
+
+        int amountElements = reportEntries.Count;
+        //draw black background square
+        if (amountElements <= 18)
+        {
+            //each page holds a table with 18 rows
+            //if we have <= 18, then there's no need for more than 1 black square background
+            gfx.DrawRectangle(XBrushes.Black, offsetX - lineOffset, offsetY,
+                doubleElementWidth + doubleLineOffset + lineOffset - margin,
+                amountElements * (elementHeight + lineOffset) + lineOffset);
+
+            int i = -1;
+            foreach (ReportEntry entry in reportEntries)
+            {
+                double currentYOffset = offsetY + lineOffset * (i + 2) + elementHeight * (i + 1);
+                double currentXOffset = margin;
+                //table should probably be like this
+                //  NAME    ID  SYSTEM  &   DEPT    ServiceDescr    Status
+                //  75      42  50          20      262             82        (widths)
+                double nameWidth = 75;
+                double idWidth = 42;
+                double systemWidth = 50;
+                double deptWidth = 20;
+                double serviceDescrWidth = 262;
+                double statusWidth = 82;
+
+                //name box
+                XRect nameRect = new XRect(currentXOffset, currentYOffset, nameWidth, elementHeight);
+                gfx.DrawRectangle(rectStyle, nameRect);
+                //id box
+                currentXOffset += nameWidth + lineOffset;
+                XRect idRect = new XRect(currentXOffset, currentYOffset, idWidth, elementHeight);
+                gfx.DrawRectangle(rectStyle, idRect);
+                //system box
+                currentXOffset += idWidth + lineOffset;
+                //XRect systemRect = new XRect(currentXOffset, currentYOffset, systemWidth, elementHeight);
+                //gfx.DrawRectangle(rectStyle, systemRect);
+                ////dept box
+                //currentXOffset += systemWidth + lineOffset;
+                //XRect deptRect = new XRect(currentXOffset, currentYOffset, deptWidth, elementHeight);
+                //gfx.DrawRectangle(rectStyle, deptRect);
+                XRect systemAndDeptRect = new XRect(currentXOffset, currentYOffset, deptWidth + systemWidth, elementHeight);
+                gfx.DrawRectangle(rectStyle, systemAndDeptRect);
+                //service box
+                currentXOffset += systemWidth + deptWidth + lineOffset;
+                XRect serviceDescrRect = new XRect(currentXOffset, currentYOffset, serviceDescrWidth, elementHeight);
+                gfx.DrawRectangle(rectStyle, serviceDescrRect);
+                //status box
+                currentXOffset += serviceDescrWidth + lineOffset;
+                XRect statusRect = new XRect(currentXOffset, currentYOffset, statusWidth, elementHeight);
+                gfx.DrawRectangle(rectStyle, statusRect);
+
+                //write inside boxes
+                if (i == -1)
+                {
+                    tf.DrawString("ΟΝΟΜΑ ΜΗΧΑΝΗΜΑΤΟΣ", headerFont, XBrushes.Black, nameRect);
+                    tf.DrawString("ΚΩΔΙΚΟΣ", headerFont, XBrushes.Black, idRect);
+                    //tf.DrawString("ΣΥΣΤΗΜΑ", headerFont, XBrushes.Black, systemRect);
+                    //tf.DrawString("ΕΠΙΣΤΑΣΙΑ", headerFont, XBrushes.Black, deptRect);
+                    tf.DrawString("ΣΥΣΤΗΜΑ ΚΑΙ\nΕΠΙΣΤΑΣΙΑ", headerFont, XBrushes.Black, systemAndDeptRect);
+                    tf.DrawString("ΠΕΡΙΓΡΑΦΗ ΕΠΙΣΚΕΥΗΣ", headerFont, XBrushes.Black, serviceDescrRect);
+                    tf.DrawString("ΚΑΤΑΣΤΑΣΗ", headerFont, XBrushes.Black, statusRect);
+                    i++;
+                    continue;
+                }
+
+                //machinery name box
+                tf.DrawString(entry.MachineryName, cellFont, XBrushes.Black, nameRect, format);
+                //id box
+                tf.DrawString(entry.MachineryID, cellFont, XBrushes.Black, idRect, format);
+                //system & dept box
+                tf.DrawString(string.Format("{0}\n{1}", entry.System, entry.Department), cellFont, XBrushes.Black, systemAndDeptRect, format);
+                //service description box
+                tf.DrawString(entry.ServiceDescription, cellFont, XBrushes.Black, serviceDescrRect, format);
+                //status box
+                tf.DrawString(entry.ServiceStatus, cellFont, XBrushes.Black, statusRect, format);
+
+                i++;
+            }
+
+        }
+        else
+        {
+            //more than 1 page
+            //draw the background for the first one
+            gfx.DrawRectangle(XBrushes.Black, offsetX - lineOffset, offsetY,
+               doubleElementWidth + doubleLineOffset + lineOffset - margin,
+               18 * (elementHeight + lineOffset) + lineOffset);
+
+            int currentPageNo = 1;
+            int j = -1;
+            for (int i = 0; i < amountElements; i++)
+            {
+                ReportEntry entry = reportEntries[i];
+                double currentYOffset = offsetY + lineOffset * (i%18 + 1) + elementHeight * (i%18 + 0);
+                double currentXOffset = margin;
+
+                //first check if page full
+                if (i % 18 == 0 & i != 0)
+                {
+                    currentPage.Close();
+                    gfx.Dispose();
+                    currentPage = pdfDocument.AddPage();
+                    gfx = XGraphics.FromPdfPage(currentPage);
+                    tf = null;
+                    tf = new XTextFormatter(gfx);
+                    //i = 0;
+                    //draw new background
+                    int remaining = amountElements - currentPageNo * 18;
+                    if (remaining == 0)
+                        return;
+
+                    if (remaining > 18)
+                    {
+                        gfx.DrawRectangle(XBrushes.Black, offsetX - lineOffset, offsetY,
+                            doubleElementWidth + doubleLineOffset + lineOffset - margin,
+                            18 * (elementHeight + lineOffset) + lineOffset);
+                    }
+                    else
+                    {
+                        gfx.DrawRectangle(XBrushes.Black, offsetX - lineOffset, offsetY,
+                            doubleElementWidth + doubleLineOffset + lineOffset - margin,
+                            remaining * (elementHeight + lineOffset) + lineOffset);
+                    }
+                }
+
+                double nameWidth = 75;
+                double idWidth = 42;
+                double systemWidth = 50;
+                double deptWidth = 20;
+                double serviceDescrWidth = 262;
+                double statusWidth = 82;
+
+                //name box
+                XRect nameRect = new XRect(currentXOffset, currentYOffset, nameWidth, elementHeight);
+                gfx.DrawRectangle(rectStyle, nameRect);
+                //id box
+                currentXOffset += nameWidth + lineOffset;
+                XRect idRect = new XRect(currentXOffset, currentYOffset, idWidth, elementHeight);
+                gfx.DrawRectangle(rectStyle, idRect);
+                //system box
+                currentXOffset += idWidth + lineOffset;
+                //XRect systemRect = new XRect(currentXOffset, currentYOffset, systemWidth, elementHeight);
+                //gfx.DrawRectangle(rectStyle, systemRect);
+                ////dept box
+                //currentXOffset += systemWidth + lineOffset;
+                //XRect deptRect = new XRect(currentXOffset, currentYOffset, deptWidth, elementHeight);
+                //gfx.DrawRectangle(rectStyle, deptRect);
+                XRect systemAndDeptRect = new XRect(currentXOffset, currentYOffset, deptWidth + systemWidth, elementHeight);
+                gfx.DrawRectangle(rectStyle, systemAndDeptRect);
+                //service box
+                currentXOffset += systemWidth + deptWidth + lineOffset;
+                XRect serviceDescrRect = new XRect(currentXOffset, currentYOffset, serviceDescrWidth, elementHeight);
+                gfx.DrawRectangle(rectStyle, serviceDescrRect);
+                //status box
+                currentXOffset += serviceDescrWidth + lineOffset;
+                XRect statusRect = new XRect(currentXOffset, currentYOffset, statusWidth, elementHeight);
+                gfx.DrawRectangle(rectStyle, statusRect);
+
+                //write inside boxes
+                if (j == -1)
+                {
+                    tf.DrawString("ΟΝΟΜΑ ΜΗΧΑΝΗΜΑΤΟΣ", headerFont, XBrushes.Black, nameRect);
+                    tf.DrawString("ΚΩΔΙΚΟΣ", headerFont, XBrushes.Black, idRect);
+                    //tf.DrawString("ΣΥΣΤΗΜΑ", headerFont, XBrushes.Black, systemRect);
+                    //tf.DrawString("ΕΠΙΣΤΑΣΙΑ", headerFont, XBrushes.Black, deptRect);
+                    tf.DrawString("ΣΥΣΤΗΜΑ ΚΑΙ\nΕΠΙΣΤΑΣΙΑ", headerFont, XBrushes.Black, systemAndDeptRect);
+                    tf.DrawString("ΠΕΡΙΓΡΑΦΗ ΕΠΙΣΚΕΥΗΣ", headerFont, XBrushes.Black, serviceDescrRect);
+                    tf.DrawString("ΚΑΤΑΣΤΑΣΗ", headerFont, XBrushes.Black, statusRect);
+                    j++;
+                    continue;
+                }
+
+                //machinery name box
+                tf.DrawString(entry.MachineryName, cellFont, XBrushes.Black, nameRect, format);
+                //id box
+                tf.DrawString(entry.MachineryID, cellFont, XBrushes.Black, idRect, format);
+                //system & dept box
+                tf.DrawString(string.Format("{0}\n{1}", entry.System, entry.Department), cellFont, XBrushes.Black, systemAndDeptRect, format);
+                //service description box
+                tf.DrawString(entry.ServiceDescription, cellFont, XBrushes.Black, serviceDescrRect, format);
+                //status box
+                tf.DrawString(entry.ServiceStatus, cellFont, XBrushes.Black, statusRect, format);
+
+                j++;
+
+            }
+
+        }
+    }
+
 }

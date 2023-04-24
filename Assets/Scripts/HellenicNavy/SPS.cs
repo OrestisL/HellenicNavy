@@ -5,6 +5,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnitySQLite.Utilities;
+using static UnityEngine.EventSystems.EventTrigger;
 
 namespace SPS
 {
@@ -127,7 +128,7 @@ namespace SPS
             //date SHOULD HAVE BEEN saved like this
             lastServiceDate = DateTime.ParseExact(lastDate, "dd-MM-yy", null);
             lastServiceHours = lastHours;
-            nextServiceHours= nextHours;
+            nextServiceHours = nextHours;
             this.systemName = system;
 
             serviceHours = new List<int>();
@@ -155,10 +156,10 @@ namespace SPS
 
         public bool ChangeHours(int hours)
         {
-            if (lastServiceHours > hours) 
+            if (lastServiceHours > hours)
             {
-                MessageBox.Instance.ShowMessageBox(new MessageBoxSettings 
-                { 
+                MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
+                {
                     showLoadingIndicator = false,
                     mainText = "Οι ώρες λειτουργίας δεν γίνεται να είναι λιγότερες από τις ώρες προηγούμενης επισκευής.",
                     useRightButton = true,
@@ -256,6 +257,75 @@ namespace SPS
         public string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
+    }
+
+    public class ReportEntry 
+    {
+        private string _machineryName;
+        public string MachineryName { get { return _machineryName; } }
+        private string _machineryId;
+        public string MachineryID { get { return _machineryId; } }
+        private string _system;
+        public string System { get { return _system; } }
+        private string _dept;
+        public string Department { get { return _dept; } }
+        private string _serviceDescription;
+        public string ServiceDescription { get { return _serviceDescription; } }
+        private string _status;
+        public string ServiceStatus { get { return _status; } }
+
+        public ReportEntry(string name, string id, string sys, string dep, string servDesc, string stat)
+        {
+            _machineryName = name;
+            _machineryId = id;
+            _system = sys;
+            _dept = dep;
+            _serviceDescription = servDesc;
+            _status = stat;
+        }
+
+
+    }
+
+    public class Report
+    {
+        private static List<ReportEntry> _reportEntries;
+        private static bool _isReportPending;
+        public static bool IsReportPending { get { return _isReportPending; } }
+        public static void AddReportEntry(ReportEntry entry)
+        {
+            if (_reportEntries == null)
+                _reportEntries = new List<ReportEntry>();
+
+            _isReportPending = true;
+            _reportEntries.Add(entry);
+        }
+
+        public static void AddReportEntries(List<ReportEntry> reportEntries)
+        {
+            if (_reportEntries == null)
+                _reportEntries = new List<ReportEntry>();
+
+            _isReportPending = true;
+            _reportEntries.AddRange(reportEntries);
+        }
+
+        public static List<ReportEntry> ConsumeData()
+        {
+            if (_reportEntries == null) 
+            {
+                Debug.LogWarning("Report Entry list is empty, no report can be printed.");
+                return new List<ReportEntry>();
+            }
+            _isReportPending = false;
+            return _reportEntries;
+        }
+
+        public static void ClearEntries() 
+        {
+            _reportEntries.Clear();
+            _reportEntries = null;
         }
     }
 }
