@@ -172,7 +172,8 @@ public class pdfTests : MonoBehaviour
             Report.AddReportEntries(entries);
 
             string remarks = "Δοκιμη παρατηρησεων υπολογου\nδευτερη γραμμη κλπ";
-            ThreadedCreatePDF(75, badgePath, hnBadgePath, shipName, remarks);
+            //ThreadedCreatePDF(75, badgePath, hnBadgePath, shipName, remarks);
+            Report.ThreadedCreatePDF(75, badgePath, hnBadgePath, shipName, remarks);
             //(double maxW, double maxH) = CreateHeaderTemplate(gfx, page, 75, badgePath, hnBadgePath, shipName);
             //create the text rect
             //XRect textRect = new XRect(margin, margin / 2 + maxH, page.Width - 2 * margin, page.Height - 2 * margin);
