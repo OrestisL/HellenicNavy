@@ -11,8 +11,6 @@ using System.Collections.Generic;
 using System.Threading;
 using UnitySQLite.Utilities;
 using SPS;
-using System.Runtime.Remoting.Contexts;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class pdfTests : MonoBehaviour
 {
@@ -515,6 +513,9 @@ public class pdfTests : MonoBehaviour
         //color of squares
         XSolidBrush rectStyle = new XSolidBrush(XColors.White);
 
+        XRect pageNoRect = new XRect(currentPage.Width - margin * 0.6f, currentPage.Height - margin * 0.5f, 10, 10);
+
+        int currentPageNo = 0;
         int amountElements = reportEntries.Count;
         //draw black background square
         if (amountElements <= 18)
@@ -594,6 +595,10 @@ public class pdfTests : MonoBehaviour
                 i++;
             }
 
+            //draw page number
+            gfx.DrawRectangle(rectStyle, pageNoRect);
+            tf.DrawString("1 / 1", cellFont, XBrushes.Black, pageNoRect, format);
+
         }
         else
         {
@@ -603,7 +608,7 @@ public class pdfTests : MonoBehaviour
                doubleElementWidth + doubleLineOffset + lineOffset - margin,
                18 * (elementHeight + lineOffset) + lineOffset);
 
-            int currentPageNo = 0;
+           
             int j = -1;
             for (int i = 0; i < amountElements; i++)
             {
@@ -615,6 +620,11 @@ public class pdfTests : MonoBehaviour
                 //first check if page full
                 if (i % 18 == 0 & i != 0)
                 {
+                    //draw page number
+                    //XRect pageNoRect = new XRect(currentPage.Width - margin * 0.6f, currentPage.Height - margin * 0.5f, 10, 10);
+                    gfx.DrawRectangle(rectStyle, pageNoRect);
+                    tf.DrawString(string.Format("{0} / {1}", currentPageNo + 1, amountElements / 18 + 1), cellFont, XBrushes.Black, pageNoRect, format);
+                    
                     currentPageNo++;
                     currentPage.Close();
                     gfx.Dispose();
@@ -732,7 +742,7 @@ public class pdfTests : MonoBehaviour
             gfx.DrawRectangle(rectStyle, remarksRect);
 
             tf.DrawString("ΠΑΡΑΤΗΡΗΣΕΙΣ ΥΠΟΛΟΓΟΥ", new XFont("Verdana", 12), XBrushes.Black, remarksHeader);
-            tf.DrawString(remarks, cellFont, XBrushes.Black, remarksRect);
+            tf.DrawString(remarks, cellFont, XBrushes.Black, remarksRect);        
         }
         else
         {
@@ -750,6 +760,11 @@ public class pdfTests : MonoBehaviour
             tf.DrawString("ΠΑΡΑΤΗΡΗΣΕΙΣ ΥΠΟΛΟΓΟΥ", new XFont("Verdana", 8, XFontStyle.Bold), XBrushes.Black, remarksHeader);
             tf.DrawString(remarks, cellFont, XBrushes.Black, remarksRect);
         }
+
+        //draw page number
+        //XRect pageNoRect = new XRect(currentPage.Width - margin * 0.6f, currentPage.Height - margin * 0.5f, 10, 10);
+        gfx.DrawRectangle(rectStyle, pageNoRect);
+        tf.DrawString(string.Format("{0} / {1}", currentPageNo + 1, amountElements / 18 + 1), cellFont, XBrushes.Black, pageNoRect, format);
     }
 
 }
