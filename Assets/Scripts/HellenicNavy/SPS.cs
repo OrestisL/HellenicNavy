@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnitySQLite.Utilities;
@@ -285,7 +286,15 @@ namespace SPS
             _status = stat;
         }
 
-
+        public ReportEntry() 
+        {
+            _machineryName = "";
+            _machineryId = "";
+            _system = "";
+            _dept = "";
+            _serviceDescription = "";
+            _status = "";
+        }
     }
 
     public class Report
@@ -296,7 +305,10 @@ namespace SPS
         public static void AddReportEntry(ReportEntry entry)
         {
             if (_reportEntries == null)
-                _reportEntries = new List<ReportEntry>();
+                _reportEntries = new List<ReportEntry>
+                {
+                    new ReportEntry()
+                };
 
             _isReportPending = true;
             _reportEntries.Add(entry);
@@ -305,7 +317,12 @@ namespace SPS
         public static void AddReportEntries(List<ReportEntry> reportEntries)
         {
             if (_reportEntries == null)
-                _reportEntries = new List<ReportEntry>();
+            {
+                _reportEntries = new List<ReportEntry>
+                {
+                    new ReportEntry()
+                };
+            }
 
             _isReportPending = true;
             _reportEntries.AddRange(reportEntries);
