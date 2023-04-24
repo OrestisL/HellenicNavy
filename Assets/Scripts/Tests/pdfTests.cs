@@ -620,7 +620,10 @@ public class pdfTests : MonoBehaviour
                     gfx = XGraphics.FromPdfPage(currentPage);
                     tf = null;
                     tf = new XTextFormatter(gfx);
-                    //i = 0;
+                    //reset j to -1 to rewrite headers when changing pages
+                    j = -1;
+                    //insert empty here to avoid losing the first entry
+                    reportEntries.Insert(i, new ReportEntry());
                     //draw new background
                     int remaining = amountElements - currentPageNo * 18;
                     if (remaining == 0)
@@ -697,9 +700,6 @@ public class pdfTests : MonoBehaviour
                 tf.DrawString(entry.ServiceDescription, cellFont, XBrushes.Black, serviceDescrRect, format);
                 //status box
                 tf.DrawString(entry.ServiceStatus, cellFont, XBrushes.Black, statusRect, format);
-
-                j++;
-
             }
 
         }
