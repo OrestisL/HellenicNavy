@@ -100,6 +100,74 @@ public class pdfTests : MonoBehaviour
                 new ReportEntry("test 21","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
                 new ReportEntry("test 22","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
                 new ReportEntry("test 23","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 1","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 2","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 3","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 4","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 5","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 6","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 7","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 8","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 9","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 10","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 11","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 12","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 13","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 14","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 15","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 16","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 17","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 18","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 19","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 20","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 21","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 22","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 23","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"), new ReportEntry("test 1","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 2","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 3","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 4","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 5","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 6","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 7","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 8","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 9","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 10","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 11","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 12","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 13","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 14","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 15","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 16","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 17","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 18","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 19","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 20","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 21","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 22","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 23","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 1","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 2","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 3","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 4","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 5","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 6","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 7","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 8","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 9","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 10","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 11","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 12","","system","dept", "some description 123","ΟΛΟΚΛΗΡΩΘΗΚΕ"),
+                new ReportEntry("test 13","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 14","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 15","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 16","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 17","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 18","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 19","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 20","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 21","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 22","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
+                new ReportEntry("test 23","","system","dept", "some description 123","ΑΝΑΒΛΗΘΗΚΕ"),
 
             };
 
@@ -534,7 +602,7 @@ public class pdfTests : MonoBehaviour
                doubleElementWidth + doubleLineOffset + lineOffset - margin,
                18 * (elementHeight + lineOffset) + lineOffset);
 
-            int currentPageNo = 1;
+            int currentPageNo = 0;
             int j = -1;
             for (int i = 0; i < amountElements; i++)
             {
@@ -545,6 +613,7 @@ public class pdfTests : MonoBehaviour
                 //first check if page full
                 if (i % 18 == 0 & i != 0)
                 {
+                    currentPageNo++;
                     currentPage.Close();
                     gfx.Dispose();
                     currentPage = pdfDocument.AddPage();
