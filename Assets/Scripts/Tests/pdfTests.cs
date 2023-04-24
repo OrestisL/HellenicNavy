@@ -173,7 +173,8 @@ public class pdfTests : MonoBehaviour
 
             Report.AddReportEntries(entries);
 
-            ThreadedCreatePDF(75, badgePath, hnBadgePath, shipName);
+            string remarks = "Δοκιμη παρατηρησεων υπολογου\nδευτερη γραμμη κλπ";
+            ThreadedCreatePDF(75, badgePath, hnBadgePath, shipName, remarks);
             //(double maxW, double maxH) = CreateHeaderTemplate(gfx, page, 75, badgePath, hnBadgePath, shipName);
             //create the text rect
             //XRect textRect = new XRect(margin, margin / 2 + maxH, page.Width - 2 * margin, page.Height - 2 * margin);
@@ -241,8 +242,8 @@ public class pdfTests : MonoBehaviour
         });
 
         worker.Start();
-    } 
-    void ThreadedCreatePDF(double biggestEdge, string badgePath, string hnBadgePath, string shipName)
+    }
+    void ThreadedCreatePDF(double biggestEdge, string badgePath, string hnBadgePath, string shipName, string remarks)
     {
         MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
         {
@@ -257,7 +258,7 @@ public class pdfTests : MonoBehaviour
             //create header
             (double maxW, double maxH) = CreateHeaderTemplate(gfx, biggestEdge, badgePath, hnBadgePath, shipName);
             //create table
-            CreateReport(margin, maxH);
+            CreateReport(margin, maxH, remarks);
             //save
             string path = SavePdfDocument(pdfDocument);
             //hide message box
@@ -477,7 +478,7 @@ public class pdfTests : MonoBehaviour
         }
     }
 
-    void CreateReport(double offsetX, double offsetY)
+    void CreateReport(double offsetX, double offsetY, string remarks)
     {
         //first check how many entries the current report has
         List<ReportEntry> reportEntries = Report.ConsumeData();
@@ -510,7 +511,7 @@ public class pdfTests : MonoBehaviour
         //offset between lines
         double lineOffset = 1;
         double doubleLineOffset = 2 * lineOffset;
-
+        double currentYPosition = 0;
         //color of squares
         XSolidBrush rectStyle = new XSolidBrush(XColors.White);
 
@@ -607,7 +608,8 @@ public class pdfTests : MonoBehaviour
             for (int i = 0; i < amountElements; i++)
             {
                 ReportEntry entry = reportEntries[i];
-                double currentYOffset = offsetY + lineOffset * (i%18 + 1) + elementHeight * (i%18 + 0);
+                double currentYOffset = offsetY + lineOffset * (i % 18 + 1) + elementHeight * (i % 18 + 0);
+                currentYPosition = currentYOffset;
                 double currentXOffset = margin;
 
                 //first check if page full
@@ -702,6 +704,51 @@ public class pdfTests : MonoBehaviour
                 tf.DrawString(entry.ServiceStatus, cellFont, XBrushes.Black, statusRect, format);
             }
 
+        }
+
+        //remarks 
+        double remarkWidth = currentPage.Width - 2 * margin;
+        double remarkHeaderHeight = 12;
+        double remarkHeight = 200 - remarkHeaderHeight; //might change
+        currentYPosition += 2 * elementHeight;
+        //check if box fits
+        if (currentYPosition + remarkHeight + remarkHeaderHeight + 20 > currentPage.Height)
+        {
+            //box does not fit
+            currentPage.Close();
+            gfx.Dispose();
+            currentPage = pdfDocument.AddPage();
+            gfx = XGraphics.FromPdfPage(currentPage);
+            tf = null;
+            tf = new XTextFormatter(gfx);
+
+            XRect remarksBG =
+                new XRect(margin - lineOffset, offsetY - lineOffset, remarkWidth + doubleLineOffset, remarkHeight + remarkHeaderHeight + doubleLineOffset);
+            XRect remarksHeader = new XRect(margin, offsetY, remarkWidth, remarkHeaderHeight);
+            XRect remarksRect = new XRect(margin, offsetY + remarkHeaderHeight, remarkWidth, remarkHeight);
+
+            gfx.DrawRectangle(XBrushes.Black, remarksBG);
+            gfx.DrawRectangle(rectStyle, remarksHeader);
+            gfx.DrawRectangle(rectStyle, remarksRect);
+
+            tf.DrawString("ΠΑΡΑΤΗΡΗΣΕΙΣ ΥΠΟΛΟΓΟΥ", new XFont("Verdana", 12), XBrushes.Black, remarksHeader);
+            tf.DrawString(remarks, cellFont, XBrushes.Black, remarksRect);
+        }
+        else
+        {
+            //box fits
+
+            XRect remarksBG =
+                new XRect(margin - lineOffset, currentYPosition - lineOffset, remarkWidth + doubleLineOffset, remarkHeight + remarkHeaderHeight + doubleLineOffset);
+            XRect remarksHeader = new XRect(margin, currentYPosition, remarkWidth, remarkHeaderHeight);
+            XRect remarksRect = new XRect(margin, currentYPosition + remarkHeaderHeight, remarkWidth, remarkHeight);
+
+            gfx.DrawRectangle(XBrushes.Black, remarksBG);
+            gfx.DrawRectangle(rectStyle, remarksHeader);
+            gfx.DrawRectangle(rectStyle, remarksRect);
+
+            tf.DrawString("ΠΑΡΑΤΗΡΗΣΕΙΣ ΥΠΟΛΟΓΟΥ", new XFont("Verdana", 8, XFontStyle.Bold), XBrushes.Black, remarksHeader);
+            tf.DrawString(remarks, cellFont, XBrushes.Black, remarksRect);
         }
     }
 
