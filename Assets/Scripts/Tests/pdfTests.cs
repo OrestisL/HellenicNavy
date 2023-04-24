@@ -513,7 +513,7 @@ public class pdfTests : MonoBehaviour
         //color of squares
         XSolidBrush rectStyle = new XSolidBrush(XColors.White);
 
-        XRect pageNoRect = new XRect(currentPage.Width - margin * 0.6f, currentPage.Height - margin * 0.5f, 10, 10);
+        XRect pageNoRect = new XRect(currentPage.Width - margin * 0.75f, currentPage.Height - margin * 0.5f, 10, 10);
 
         int currentPageNo = 0;
         int amountElements = reportEntries.Count;
@@ -597,7 +597,7 @@ public class pdfTests : MonoBehaviour
 
             //draw page number
             gfx.DrawRectangle(rectStyle, pageNoRect);
-            tf.DrawString("1 / 1", cellFont, XBrushes.Black, pageNoRect, format);
+            tf.DrawString("1/1", cellFont, XBrushes.Black, pageNoRect, format);
 
         }
         else
@@ -623,7 +623,7 @@ public class pdfTests : MonoBehaviour
                     //draw page number
                     //XRect pageNoRect = new XRect(currentPage.Width - margin * 0.6f, currentPage.Height - margin * 0.5f, 10, 10);
                     gfx.DrawRectangle(rectStyle, pageNoRect);
-                    tf.DrawString(string.Format("{0} / {1}", currentPageNo + 1, amountElements / 18 + 1), cellFont, XBrushes.Black, pageNoRect, format);
+                    tf.DrawString(string.Format("{0}/{1}", currentPageNo + 1, amountElements / 18 + 1), cellFont, XBrushes.Black, pageNoRect, format);
                     
                     currentPageNo++;
                     currentPage.Close();
@@ -764,7 +764,7 @@ public class pdfTests : MonoBehaviour
         //draw page number
         //XRect pageNoRect = new XRect(currentPage.Width - margin * 0.6f, currentPage.Height - margin * 0.5f, 10, 10);
         gfx.DrawRectangle(rectStyle, pageNoRect);
-        tf.DrawString(string.Format("{0} / {1}", currentPageNo + 1, amountElements / 18 + 1), cellFont, XBrushes.Black, pageNoRect, format);
+        tf.DrawString(string.Format("{0}/{1}", currentPageNo + 1, amountElements / 18 + 1), cellFont, XBrushes.Black, pageNoRect, format);
     }
 
 }
