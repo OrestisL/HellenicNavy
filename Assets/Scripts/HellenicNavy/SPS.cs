@@ -217,6 +217,11 @@ namespace SPS
                     postponedServiceDescr = string.Format("Την {0} αναβλήθησαν οι εξής επισκευές:", DateTime.Now.ToString("dd-MM-yy"));
 
                     entries[i].Status = ServiceStatus.postponed;
+                    Service current = InterfaceManager.Instance._currentService;
+                    Report.AddReportEntry(new ReportEntry(current.name, current.id,
+                        InterfaceManager.Instance.displayDeptDropdown.options[current.systemName].text,
+                        InterfaceManager.Instance.displaySystemDropdown.options[current.systemName].text,
+                        entries[i].descriptionField.text, "ΑΝΑΒΛΗΘΗΚΕ"));
                     postponedServiceDescr = string.Format("{0}\n{1}", postponedServiceDescr, entries[i].Descr);
                     serviceHistoryPostponed += string.Format("{0}\n", entries[i].Descr);
                     entries[i].IsSelected = false;
@@ -235,6 +240,11 @@ namespace SPS
                     completedServiceDescr = string.Format("Την {0} ολοκληρώθηκαν οι εξής επισκευές:", DateTime.Now.ToString("dd-MM-yy"));
 
                     entries[i].Status = ServiceStatus.completed;
+                    Service current = InterfaceManager.Instance._currentService;
+                    Report.AddReportEntry(new ReportEntry(current.name, current.id,
+                        InterfaceManager.Instance.displayDeptDropdown.options[current.systemName].text,
+                        InterfaceManager.Instance.displaySystemDropdown.options[current.systemName].text,
+                        entries[i].descriptionField.text, "ΟΛΟΚΛΗΡΩΘΗΚΕ"));
                     completedServiceDescr = string.Format("{0}\n{1}", completedServiceDescr, entries[i].Descr);
                     serviceHistoryCompleted += string.Format("{0}\n", entries[i].Descr);
                     entries[i].IsSelected = false;
@@ -263,7 +273,7 @@ namespace SPS
         }
     }
 
-    public class ReportEntry 
+    public class ReportEntry
     {
         private string _machineryName;
         public string MachineryName { get { return _machineryName; } }
@@ -288,7 +298,7 @@ namespace SPS
             _status = stat;
         }
 
-        public ReportEntry() 
+        public ReportEntry()
         {
             _machineryName = "";
             _machineryId = "";
@@ -305,6 +315,8 @@ namespace SPS
     public class Report
     {
         private static List<ReportEntry> _reportEntries;
+        private static string _remarks;
+        public static string Remarks { get { return _remarks; } set { _remarks = string.Format("{0}\n{1}", _remarks, value); } }
         private static bool _isReportPending;
         public static bool IsReportPending { get { return _isReportPending; } }
 
@@ -319,6 +331,7 @@ namespace SPS
                 {
                     new ReportEntry()
                 };
+            InterfaceManager.Instance.printReportButton.interactable = true;
 
             _isReportPending = true;
             _reportEntries.Add(entry);
@@ -333,14 +346,15 @@ namespace SPS
                     new ReportEntry()
                 };
             }
+            InterfaceManager.Instance.printReportButton.interactable = true;
 
             _isReportPending = true;
             _reportEntries.AddRange(reportEntries);
         }
 
-        public static List<ReportEntry> ConsumeData()
+        public static List<ReportEntry> GetReportEntries()
         {
-            if (_reportEntries == null) 
+            if (_reportEntries == null)
             {
                 Debug.LogWarning("Report Entry list is empty, no report can be printed.");
                 return new List<ReportEntry>();
@@ -349,13 +363,19 @@ namespace SPS
             return _reportEntries;
         }
 
-        public static void ClearEntries() 
+        public static void ClearEntries()
         {
+            InterfaceManager.Instance.printReportButton.interactable = false;
             _reportEntries.Clear();
             _reportEntries = null;
         }
 
-        public static void ThreadedCreatePDF(double biggestEdge, string badgePath, string hnBadgePath, string shipName, string remarks)
+        public static void ClearRemarks() 
+        {
+            _remarks = string.Empty;
+        }
+
+        public static void ThreadedCreatePDF(double biggestEdge = 65)
         {
             if (!IsReportPending) { return; } //report already done and no new info has been added
             // Create a new PDF document
@@ -371,6 +391,11 @@ namespace SPS
             gfx = XGraphics.FromPdfPage(currentPage);
             XTextFormatter textFormatter = new XTextFormatter(gfx);
 
+            //set paths
+            string badgePath = SettingsHolder.Instance.settings.BadgeFullPath;
+            string hnBadgePath = SettingsHolder.Instance.settings.HNFullPath;
+            string shipName = SettingsHolder.Instance.settings.shipName;
+
             MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
             {
                 showLoadingIndicator = true,
@@ -384,7 +409,7 @@ namespace SPS
                 //create header
                 (double maxW, double maxH) = CreateHeaderTemplate(gfx, biggestEdge, badgePath, hnBadgePath, shipName);
                 //create table
-                CreateReport(margin, maxH, remarks);
+                CreateReport(margin, maxH, Remarks);
                 //save
                 string path = SavePdfDocument(pdfDocument);
                 //hide message box
@@ -433,7 +458,7 @@ namespace SPS
             tf.Alignment = XParagraphAlignment.Center;
             XFont font = new XFont("Verdana", 25, XFontStyle.Bold);
 
-            double verticalPos = margin - 10;
+            double verticalPos = margin - 15;
             double horzSize = currentPage.Width - finalWidthHN - finalWidthBadge - 2 * margin;
 
             XRect titleRect = new XRect(finalWidthBadge + margin, verticalPos, horzSize, 25);
@@ -485,11 +510,11 @@ namespace SPS
 
             }
         }
-      
+
         static void CreateReport(double offsetX, double offsetY, string remarks)
         {
             //first check how many entries the current report has
-            List<ReportEntry> reportEntries = ConsumeData();
+            List<ReportEntry> reportEntries = GetReportEntries();
             if (reportEntries.Count == 0)
             {
                 //there is no data, so we should just return
@@ -540,6 +565,7 @@ namespace SPS
                 foreach (ReportEntry entry in reportEntries)
                 {
                     double currentYOffset = offsetY + lineOffset * (i + 2) + elementHeight * (i + 1);
+                    currentYPosition = currentYOffset;
                     double currentXOffset = margin;
                     //table should probably be like this
                     //  NAME    ID  SYSTEM  &   DEPT    ServiceDescr    Status
@@ -756,7 +782,6 @@ namespace SPS
             else
             {
                 //box fits
-
                 XRect remarksBG =
                     new XRect(margin - lineOffset, currentYPosition - lineOffset, remarkWidth + doubleLineOffset, remarkHeight + remarkHeaderHeight + doubleLineOffset);
                 XRect remarksHeader = new XRect(margin, currentYPosition, remarkWidth, remarkHeaderHeight);
@@ -774,7 +799,7 @@ namespace SPS
             //XRect pageNoRect = new XRect(currentPage.Width - margin * 0.6f, currentPage.Height - margin * 0.5f, 10, 10);
             gfx.DrawRectangle(rectStyle, pageNoRect);
             tf.DrawString(string.Format("{0}/{1}", currentPageNo + 1, amountElements / 18 + 1), cellFont, XBrushes.Black, pageNoRect, format);
-            ClearEntries();
+            UnityMainThreadDispatcher.Instance.Enqueue(() => ClearEntries());
         }
     }
 

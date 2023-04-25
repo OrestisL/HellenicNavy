@@ -21,7 +21,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public ServiceEntry _currentEntry;
     [SerializeField]
     CreateTables tables;
-    Dictionary<string, string> systemsDict = new Dictionary<string, string>();
+    public Dictionary<string, string> systemsDict = new Dictionary<string, string>();
 
     public GameObject canvas;
 
@@ -128,6 +128,14 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public Button importDBButton;
     public Button exportDBButton;
     public Button closeImportExportButton;
+
+    [Header("Print day's report interface")]
+    public Button printReportButton;
+
+    [Header("Remarks interface")]
+    public GameObject remarksPanel;
+    public TMP_InputField remarksInputField;
+    public Button submitRemarksButton;
 
     [Header("Prefabs")]
     public GameObject serviceEntryPrefab;
@@ -372,6 +380,12 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         #region import export db
         importDBButton.onClick.AddListener(() => ImportDatabase());
         exportDBButton.onClick.AddListener(() => ExportDatabase());
+        #endregion
+
+        #region report
+        printReportButton.interactable = false;
+        printReportButton.onClick.AddListener(() => remarksPanel.SetActive(!remarksPanel.activeSelf));
+        submitRemarksButton.onClick.AddListener(() => SubmitRemarksAndPrint());
         #endregion
     }
 
@@ -1108,6 +1122,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         for (int i = 0; i < displayServiceEntryParent.childCount; i++)
         {
             serviceEntries.Add(displayServiceEntryParent.GetChild(i).GetComponent<ServiceEntry>());
+            yield return new WaitForEndOfFrame();
         }
 
         _currentService = new Service(
@@ -1120,6 +1135,18 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         MessageBox.Instance.HideMessageBox();
     }
 
+    void SubmitRemarksAndPrint() 
+    {
+        if (remarksInputField.text.Length == 0) 
+        {
+            //no remarks
+            Report.Remarks = "Δεν υπάρχουν παρατηρήσεις.";
+        }
+
+        remarksPanel.gameObject.SetActive(false);
+        Report.ThreadedCreatePDF();
+
+    }
     void UpdateMachineryInfo()
     {
         //show message box 

@@ -171,9 +171,8 @@ public class pdfTests : MonoBehaviour
 
             Report.AddReportEntries(entries);
 
-            string remarks = "Δοκιμη παρατηρησεων υπολογου\nδευτερη γραμμη κλπ";
             //ThreadedCreatePDF(75, badgePath, hnBadgePath, shipName, remarks);
-            Report.ThreadedCreatePDF(65, badgePath, hnBadgePath, shipName, remarks);
+            Report.ThreadedCreatePDF();
             //(double maxW, double maxH) = CreateHeaderTemplate(gfx, page, 75, badgePath, hnBadgePath, shipName);
             //create the text rect
             //XRect textRect = new XRect(margin, margin / 2 + maxH, page.Width - 2 * margin, page.Height - 2 * margin);
@@ -480,7 +479,7 @@ public class pdfTests : MonoBehaviour
     void CreateReport(double offsetX, double offsetY, string remarks)
     {
         //first check how many entries the current report has
-        List<ReportEntry> reportEntries = Report.ConsumeData();
+        List<ReportEntry> reportEntries = Report.GetReportEntries();
         if (reportEntries.Count == 0)
         {
             //there is no data, so we should just return

@@ -42,6 +42,7 @@ public class MessageBox : GenericSingleton<MessageBox>
         TMP_InputField[] inputFieldsOnScreen = Resources.FindObjectsOfTypeAll<TMP_InputField>();
         for (int i = 0; i < buttonsOnScreen.Length; i++)
         {
+            if (buttonsOnScreen[i].name.Equals("PrintReport")) continue;
             buttonsOnScreen[i].interactable = false;
         }
         for (int i = 0; i < inputFieldsOnScreen.Length; i++) 
@@ -106,6 +107,7 @@ public class MessageBox : GenericSingleton<MessageBox>
         TMP_InputField[] inputFieldsOnScreen = Resources.FindObjectsOfTypeAll<TMP_InputField>();
         for (int i = 0; i < buttonsOnScreen.Length; i++)
         {
+            if (buttonsOnScreen[i].name.Equals("PrintReport")) continue;
             buttonsOnScreen[i].interactable = true;
         }
         for (int i = 0; i < inputFieldsOnScreen.Length; i++)

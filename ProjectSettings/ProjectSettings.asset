@@ -136,7 +136,7 @@ PlayerSettings:
     16:10: 0
     16:9: 1
     Others: 0
-  bundleVersion: 1.0.1
+  bundleVersion: 1.2
   preloadedAssets:
   - {fileID: 5259311642358059621, guid: 7707010f971c535419b8db452d8f0f60, type: 3}
   - {fileID: 19600443213698789, guid: 96c8fd9ceb426d24cb4327cb1170d4f5, type: 3}
@@ -693,7 +693,7 @@ PlayerSettings:
     Standalone: 1
   il2cppCompilerConfiguration: {}
   managedStrippingLevel:
-    Standalone: 4
+    Standalone: 2
   incrementalIl2cppBuild: {}
   suppressCommonWarnings: 1
   allowUnsafeCode: 0
