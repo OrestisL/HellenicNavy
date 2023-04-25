@@ -1117,7 +1117,7 @@ MonoBehaviour:
   bgImg: {fileID: 6984114836389025928}
   normalColor: {r: 1, g: 1, b: 1, a: 0.6666667}
   selectedColor: {r: 0.03137255, g: 0.49803925, b: 0.8431373, a: 0.6666667}
-  postponedColor: {r: 0.6603774, g: 0.064791724, b: 0.24498351, a: 1}
+  postponedColor: {r: 1, g: 0.028755505, b: 0, a: 1}
   highlightedColor: {r: 1, g: 0.70938915, b: 0, a: 1}
   serviceTypesParentHours: {fileID: 5539512954308784721}
   serviceTypesParentDays: {fileID: 2598906280169272716}

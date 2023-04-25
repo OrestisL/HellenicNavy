@@ -433,14 +433,14 @@ namespace SPS
             tf.Alignment = XParagraphAlignment.Center;
             XFont font = new XFont("Verdana", 25, XFontStyle.Bold);
 
-            double verticalPos = margin - 5;
+            double verticalPos = margin - 10;
             double horzSize = currentPage.Width - finalWidthHN - finalWidthBadge - 2 * margin;
 
             XRect titleRect = new XRect(finalWidthBadge + margin, verticalPos, horzSize, 25);
             tf.Alignment = XParagraphAlignment.Center;
             tf.DrawString(shipName, font, XBrushes.Black, titleRect);
 
-            font = new XFont("Verdana", 18, XFontStyle.Regular);
+            font = new XFont("Verdana", 18, XFontStyle.Bold);
             verticalPos += 30;
             titleRect = new XRect(finalWidthBadge + margin, verticalPos, horzSize, 18);
             tf.DrawString("ΑΝΑΦΟΡΑ ΕΠΙΣΚΕΥΩΝ", font, XBrushes.Black, titleRect);
@@ -449,7 +449,7 @@ namespace SPS
             verticalPos += 20;
             titleRect = new XRect(finalWidthBadge + margin, verticalPos, horzSize, 16);
             tf.DrawString(string.Format("Ημερομηνία {0}", DateTime.Now.ToString("dd-MM-yy")), font, XBrushes.Black, titleRect);
-            return (Math.Max(finalWidthHN, finalWidthBadge) + margin / 2, Math.Max(finalHeightBadge, finalHeightHN) + (float)margin * 0.66f);
+            return (Math.Max(finalWidthHN, finalWidthBadge) + margin / 2 + 10, Math.Max(finalHeightBadge, finalHeightHN) + (float)margin * 0.66f + 10);
         }
 
         static string SavePdfDocument(PdfDocument document)

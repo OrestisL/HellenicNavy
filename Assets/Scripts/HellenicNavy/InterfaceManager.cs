@@ -73,6 +73,9 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public TMP_Dropdown displayDeptDropdown;
     public TMP_Dropdown displaySystemDropdown;
     public TMP_InputField displayHoursInput;
+    public TMP_InputField displayPreviousHours;
+    public TMP_InputField displayNextHours;
+    
 
     [Header("Menu")]
     public GameObject menuPanel;
@@ -1087,6 +1090,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         displayDescriptionInput.text = serv.descr;
         displayIdInput.text = serv.id;
         displayHoursInput.text = serv.CurrentHours.ToString();
+        displayNextHours.text = serv.nextServiceHours.ToString();
+        displayPreviousHours.text = serv.lastServiceHours.ToString();
         displayDateInput.text = serv.lastServiceDate.ToString("dd-MM-yy");
 
         for (int i = 0; i < serv.descriptions.Count; i++)
