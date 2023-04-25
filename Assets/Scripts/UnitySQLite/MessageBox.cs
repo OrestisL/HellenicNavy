@@ -47,6 +47,7 @@ public class MessageBox : GenericSingleton<MessageBox>
         }
         for (int i = 0; i < inputFieldsOnScreen.Length; i++) 
         {
+            if (inputFieldsOnScreen[i].name.Equals("HoursPrevious") | inputFieldsOnScreen[i].name.Equals("HoursNext")) continue;
             inputFieldsOnScreen[i].interactable = false;
         }
 
@@ -112,6 +113,7 @@ public class MessageBox : GenericSingleton<MessageBox>
         }
         for (int i = 0; i < inputFieldsOnScreen.Length; i++)
         {
+            if (inputFieldsOnScreen[i].name.Equals("HoursPrevious") | inputFieldsOnScreen[i].name.Equals("HoursNext")) continue;
             inputFieldsOnScreen[i].interactable = true;
         }
         //clear arrays

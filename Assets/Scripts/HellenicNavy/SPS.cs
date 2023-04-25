@@ -450,8 +450,8 @@ namespace SPS
 
             //draw images
             //badge top left, HN top right
-            gfx.DrawImage(badgeImg, margin / 2, margin / 2, finalWidthBadge, finalHeightBadge);
-            gfx.DrawImage(hnImg, currentPage.Width - finalWidthHN - margin / 2, margin / 2, finalWidthHN, finalHeightHN);
+            gfx.DrawImage(badgeImg, margin * 0.66f, margin * 0.66f, finalWidthBadge, finalHeightBadge);
+            gfx.DrawImage(hnImg, currentPage.Width - finalWidthHN - margin * 0.66f, margin * 0.66f, finalWidthHN, finalHeightHN);
 
             //draw text between images
             XTextFormatter tf = new XTextFormatter(gfx);
