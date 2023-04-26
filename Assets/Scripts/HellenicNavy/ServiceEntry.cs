@@ -26,6 +26,7 @@ public class ServiceEntry : MonoBehaviour
     public List<ServiceAssignmentType> serviceAssignmentTypesDays;
     public List<ServiceAssignment> assignments;
     public List<ServiceStatus> assignmentsStatuses;
+    //public string lastServiceDate;
 
     [SerializeField]
     private ServiceStatus status;

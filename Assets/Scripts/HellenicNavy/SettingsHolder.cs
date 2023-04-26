@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
+using System.Reflection;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
@@ -45,7 +46,8 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
             maxLookupTableHours = 50000;
             maxLookupTableDays = 10000;
             AccessTime = 0.5f;
-            directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "SPSSettings");
+            //directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "SPSSettings");
+            directoryPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "SPSSettings");
             badgeName = "badge.png";
             shipName = "ΠΓΥ ΗΡΑΚΛΗΣ";
         }
@@ -83,11 +85,7 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
 
     void LoadFromJson(string name)
     {
-        if (settings == null)
-        {
-            settings = new Settings();
-            //return;
-        }
+        settings ??= new Settings();
         //ensure path exists (path is next to the exe)
         if (!Directory.Exists(settings.directoryPath))
         {
@@ -105,6 +103,9 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
             {
                 json = reader.ReadToEnd();
             }
+            if (json.Length == 0)
+                throw new Exception(string.Format("{0},{1}\n{2}", "There is no data in json file at ", jsonPath,json));
+
             settings = new Settings(json);
             Debug.Log($"Successfully read settings from {jsonPath}.");
         }
@@ -116,6 +117,7 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
             using (StreamWriter writer = new StreamWriter(jsonPath))
             {
                 writer.Write(JsonConvert.SerializeObject(settings, Formatting.Indented));
+                Debug.Log(settings.directoryPath);
             }
         }
 

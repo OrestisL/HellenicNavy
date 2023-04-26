@@ -70,6 +70,7 @@ __COMPLETED__
 #################################################################################################################################################
 
 __REMAINING__
+- change settings location to persistentDataPath because the others dont work properly
 - refactor database manager to command pattern (read write) (consider message box hide)(might omit entirely)
 - user manual
 

@@ -91,7 +91,7 @@ namespace SPS
         public List<ServiceStatus> serviceStatuses;
         public List<List<ServiceAssignment>> serviceAssignments; //WIP
         public List<List<ServiceStatus>> serviceAssignmentsStatuses;
-
+        //public List<string> lastServiceDates;
         public Service() { }
 
         public Service(string json)
@@ -179,7 +179,6 @@ namespace SPS
 
         public void ChangeEntries(ServiceEntry[] entries)
         {
-
             serviceHours = new List<int>();
             serviceDays = new List<int>();
             descriptions = new List<string>();
@@ -188,6 +187,7 @@ namespace SPS
             serviceStatuses = new List<ServiceStatus>();
             serviceAssignments = new List<List<ServiceAssignment>>();
             serviceAssignmentsStatuses = new List<List<ServiceStatus>>();
+            //lastServiceDates = new List<string>();
 
             for (int i = 0; i < entries.Length; i++)
             {
@@ -199,6 +199,7 @@ namespace SPS
                 serviceStatuses.Add(entries[i].Status);
                 serviceAssignments.Add(entries[i].assignments);
                 serviceAssignmentsStatuses.Add(entries[i].assignmentsStatuses);
+                //lastServiceDates.Add(entries[i].lastServiceDate);
             }
         }
 
@@ -240,6 +241,7 @@ namespace SPS
                     completedServiceDescr = string.Format("Την {0} ολοκληρώθηκαν οι εξής επισκευές:", DateTime.Now.ToString("dd-MM-yy"));
 
                     entries[i].Status = ServiceStatus.completed;
+                    //entries[i].lastServiceDate = DateTime.Now.ToString("dd-MM-yy");
                     Service current = InterfaceManager.Instance._currentService;
                     Report.AddReportEntry(new ReportEntry(current.name, current.id,
                         InterfaceManager.Instance.displayDeptDropdown.options[current.systemName].text,
