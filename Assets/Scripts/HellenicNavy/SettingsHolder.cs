@@ -28,6 +28,7 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
         public string BadgeFullPath { get { return Path.Combine(directoryPath, badgeName); } }
         public string HNFullPath { get { return Path.Combine(directoryPath, "HN.png"); } }
         public string shipName;
+        public int buttonsPerRow = 5;
         //in order to avoid weird behavior and excess resource usage, some bounds are set
         #region bounds
         private int minRate = 20;
@@ -38,6 +39,8 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
         private int maxLookupTableSizeHours = 100000;
         private int minLookupTableSizeDays = 5000;
         private int maxLookupTableSizeDays = 20000;
+        private int maxButtonsPerRow = 7;
+        private int minButtonsPerRow = 2;
         #endregion
 
         public Settings()
@@ -47,7 +50,8 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
             maxLookupTableDays = 10000;
             AccessTime = 0.5f;
             //directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "SPSSettings");
-            directoryPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "SPSSettings");
+            //directoryPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "SPSSettings");
+            directoryPath = Path.Combine(Application.streamingAssetsPath, "SPSSettings");
             badgeName = "badge.png";
             shipName = "ΠΓΥ ΗΡΑΚΛΗΣ";
         }
@@ -68,6 +72,7 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
             directoryPath = s.directoryPath;
             badgeName = s.badgeName;
             shipName = s.shipName;
+            buttonsPerRow = Mathf.Clamp(buttonsPerRow, minButtonsPerRow, maxButtonsPerRow);
         }
         public string ToJson()
         {
@@ -80,6 +85,7 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
     public override void Awake()
     {
         base.Awake();
+        settings.directoryPath = Path.Combine(Application.streamingAssetsPath, "SPSSettings");
         LoadFromJson("settings");
     }
 
@@ -120,7 +126,7 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
                 Debug.Log(settings.directoryPath);
             }
         }
-
+        //InterfaceManager.Instance.buttonsPerRow = settings.buttonsPerRow;
         StartCoroutine(LoadBadgeIcon(settings.BadgeFullPath));
     }
 
