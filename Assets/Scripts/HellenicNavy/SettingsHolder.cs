@@ -39,7 +39,7 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
         private int maxLookupTableSizeHours = 100000;
         private int minLookupTableSizeDays = 5000;
         private int maxLookupTableSizeDays = 20000;
-        private int maxButtonsPerRow = 7;
+        private int maxButtonsPerRow = 12;
         private int minButtonsPerRow = 2;
         #endregion
 
@@ -72,7 +72,7 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
             directoryPath = s.directoryPath;
             badgeName = s.badgeName;
             shipName = s.shipName;
-            buttonsPerRow = Mathf.Clamp(buttonsPerRow, minButtonsPerRow, maxButtonsPerRow);
+            buttonsPerRow = Mathf.Clamp(s.buttonsPerRow, minButtonsPerRow, maxButtonsPerRow);
         }
         public string ToJson()
         {

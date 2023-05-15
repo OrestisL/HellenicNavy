@@ -4,7 +4,7 @@
   "directoryPath": "C:/Users/Orestis/Desktop/unity projects/SPS/Assets/StreamingAssets\\SPSSettings",
   "badgeName": "badge.png",
   "shipName": "ΠΓΥ ΗΡΑΚΛΗΣ",
-  "buttonsPerRow": 5,
+  "buttonsPerRow": 15,
   "BadgeFullPath": "C:/Users/Orestis/Desktop/unity projects/SPS/Assets/StreamingAssets\\SPSSettings\\badge.png",
   "HNFullPath": "C:/Users/Orestis/Desktop/unity projects/SPS/Assets/StreamingAssets\\SPSSettings\\HN.png"
 }
