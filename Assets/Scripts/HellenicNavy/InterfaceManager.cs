@@ -102,6 +102,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     [Header("Select department interface")]
     public Button selectDeptButton;
     public GameObject selectDeptPanel;
+    public Button closeSelectDeptPanel;
 
     [Header("Select System Interface")]
     public GameObject selectSystemPanel;
@@ -337,6 +338,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         createDeptButton.onClick.AddListener(() => addDeptPanel.SetActive(!addDeptPanel.activeSelf));
         closeDeptPanel.onClick.AddListener(() => addDeptPanel.SetActive(false));
         selectDeptButton.onClick.AddListener(() => { SetupDeptSelectionInterface(); });
+        closeSelectDeptPanel.onClick.AddListener(() => SetupDeptSelectionInterface());
         #endregion
 
         #region menu
