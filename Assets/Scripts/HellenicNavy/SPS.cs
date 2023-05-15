@@ -318,7 +318,11 @@ namespace SPS
     {
         private static List<ReportEntry> _reportEntries;
         private static string _remarks;
-        public static string Remarks { get { return _remarks; } set { _remarks = string.Format("{0}\n{1}", _remarks, value); } }
+        public static string Remarks { 
+            get { return _remarks; } 
+            set {
+                _remarks = string.Format("{0}\n{1}", _remarks, value); 
+            } }
         private static bool _isReportPending;
         public static bool IsReportPending { get { return _isReportPending; } }
 
@@ -370,6 +374,7 @@ namespace SPS
             InterfaceManager.Instance.printReportButton.interactable = false;
             _reportEntries.Clear();
             _reportEntries = null;
+            ClearRemarks();
         }
 
         public static void ClearRemarks() 
