@@ -96,13 +96,12 @@ namespace UnitySQLite
         public override void Awake()
         {
             //initialize singleton
-            base.Awake();
-
-            m_writeFrequency = SettingsHolder.Instance.settings.AccessTime;
+            base.Awake();           
         }
 
         public void Initialize(string dbLocation, string dbName)
         {
+            m_writeFrequency = SettingsHolder.Instance.settings.AccessTime;
             //ensure write frequency is not 0
             m_writeFrequency = Mathf.Clamp(m_writeFrequency, 0.1f, m_writeFrequency);
 

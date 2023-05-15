@@ -91,7 +91,7 @@ public class SettingsHolder : GenericSingleton<SettingsHolder>
 
     void LoadFromJson(string name)
     {
-        settings ??= new Settings();
+        //settings ??= new Settings();
         //ensure path exists (path is next to the exe)
         if (!Directory.Exists(settings.directoryPath))
         {
