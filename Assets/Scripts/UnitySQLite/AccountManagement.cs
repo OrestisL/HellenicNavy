@@ -60,6 +60,13 @@ namespace UnitySQLite
 #endif
         }
 
+#if UNITY_EDITOR
+        private void Start()
+        {
+            usernameField.text = "admin";
+            passwordField.text = "admin";
+        }
+#endif
         public void SetCurrentAccount(int id)
         {
             StartCoroutine(GetAccount(id));
