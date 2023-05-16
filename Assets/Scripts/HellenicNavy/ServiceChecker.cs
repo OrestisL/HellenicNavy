@@ -30,18 +30,28 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
     /// <summary>
     /// Class used for lookup table.
     /// </summary>
-    private struct ServiceTableEntry
+    private class ServiceTableEntry
     {
         int timeInterval;
         List<int> services;
-        public ServiceTableEntry(int repeat, List<int> services)
+        List<DateTime> lastDates;
+        public ServiceTableEntry(int repeat, List<int> services, List<string> dates = null)
         {
             this.timeInterval = repeat;
             this.services = services;
+            if (dates != null & dates.Count > 0)
+            {
+                for (int i = 0; i < dates.Count; i++)
+                {
+                    lastDates.Add(DateTime.ParseExact(dates[i], "dd-MM-YY", null));
+                }
+
+            }
         }
 
         public int TimeInterval { get { return timeInterval; } }
         public List<int> Services { get { return services; } }
+        public List<DateTime> LastDates { get { return lastDates; } }
     }
 
     public override void Awake()
@@ -98,9 +108,8 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
 
                     watch.Start();
 #endif
-
-                    #region hours
                     Service serv = new Service(data[0][0].StringValue);
+                    #region hours
                     List<int> serviceTimes = serv.serviceHours;
 
                     int iterHours = SettingsHolder.Instance.settings.maxLookupTableHours / serviceTimes.Min();
@@ -169,7 +178,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                     {
                         int currentDays = jj * serviceDays.Min();
                         List<int> servicesToBeDone = new List<int>();
-
+                        List<string> dates = new List<string>();
                         for (int kk = 0; kk < serviceDays.Count; kk++)
                         {
                             if (jj == 0)
@@ -177,12 +186,14 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                             if (currentDays % serviceDays[kk] == 0)
                             {
                                 servicesToBeDone.Add(kk);
+                                dates.Add(serv.lastServiceDates[kk]);
                             }
                         }
-                        servDays.Add(new ServiceTableEntry(currentDays, servicesToBeDone));
+                        servDays.Add(new ServiceTableEntry(currentDays, servicesToBeDone, dates));
                         if (jj > 1)
                         {
-                            if (serv.CurrentDays >= servDays[jj - 1].TimeInterval & serv.CurrentDays <= servDays[jj].TimeInterval)
+                            int daysSinceLast = (DateTime.Now - servDays[jj - 1].LastDates[jj - 1]).Days;
+                            if (daysSinceLast >= servDays[jj - 1].TimeInterval & daysSinceLast <= servDays[jj].TimeInterval)
                             {
                                 if (serv.lastServiceDays == servDays[jj - 1].TimeInterval)
                                 {

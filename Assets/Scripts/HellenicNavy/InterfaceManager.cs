@@ -623,6 +623,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         for (int i = 0; i < serviceEntryParent.childCount; i++)
         {
             serviceEntries.Add(serviceEntryParent.GetChild(i).GetComponent<ServiceEntry>());
+            serviceEntries[i].lastServiceDate = dateInput.text;
         }
 
         _currentService = new Service(
