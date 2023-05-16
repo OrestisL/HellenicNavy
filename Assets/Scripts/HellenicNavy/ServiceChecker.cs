@@ -172,65 +172,17 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                     }
                     #endregion
                     #region days
+                    //List<int> _servicesToBeDone = new List<int>();
                     List<int> serviceDays = serv.serviceDays;
-                    int iterDays = SettingsHolder.Instance.settings.maxLookupTableDays;
-                    List<ServiceTableEntry> servDays = new List<ServiceTableEntry>();
-                    int currentIndex = 0;
-                    for (int jj = 0; jj < iterDays; jj++)
+
+                    for (int ii = 0; ii < serviceDays.Count; ii++)
                     {
-                        if (!serviceDays.Contains(jj))
-                            continue;
-
-                        int currentDays = jj * serviceDays.Min();
-                        List<int> servicesToBeDone = new List<int>();
-                        List<string> dates = new List<string>();
-                        for (int kk = 0; kk < serv.lastServiceDates.Count; kk++)
+                        if ((DateTime.Now - DateTime.ParseExact(serv.lastServiceDates[ii], "dd-MM-yy", null)).Days >= serviceDays[ii])
                         {
-                            if (jj == 0)
-                                break;
-
-                            servicesToBeDone.Add(kk);
-                            dates.Add(serv.lastServiceDates[kk]);
-
+                            serv.serviceStatuses[ii] = ServiceStatus.pending;
                         }
-                        servDays.Add(new ServiceTableEntry(currentDays, servicesToBeDone, dates));
-                        if (currentIndex >= 1)
-                        {
-                            int daysSinceLast = (DateTime.Now - servDays[currentIndex - 1].LastDates[currentIndex - 1]).Days;
-                            if (daysSinceLast >= servDays[currentIndex - 1].TimeInterval & daysSinceLast <= servDays[currentIndex].TimeInterval)
-                            {
-                                if (serv.lastServiceDays == servDays[currentIndex - 1].TimeInterval)
-                                {
-                                    //service has already been done for the given days
-                                    break;
-                                }
-                                string descr = "";
-                                servicesToBeDone = servDays[currentIndex - 1].Services;
-
-                                int ll = servicesToBeDone.Max();
-                                while (ll >= 0)
-                                {
-                                    if (servicesToBeDone.Contains(ll))
-                                    {
-                                        descr += string.Format("{0}\n", serv.descriptions[ll]);
-                                        serv.serviceStatuses[ll] = ServiceStatus.pending;
-                                    }
-                                    ll--;
-                                }
-
-                                int ss = machineryButtonsToDisplay.Select(x => x.name == serv.name).Count();
-                                if (ss == 0)
-                                {
-                                    Button toAdd = InterfaceManager.Instance.ShowMachineryWithPendingServiceButtons(serv.name);
-                                    machineryButtonsToDisplay.Add(toAdd);
-                                }
-                                //add button here, if not already exists
-                                Debug.Log(string.Format("services (days) to be done for machinery {0}:\n{1}", serv.name, descr.Trim()));
-                                break;
-                            }
-                        }
-                        currentIndex++;
                     }
+
                     #endregion
 
                     #region postponed
