@@ -424,6 +424,34 @@ namespace UnitySQLite.Utilities
                     }, 1.5f))
                 , true));
         }
+
+        public static void ResetAccountPassword(string accountName) 
+        {
+            string salt;
+            using (RandomNumberGenerator rng = new RNGCryptoServiceProvider())
+            {
+                byte[] bytes = new byte[16];
+                rng.GetNonZeroBytes(bytes);
+                salt = bytes.ByteArrayToString();
+            }
+            string hash = CreateSHA256(accountName, salt);
+
+            string values = string.Format("{0},{1}", hash, salt);
+
+            DatabaseManager.Instance.WriteOnce(() => DatabaseManager.Instance.UpdateValuesOnTable("Users", "Password,Salt", values, $"name = '{accountName}'",
+               () =>
+               UnityMainThreadDispatcher.Instance.Enqueue(
+                   () => MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
+                   {
+                       showLabel = true,
+                       label = "Επαναφορά κωδικού πρόσβασης",
+                       mainText = $"Επιτυχής επαναφορά κωδικού πρόσβασης για {accountName}",
+                       showLoadingIndicator = false,
+                       useLeftButton = false,
+                       useRightButton = false,
+                   }, 1.5f))
+               , true));
+        }
         /// <summary>
         /// Create account on database if not exists. 
         /// </summary>
