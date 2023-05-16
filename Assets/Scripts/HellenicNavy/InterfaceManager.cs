@@ -75,7 +75,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public TMP_InputField displayHoursInput;
     public TMP_InputField displayPreviousHours;
     public TMP_InputField displayNextHours;
-    
+
 
     [Header("Menu")]
     public GameObject menuPanel;
@@ -121,7 +121,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public GameObject assignmentsPanel;
     public GameObject assignmentsPanelScrollView;
     public Button addAsignmentButton;
-    public Button markAssignmentCompleteButton;
+    public Button deleteAssignmentsButton;
+    public Button setAssignmnetsButton;
     public Button closeAssignmentsPanelButton;
 
     [Header("Import/Export interface")]
@@ -376,7 +377,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
         #region assignments
         addAsignmentButton.onClick.AddListener(AddAssignment);
-        markAssignmentCompleteButton.onClick.AddListener(MarkAssignmentsComplete);
+        deleteAssignmentsButton.onClick.AddListener(DeleteAssignmentSelection);
+        setAssignmnetsButton.onClick.AddListener(SetAssignmentsOnEntry);
         closeAssignmentsPanelButton.onClick.AddListener(CloseAssignmentsPanel);
         #endregion
 
@@ -1126,6 +1128,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         for (int i = 0; i < displayServiceEntryParent.childCount; i++)
         {
             serviceEntries.Add(displayServiceEntryParent.GetChild(i).GetComponent<ServiceEntry>());
+            serviceEntries[i].lastServiceDate = serv.lastServiceDates[i];
             yield return new WaitForEndOfFrame();
         }
 
@@ -1139,9 +1142,9 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         MessageBox.Instance.HideMessageBox();
     }
 
-    void SubmitRemarksAndPrint() 
+    void SubmitRemarksAndPrint()
     {
-        if (remarksInputField.text.Length == 0) 
+        if (remarksInputField.text.Length == 0)
         {
             //no remarks
             Report.Remarks = "Δεν υπάρχουν παρατηρήσεις.";
@@ -1224,13 +1227,14 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         MessageBox.Instance.ShowMessageBox(new MessageBoxSettings()
         {
             showLabel = true,
-            label = "Αποθήκευση αλλαγών",
+            label = "Αποθήκευση εργασιών",
             mainText = "Είστε σίγουροι ότι θέλετε να αποθηκεύσετε τις αλλαγές;",
             useRightButton = true,
             rightButtonLabel = "NAI",
             onRightButtonClick = () =>
             {
-                MessageBox.Instance.HideMessageBox(); List<Assignment> assignments = assignmentsPanelScrollView.GetComponentsInChildren<Assignment>().ToList();
+                MessageBox.Instance.HideMessageBox();
+                List<Assignment> assignments = assignmentsPanelScrollView.GetComponentsInChildren<Assignment>().ToList();
                 List<ServiceAssignment> serviceAssignments = new List<ServiceAssignment>(assignments.Count);
                 List<ServiceStatus> serviceStatuses = new List<ServiceStatus>();
                 for (int i = 0; i < assignments.Count; i++)
@@ -1264,6 +1268,44 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 assign.Complete();
             }
         }
+    }
+
+    void DeleteAssignmentSelection()
+    {
+        List<Assignment> assignments = assignmentsPanelScrollView.GetComponentsInChildren<Assignment>().ToList();
+        foreach (Assignment assign in assignments)
+        {
+            if (assign.isSelected.isOn)
+            {
+                Destroy(assign.gameObject);
+            }
+        }
+    }
+
+    void SetAssignmentsOnEntry()
+    {
+        List<Assignment> assignments = assignmentsPanelScrollView.GetComponentsInChildren<Assignment>().ToList();
+        List<ServiceAssignment> serviceAssignments = new List<ServiceAssignment>(assignments.Count);
+        List<ServiceStatus> serviceStatuses = new List<ServiceStatus>();
+        for (int i = 0; i < assignments.Count; i++)
+        {
+            serviceAssignments.Add(new ServiceAssignment(assignments[i].descrInput.text, assignments[i].isSelected.isOn));
+            serviceStatuses.Add(ServiceStatus.pending);
+        }
+        _currentEntry.assignments = serviceAssignments;
+        _currentEntry.assignmentsStatuses = serviceStatuses;
+        _currentEntry = null;
+        assignmentsPanel.SetActive(false);
+        assignmentsPanel.SetActive(false);
+        MessageBox.Instance.ShowMessageBox(new MessageBoxSettings
+        {
+            showLabel = false,
+            mainText = "Επιτυχής αποθήκευση εργασιών",
+            useLeftButton = false,
+            useRightButton = false,
+            showLoadingIndicator = false,
+
+        });
     }
 
     void DeleteMachinery()

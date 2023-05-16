@@ -39,11 +39,12 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
         {
             this.timeInterval = repeat;
             this.services = services;
-            if (dates != null & dates.Count > 0)
+            lastDates = new List<DateTime>();
+            if (dates != null)
             {
                 for (int i = 0; i < dates.Count; i++)
                 {
-                    lastDates.Add(DateTime.ParseExact(dates[i], "dd-MM-YY", null));
+                    lastDates.Add(DateTime.ParseExact(dates[i], "dd-MM-yy", null));
                 }
 
             }
@@ -172,36 +173,39 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                     #endregion
                     #region days
                     List<int> serviceDays = serv.serviceDays;
-                    int iterDays = SettingsHolder.Instance.settings.maxLookupTableDays / serviceDays.Min();
+                    int iterDays = SettingsHolder.Instance.settings.maxLookupTableDays;
                     List<ServiceTableEntry> servDays = new List<ServiceTableEntry>();
+                    int currentIndex = 0;
                     for (int jj = 0; jj < iterDays; jj++)
                     {
+                        if (!serviceDays.Contains(jj))
+                            continue;
+
                         int currentDays = jj * serviceDays.Min();
                         List<int> servicesToBeDone = new List<int>();
                         List<string> dates = new List<string>();
-                        for (int kk = 0; kk < serviceDays.Count; kk++)
+                        for (int kk = 0; kk < serv.lastServiceDates.Count; kk++)
                         {
                             if (jj == 0)
                                 break;
-                            if (currentDays % serviceDays[kk] == 0)
-                            {
-                                servicesToBeDone.Add(kk);
-                                dates.Add(serv.lastServiceDates[kk]);
-                            }
+
+                            servicesToBeDone.Add(kk);
+                            dates.Add(serv.lastServiceDates[kk]);
+
                         }
                         servDays.Add(new ServiceTableEntry(currentDays, servicesToBeDone, dates));
-                        if (jj > 1)
+                        if (currentIndex >= 1)
                         {
-                            int daysSinceLast = (DateTime.Now - servDays[jj - 1].LastDates[jj - 1]).Days;
-                            if (daysSinceLast >= servDays[jj - 1].TimeInterval & daysSinceLast <= servDays[jj].TimeInterval)
+                            int daysSinceLast = (DateTime.Now - servDays[currentIndex - 1].LastDates[currentIndex - 1]).Days;
+                            if (daysSinceLast >= servDays[currentIndex - 1].TimeInterval & daysSinceLast <= servDays[currentIndex].TimeInterval)
                             {
-                                if (serv.lastServiceDays == servDays[jj - 1].TimeInterval)
+                                if (serv.lastServiceDays == servDays[currentIndex - 1].TimeInterval)
                                 {
                                     //service has already been done for the given days
                                     break;
                                 }
                                 string descr = "";
-                                servicesToBeDone = servDays[jj - 1].Services;
+                                servicesToBeDone = servDays[currentIndex - 1].Services;
 
                                 int ll = servicesToBeDone.Max();
                                 while (ll >= 0)
@@ -225,6 +229,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                                 break;
                             }
                         }
+                        currentIndex++;
                     }
                     #endregion
 

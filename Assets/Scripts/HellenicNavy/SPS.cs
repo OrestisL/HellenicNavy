@@ -144,7 +144,7 @@ namespace SPS
             serviceStatuses = new List<ServiceStatus>();
             serviceAssignments = new List<List<ServiceAssignment>>();
             serviceAssignmentsStatuses = new List<List<ServiceStatus>>();
-
+            lastServiceDates = new List<string>();
 
             for (int i = 0; i < entries.Count; i++)
             {
