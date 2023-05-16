@@ -1118,7 +1118,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         {
             ServiceEntry currentEntry = Instantiate(serviceEntryPrefab, displayServiceEntryParent).GetComponent<ServiceEntry>();
             //currentEntry.DisplayFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceDays[i], serv.serviceTypesHours[i], serv.serviceTypesDays[i]);
-            StartCoroutine(currentEntry.CreateInterfaceFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceDays[i], /*serv.serviceTypesHours[i], serv.serviceTypesDays[i],*/ serv.serviceStatuses[i], serv.serviceAssignments[i]));
+            StartCoroutine(currentEntry.CreateInterfaceFromData(serv.descriptions[i], serv.serviceHours[i], serv.serviceDays[i], /*serv.serviceTypesHours[i], serv.serviceTypesDays[i],*/ serv.serviceStatuses[i], serv.serviceAssignments[i], serv.lastServiceDates[i]));
             yield return new WaitForEndOfFrame();
         }
 

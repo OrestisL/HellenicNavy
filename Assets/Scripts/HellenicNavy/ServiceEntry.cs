@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
@@ -16,6 +16,7 @@ public class ServiceEntry : MonoBehaviour
     public TMP_InputField descriptionField;
     public TMP_InputField hoursField;
     public TMP_InputField daysField;
+    public TextMeshProUGUI lastDateText;
     public Button displayAssignments;
     public Toggle selectionToggle;
     public Image bgImg;
@@ -169,7 +170,7 @@ public class ServiceEntry : MonoBehaviour
         return normalColor;
     }
 
-    public IEnumerator CreateInterfaceFromData(string descr, int hours, int days, /*ServiceAssignmentType serviceTypesHours, ServiceAssignmentType serviceTypesDays,*/ ServiceStatus status, List<ServiceAssignment> _assignments)
+    public IEnumerator CreateInterfaceFromData(string descr, int hours, int days, /*ServiceAssignmentType serviceTypesHours, ServiceAssignmentType serviceTypesDays,*/ ServiceStatus status, List<ServiceAssignment> _assignments, string _lastServiceDate)
     {
         bool accessible = AccountManagement.Instance.CurrentAccount.AccessLevel == UnitySQLite.Utilities.AccessLevel.admin;
         descriptionField.text = descr;
@@ -199,6 +200,8 @@ public class ServiceEntry : MonoBehaviour
         {
             assignments.Add(new ServiceAssignment(_assignments[i].description, _assignments[i].isCompleted));
         }
+        lastServiceDate = _lastServiceDate;
+        lastDateText.text = string.Format("Ημ/νια τελευταίου ΣΠΣ\n{0}", lastServiceDate);
         //selectionToggle.interactable = accessible;
     }
 
