@@ -1228,7 +1228,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         {
             showLabel = true,
             label = "Αποθήκευση εργασιών",
-            mainText = "Είστε σίγουροι ότι θέλετε να αποθηκεύσετε τις αλλαγές;",
+            mainText = "Θέλετε να αποθηκεύσετε τις αλλαγές;",
             useRightButton = true,
             rightButtonLabel = "NAI",
             onRightButtonClick = () =>

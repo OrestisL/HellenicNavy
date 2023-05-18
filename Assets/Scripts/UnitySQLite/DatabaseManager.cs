@@ -84,7 +84,7 @@ namespace UnitySQLite
         private Action<List<List<DataEntry>>> OnDataReady;
 
         /// <summary>
-        /// called after the user creates a database (only first run of program, unless someone deletes the file)
+        /// Called after the user creates a database (only first run of program, unless someone deletes the file)
         /// </summary>
         public Action onDatabaseCreated = delegate
         {

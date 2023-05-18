@@ -445,7 +445,7 @@ namespace UnitySQLite.Utilities
                    {
                        showLabel = true,
                        label = "Επαναφορά κωδικού πρόσβασης",
-                       mainText = $"Επιτυχής επαναφορά κωδικού πρόσβασης για {accountName}",
+                       mainText = $"Επιτυχής επαναφορά κωδικού πρόσβασης για {accountName}.",
                        showLoadingIndicator = false,
                        useLeftButton = false,
                        useRightButton = false,

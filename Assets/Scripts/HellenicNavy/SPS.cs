@@ -13,7 +13,7 @@ using System.Threading;
 namespace SPS
 {
     /// <summary>
-    /// Each service will contain some assignments. These will be decribed here. WIP
+    /// Each service will contain some assignments. These will be decribed here. 
     /// </summary>
     [Serializable]
     public class ServiceAssignment

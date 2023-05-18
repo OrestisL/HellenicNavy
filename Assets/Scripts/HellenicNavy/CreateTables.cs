@@ -16,7 +16,6 @@ public class CreateTables : MonoBehaviour
 
     void Start()
     {
-
         DatabaseManager.Instance.Initialize("Databases", "Machinery");
         DatabaseManager.Instance.onDatabaseCreated += () =>
         {
