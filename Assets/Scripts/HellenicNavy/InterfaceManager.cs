@@ -1149,7 +1149,10 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             //no remarks
             Report.Remarks = "Δεν υπάρχουν παρατηρήσεις.";
         }
-
+        else
+        {
+            Report.Remarks = remarksInputField.text; 
+        }
         remarksPanel.gameObject.SetActive(false);
         Report.ThreadedCreatePDF();
 

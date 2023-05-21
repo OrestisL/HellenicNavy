@@ -180,6 +180,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                         if ((DateTime.Now - DateTime.ParseExact(serv.lastServiceDates[ii], "dd-MM-yy", null)).Days >= serviceDays[ii])
                         {
                             serv.serviceStatuses[ii] = ServiceStatus.pending;
+                            machineryButtonsToDisplay.Add(InterfaceManager.Instance.ShowMachineryWithPendingServiceButtons(serv.name));
                         }
                     }
 

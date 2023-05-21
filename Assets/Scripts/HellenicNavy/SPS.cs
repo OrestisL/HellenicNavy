@@ -320,12 +320,14 @@ namespace SPS
     public class Report
     {
         private static List<ReportEntry> _reportEntries;
-        private static string _remarks;
+        private static string _remarks = "";
         public static string Remarks { 
             get { return _remarks; } 
-            set {
+            set 
+            {
                 _remarks = string.Format("{0}\n{1}", _remarks, value); 
-            } }
+            } 
+        }
         private static bool _isReportPending;
         public static bool IsReportPending { get { return _isReportPending; } }
 
@@ -542,8 +544,8 @@ namespace SPS
             XTextFormatter tf = new XTextFormatter(gfx);
 
             //fonts
-            XFont cellFont = new XFont("Verdana", 6, XFontStyle.Regular);
-            XFont headerFont = new XFont("Verdana", 7, XFontStyle.Bold);
+            XFont cellFont = new XFont("Verdana", 8, XFontStyle.Regular);
+            XFont headerFont = new XFont("Verdana", 8, XFontStyle.Bold);
 
             //element dimensions
             int elementWidth = (int)(currentPage.Width - margin) / 2; //282
@@ -786,7 +788,7 @@ namespace SPS
                 gfx.DrawRectangle(rectStyle, remarksHeader);
                 gfx.DrawRectangle(rectStyle, remarksRect);
 
-                tf.DrawString("ΠΑΡΑΤΗΡΗΣΕΙΣ ΥΠΟΛΟΓΟΥ", new XFont("Verdana", 12), XBrushes.Black, remarksHeader);
+                tf.DrawString("ΠΑΡΑΤΗΡΗΣΕΙΣ ΥΠΟΛΟΓΟΥ", new XFont("Verdana", 10), XBrushes.Black, remarksHeader);
                 tf.DrawString(remarks, cellFont, XBrushes.Black, remarksRect);
             }
             else
@@ -801,7 +803,7 @@ namespace SPS
                 gfx.DrawRectangle(rectStyle, remarksHeader);
                 gfx.DrawRectangle(rectStyle, remarksRect);
 
-                tf.DrawString("ΠΑΡΑΤΗΡΗΣΕΙΣ ΥΠΟΛΟΓΟΥ", new XFont("Verdana", 8, XFontStyle.Bold), XBrushes.Black, remarksHeader);
+                tf.DrawString("ΠΑΡΑΤΗΡΗΣΕΙΣ ΥΠΟΛΟΓΟΥ", new XFont("Verdana", 10, XFontStyle.Bold), XBrushes.Black, remarksHeader);
                 tf.DrawString(remarks, cellFont, XBrushes.Black, remarksRect);
             }
 
