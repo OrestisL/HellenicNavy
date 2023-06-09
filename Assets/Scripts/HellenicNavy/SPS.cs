@@ -92,7 +92,7 @@ namespace SPS
         public List<List<ServiceAssignment>> serviceAssignments; //WIP
         public List<List<ServiceStatus>> serviceAssignmentsStatuses;
         public List<string> lastServiceDates;
-        public List<HistoryEntry> history = new List<HistoryEntry>();
+        public List<HistoryEntry> history;
         public Service() { }
 
         public Service(string json)
@@ -126,7 +126,7 @@ namespace SPS
         }
 
         public Service(string name, string descr, string id, int hours, int lastHours,
-            int nextHours, string lastDate, int system, List<ServiceEntry> entries)
+            int nextHours, string lastDate, int system, List<ServiceEntry> entries, List<HistoryEntry> history)
         {
             this.name = name;
             this.id = id;
@@ -147,7 +147,8 @@ namespace SPS
             serviceAssignments = new List<List<ServiceAssignment>>();
             serviceAssignmentsStatuses = new List<List<ServiceStatus>>();
             lastServiceDates = new List<string>();
-            //history = new List<HistoryEntry>();
+            this.history = history;
+
             for (int i = 0; i < entries.Count; i++)
             {
                 serviceHours.Add(entries[i].Hours);
@@ -224,12 +225,14 @@ namespace SPS
 
                     entries[i].Status = ServiceStatus.postponed;
                     Service current = InterfaceManager.Instance._currentService;
-                    Report.AddReportEntry(new ReportEntry(current.name, current.id,
+                    ReportEntry entry = new ReportEntry(current.name, current.id,
                         InterfaceManager.Instance.displayDeptDropdown.options[current.systemName].text,
                         InterfaceManager.Instance.displaySystemDropdown.options[current.systemName].text,
-                        entries[i].descriptionField.text, "ΑΝΑΒΛΗΘΗΚΕ"));
+                        entries[i].descriptionField.text, "ΑΝΑΒΛΗΘΗΚΕ");
+                    Report.AddReportEntry(entry);
                     postponedServiceDescr = string.Format("{0}\n{1}", postponedServiceDescr, entries[i].Descr);
-                    serviceHistoryPostponed += string.Format("{0}\n", entries[i].Descr);
+                    //serviceHistoryPostponed += string.Format("{0}\n", entries[i].Descr);
+                    history.Add(new HistoryEntry(entry));
                     entries[i].IsSelected = false;
 
                 }
@@ -282,39 +285,40 @@ namespace SPS
         }
     }
 
+    [Serializable]
     public class ReportEntry
     {
-        private string _machineryName;
-        public string MachineryName { get { return _machineryName; } }
-        private string _machineryId;
-        public string MachineryID { get { return _machineryId; } }
-        private string _system;
-        public string System { get { return _system; } }
-        private string _dept;
-        public string Department { get { return _dept; } }
-        private string _serviceDescription;
-        public string ServiceDescription { get { return _serviceDescription; } }
-        private string _status;
-        public string ServiceStatus { get { return _status; } }
+        //private string _machineryName;
+        public string MachineryName { get; set; }
+        //private string _machineryId;
+        public string MachineryID { get; set; }
+        //private string _system;
+        public string System { get; set; }
+        //private string _dept;
+        public string Department { get; set; }
+        //private string _serviceDescription;
+        public string ServiceDescription { get; set; }
+        //private string _status;
+        public string ServiceStatus { get; set; }
 
         public ReportEntry(string name, string id, string sys, string dep, string servDesc, string stat)
         {
-            _machineryName = name;
-            _machineryId = id;
-            _system = sys;
-            _dept = dep;
-            _serviceDescription = servDesc;
-            _status = stat;
+            MachineryName = name;
+            MachineryID = id;
+            System = sys;
+            Department = dep;
+            ServiceDescription = servDesc;
+            ServiceStatus = stat;
         }
 
         public ReportEntry()
         {
-            _machineryName = "";
-            _machineryId = "";
-            _system = "";
-            _dept = "";
-            _serviceDescription = "";
-            _status = "";
+            MachineryName = "";
+            MachineryID = "";
+            System = "";
+            Department = "";
+            ServiceDescription = "";
+            ServiceStatus = "";
         }
     }
 
@@ -427,7 +431,7 @@ namespace SPS
                 //create table
                 CreateHistoryReport(serv, margin, maxH);
                 //save
-                string path = SavePdfDocument(pdfDocument);
+                string path = SavePdfDocument(pdfDocument, serv.name, false);
                 //hide message box
                 UnityMainThreadDispatcher.Instance.Enqueue(() =>
                 {
@@ -437,7 +441,7 @@ namespace SPS
                         showLoadingIndicator = false,
                         useLeftButton = false,
                         useRightButton = false,
-                        mainText = string.Format("Η αναφορά αποθηκεύτηκε επιτυχώς στην τοποθεσία {0}", path),
+                        mainText = string.Format("Τo ιστορικό αποθηκεύτηκε επιτυχώς στην τοποθεσία {0}", path),
                         showLabel = false,
                     });
                 });
@@ -548,7 +552,7 @@ namespace SPS
             return (Math.Max(finalWidthHN, finalWidthBadge) + margin / 2 + 10, Math.Max(finalHeightBadge, finalHeightHN) + (float)margin * 0.66f + 10);
         }
 
-        static string SavePdfDocument(PdfDocument document)
+        static string SavePdfDocument(PdfDocument document, string machineryName = "", bool isReport = true)
         {
             string reportsPath = Path.Combine(Directory.GetCurrentDirectory(), "Αναφορές");
             if (!Directory.Exists(reportsPath))
@@ -557,7 +561,12 @@ namespace SPS
             }
 
             //check if file already exists
-            string filename = string.Format("Αναφορά {0}", DateTime.Now.ToString("dd-MM-yy"));
+            string filename = "";
+            if (isReport)
+                filename = string.Format("Αναφορά {0}", DateTime.Now.ToString("dd-MM-yy"));
+            else
+                filename = string.Format("Ιστορικό {0}", machineryName);
+
             //first time creating the file it should not exist
             if (!File.Exists(Path.Combine(reportsPath, string.Format("{0}.pdf", filename))))
             {
@@ -939,6 +948,7 @@ namespace SPS
 
             int currentPageNo = 0;
             List<HistoryEntry> history = serv.history;
+            history.Insert(0, new HistoryEntry(new ReportEntry()));
             int amountElements = history.Count;
             //draw black background square
             if (amountElements <= 18)
@@ -1115,7 +1125,7 @@ namespace SPS
                     //write inside boxes
                     if (j == -1)
                     {
-                        tf.DrawString("ΟΝΟΜΑ ΜΗΧΑΝΗΜΑΤΟΣ", headerFont, XBrushes.Black, nameRect);
+                        tf.DrawString("ΗΜΕΡΟΜΗΝΙΑ", headerFont, XBrushes.Black, nameRect);
                         tf.DrawString("ΚΩΔΙΚΟΣ", headerFont, XBrushes.Black, idRect);
                         //tf.DrawString("ΣΥΣΤΗΜΑ", headerFont, XBrushes.Black, systemRect);
                         //tf.DrawString("ΕΠΙΣΤΑΣΙΑ", headerFont, XBrushes.Black, deptRect);
@@ -1127,7 +1137,7 @@ namespace SPS
                     }
 
                     //machinery name box
-                    tf.DrawString(entry.reportEntry.MachineryName, cellFont, XBrushes.Black, nameRect, format);
+                    tf.DrawString(entry.date, cellFont, XBrushes.Black, nameRect, format);
                     //id box
                     tf.DrawString(entry.reportEntry.MachineryID, cellFont, XBrushes.Black, idRect, format);
                     //system & dept box
@@ -1143,10 +1153,11 @@ namespace SPS
         }
     }
 
+    [Serializable]
     public class HistoryEntry
     {
-        public ReportEntry reportEntry;
-        public string date;
+        public ReportEntry reportEntry { get; set; }
+        public string date { get; set; }
 
         public HistoryEntry(ReportEntry entry)
         {

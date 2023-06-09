@@ -60,7 +60,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
     public Button displayAddServiceEntryButton;
     public Button displayDeleteSelectionButton;
     public Button displayPanelCloseButton;
-    public Button displayEnableEditingButton;
+    public Button displayPrintHistoryButton;
     public Button displayDeleteMachineryButton;
     public Button displayCompleteServiceButton;
     public Button displayPostponeServiceButton;
@@ -190,6 +190,9 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
                 //show info depending on account
                 SetupInterface(acc.AccessLevel);
+
+                EnableInputFieldsInDisplay(acc.AccessLevel);
+                DisplayMachineryChangeButtonsStatus(acc.AccessLevel == AccessLevel.admin);
             }
         };
 
@@ -229,7 +232,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 addSystemButton.gameObject.SetActive(false);
                 createDeptButton.gameObject.SetActive(false);
                 addMachineryButton.gameObject.SetActive(false);
-                displayEnableEditingButton.gameObject.SetActive(false);
                 displayAddServiceEntryButton.gameObject.SetActive(false);
                 displayDeleteSelectionButton.gameObject.SetActive(false);
                 updateMachineryButton.gameObject.SetActive(false);
@@ -242,16 +244,15 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
                 //admin should have access to all
                 addSystemButton.gameObject.SetActive(true);
                 createDeptButton.gameObject.SetActive(true);
-                addMachineryButton.gameObject.SetActive(true);
-                displayEnableEditingButton.gameObject.SetActive(true);
+                addMachineryButton.gameObject.SetActive(true);              
                 displayAddServiceEntryButton.gameObject.SetActive(true);
                 displayDeleteSelectionButton.gameObject.SetActive(true);
                 updateMachineryButton.gameObject.SetActive(true);
                 displayDeleteMachineryButton.gameObject.SetActive(true);
                 break;
         }
-        displayEnableEditingButton.onClick.RemoveAllListeners();
-        displayEnableEditingButton.onClick.AddListener(() => { DisplayMachineryChangeButtonsStatus(accessLevel == AccessLevel.admin); EnableInputFieldsInDisplay(accessLevel); });
+       
+        
         //apply validator for dates
         if (textValidatorDateTime == null)
             textValidatorDateTime = ScriptableObject.CreateInstance<TextValidatorDateTime>();
@@ -315,6 +316,8 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         displayDeleteSelectionButton.onClick.AddListener(() => DeleteSelectedServiceEntries(displayServiceEntryParent));
         displayAddServiceEntryButton.onClick.AddListener(() => AddServiceEntry(displayServiceEntryParent));
         updateMachineryButton.onClick.AddListener(UpdateMachineryInfo);
+
+        displayPrintHistoryButton.onClick.AddListener(() => Report.ThreadedCreateHistory(_currentService));
 
         displayPanelCloseButton.onClick.AddListener(() => CloseDisplayPanel());
 
@@ -631,7 +634,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         _currentService = new Service(
             nameInput.text, descriptionInput.text, idInput.text, hoursInput.text.Length > 0 ? int.Parse(hoursInput.text) : 0,
             0, 0, dateInput.text, systemDropdown.value,
-            serviceEntries);
+            serviceEntries, new List<HistoryEntry>());
         //creating machinery should have 0 as starting hours
         Debug.Log(_currentService.ToJson());
         //write to database
@@ -1135,10 +1138,10 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         _currentService = new Service(
             displayNameInput.text, displayDescriptionInput.text, displayIdInput.text, displayHoursInput.text.Length > 0 ? int.Parse(displayHoursInput.text) : 0,
             serv.lastServiceHours, serv.nextServiceHours, displayDateInput.text, displaySystemDropdown.value,
-            serviceEntries);
+            serviceEntries, serv.history);
 
         displayMachineryPanel.SetActive(true);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(displayEnableEditingButton.transform.parent.parent.GetComponent<RectTransform>());
+        LayoutRebuilder.ForceRebuildLayoutImmediate(displayAddServiceEntryButton.transform.parent.parent.GetComponent<RectTransform>());
         MessageBox.Instance.HideMessageBox();
     }
 
