@@ -1154,7 +1154,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             Report.Remarks = remarksInputField.text; 
         }
         remarksPanel.gameObject.SetActive(false);
-        Report.ThreadedCreatePDF();
+        Report.ThreadedCreateReport();
 
     }
     void UpdateMachineryInfo()

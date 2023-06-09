@@ -180,7 +180,12 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
                         if ((DateTime.Now - DateTime.ParseExact(serv.lastServiceDates[ii], "dd-MM-yy", null)).Days >= serviceDays[ii])
                         {
                             serv.serviceStatuses[ii] = ServiceStatus.pending;
-                            machineryButtonsToDisplay.Add(InterfaceManager.Instance.ShowMachineryWithPendingServiceButtons(serv.name));
+                            foreach (Button b in machineryButtonsToDisplay)
+                            {
+                                if (!b.name.Equals(serv.name))
+                                    machineryButtonsToDisplay.Add(InterfaceManager.Instance.ShowMachineryWithPendingServiceButtons(serv.name));
+                            }
+                            
                         }
                     }
 
@@ -207,7 +212,7 @@ public class ServiceChecker : GenericSingleton<ServiceChecker>
 #endif
                     TableRow row = new TableRow(new TableColumn[] { new TableColumn("Name", "TEXT", false, true), new TableColumn("ServiceDescr", "TEXT") });
                     row.AddValues(new DataEntry[] { new DataEntry(serv.name), new DataEntry(string.Format("{0}", serv.ToJson())) });
-                    DatabaseManager.Instance.UpdateValuesOnTable(serv.name, row.GetColumnNames(), row.GetValues(), "", () => Debug.Log($"ServiceDesrc for {serv.name} updated"));
+                    DatabaseManager.Instance.UpdateValuesOnTable(serv.name, row.GetColumnNames(), row.GetValues(), "", () => Debug.Log($"ServiceDesrc for {serv.name} updated to reflected changed statuses"));
                 },
                 SortResultsBy.none, null, "ServiceDescr");
 

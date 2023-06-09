@@ -172,7 +172,7 @@ public class pdfTests : MonoBehaviour
             Report.AddReportEntries(entries);
 
             //ThreadedCreatePDF(75, badgePath, hnBadgePath, shipName, remarks);
-            Report.ThreadedCreatePDF();
+            Report.ThreadedCreateReport();
             //(double maxW, double maxH) = CreateHeaderTemplate(gfx, page, 75, badgePath, hnBadgePath, shipName);
             //create the text rect
             //XRect textRect = new XRect(margin, margin / 2 + maxH, page.Width - 2 * margin, page.Height - 2 * margin);
