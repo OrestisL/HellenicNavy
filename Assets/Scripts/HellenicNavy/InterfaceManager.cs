@@ -224,7 +224,6 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
 
     void SetupInterface(AccessLevel accessLevel)
     {
-        //TODO hide UI elements according to access level
         switch (accessLevel)
         {
             case AccessLevel.user:
@@ -961,18 +960,35 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
         switch (level)
         {
             case AccessLevel.user:
+                displayHoursInput.enabled = true;
+                displayDateInput.enabled = false;
+                displayDescriptionInput.enabled = false;
+                displayNameInput.enabled = false;
+                displaySystemDropdown.interactable = false;
+                displayIdInput.enabled = false;
+
+                setAssignmnetsButton.interactable = false;
+                addAsignmentButton.interactable = false;
+                deleteAssignmentsButton.interactable = false;
                 break;
             case AccessLevel.supervisor:
                 displayHoursInput.interactable = true;
                 break;
             case AccessLevel.admin:
-                displayHoursInput.interactable = true;
-                displayDateInput.interactable = true;
-                displayDescriptionInput.interactable = true;
+                displayHoursInput.enabled = true;
+                displayDateInput.enabled = true;
+                displayNameInput.enabled = true;
+                displayDescriptionInput.enabled = true;
                 displaySystemDropdown.interactable = true;
-                displayIdInput.interactable = true;
+                displayIdInput.enabled = true;
+
+                setAssignmnetsButton.interactable = true;
+                addAsignmentButton.interactable = true;
+                deleteAssignmentsButton.interactable = true;
                 break;
         }
+
+        printReportButton.interactable = Report.IsReportPending;
     }
 
     void CompleteServiceEntries()
