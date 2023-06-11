@@ -207,7 +207,7 @@ public class InterfaceManager : GenericSingleton<InterfaceManager>
             userPanel.SetActive(false);
             SetupLoginInterface(LoginInterfaceSetup.login);
 
-            //close connection?
+            //close connection? no because cant re log in
             //DatabaseManager.Instance.CloseConnection();
         };
 
